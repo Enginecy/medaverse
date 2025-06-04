@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "../components/ui/sonner";
 import { SupabaseClientProvider } from "../lib/supabase/provider";
+import { QueryProvider } from "../providers/client-query";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -20,13 +21,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <SupabaseClientProvider>
-      <html lang="en" className={`${geist.variable}`}>
-        <body>
-          {children}
-          <Toaster />
-        </body>
-      </html>
-    </SupabaseClientProvider>
+    <QueryProvider>
+      <SupabaseClientProvider>
+        <html lang="en" className={`${geist.variable}`}>
+          <body>
+            {children}
+            <Toaster />
+          </body>
+        </html>
+      </SupabaseClientProvider>
+    </QueryProvider>
   );
 }
