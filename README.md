@@ -24,11 +24,8 @@
 
 # General Commands
 
-```
- npm run dev -> runs in dev mode (next dev)
- 
-```
- ```npm run build -> builds the app (next build)```
+```npm run dev -> runs in dev mode (next dev)```
+```npm run build -> builds the app (next build)```
 
 
 <br>
