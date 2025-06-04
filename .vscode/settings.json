@@ -1,0 +1,7 @@
+{
+    "editor.foldingImportsByDefault": true,
+    "workbench.editor.customLabels.patterns": {
+        "**/app/**/*.{tsx,jsx,ts}": "${dirname}/${filename}.${extname}",
+        "**/components/**": "${dirname}/${filename}.${extname} : Comp",
+    },
+}
