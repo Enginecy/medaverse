@@ -34,3 +34,7 @@
 <br>
 
 **npm run preview -> builds then previews (next build && next start)**
+<br>
+
+**npm i --force -> installs all dependencies needed**
+<br>
