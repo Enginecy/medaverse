@@ -14,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { tryCatch } from "~/lib/utils";
 import { toast } from "sonner";
 import {
   InputOTP,
@@ -22,18 +21,18 @@ import {
   InputOTPSlot,
 } from "../../components/ui/input-otp";
 import { useState } from "react";
+import { useSupabase } from "../../lib/supabase/provider";
 
 const pinSchema = z.object({
   code: z.string().min(6),
 });
-
 const emailSchema = z.object({
   email: z.string().email(),
 });
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin">("email");
-
+  const supabase = useSupabase();
   const emailForm = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
     defaultValues: {
@@ -49,10 +48,38 @@ export default function Home() {
   });
 
   async function onSubmitEmail(values: z.infer<typeof emailSchema>) {
+    const { data: session, error } = await supabase.auth.signInWithOtp({
+      email: values.email,
+      options: { shouldCreateUser: false },
+    });
+    if (error) {
+      toast.error("Failed to send OTP, Are you already registered?");
+      return;
+    }
+    if (session) {
+      toast.success("OTP sent to email");
+    }
     setStep("pin");
   }
 
-  async function onSubmitPin(values: z.infer<typeof pinSchema>) {}
+  async function onSubmitPin(values: z.infer<typeof pinSchema>) {
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.verifyOtp({
+      email: emailForm.getValues("email"),
+      token: values.code,
+      type: "email",
+    });
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (session) {
+      toast.success("Logged in");
+    }
+  }
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-blue-500">
