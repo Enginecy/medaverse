@@ -24,26 +24,48 @@
 
 # General Commands
 
+## Run in dev mode (next dev)
 ```
-npm run dev -> runs in dev mode (next dev)
+    npm run dev 
+
+```
+<br>
+
+## Builds the app (next build)
+```
+    npm run build 
 
 ```
 <br>
 
+## Previews the built app (next start)
 ```
-npm run build -> builds the app (next build)
+    npm run start 
 
-```
-
-
-
-```
-    **npm run start -> previews the built app (next start)** 
 ```
 <br>
 
-**npm run preview -> builds then previews (next build && next start)**
+## Builds then previews (next build && next start)
+
+``` 
+    npm run preview 
+
+```
 <br>
 
-**npm i --force -> installs all dependencies needed**
+## Installs all dependencies needed
+```
+npm i --force 
+
+```
+## OR
+```
+     pnpm i  
+
+```
+## OR
+```
+    yarn i
+
+```
 <br>
