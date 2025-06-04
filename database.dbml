@@ -1,0 +1,163 @@
+Project insurance_system {
+  database_type: 'PostgreSQL'
+  Note: '''
+    # Insurance Management System
+    Database schema for managing insurance companies, products, and sales
+  '''
+}
+
+// TODO: Add base template for all tables
+
+Table users {
+  id integer [primary key, note: 'Unique identifier for each user']
+  username varchar [note: 'Unique username for login']
+  email varchar [unique, note: 'User email address, must be unique']
+  status status [note: 'User account status - active, disabled, or deleted']
+  created_at timestamp [note: 'When the user account was created']
+  updated_at timestamp [note: 'When the user account was last updated']
+  deleted_at timestamp [note: 'Soft delete timestamp, null if not deleted']
+  
+  Note: 'System users - agents, managers, administrators'
+}
+
+Table Profile {
+  id integer [primary key, note: 'Unique identifier for each profile']
+  user_id integer [ref: - users.id, note: 'Reference to the user this profile belongs to']
+  name varchar [note: 'Full name of the user']
+  address varchar [note: 'Physical address of the user']
+  dob timestamp [note: 'Date of birth']
+  role title [note: 'User role/position in the organization hierarchy']
+  
+  Note: 'Extended profile information for users'
+}
+
+Table insurance_companies {
+  id integer [primary key, increment, note: 'Unique identifier for each insurance company']
+  name varchar(255) [not null, note: 'Full company name']
+  code varchar(10) [unique, not null, note: 'Short company identifier code']
+  email varchar(255) [note: 'Company contact email address']
+  phone varchar(20) [note: 'Company contact phone number']
+  website varchar(255) [note: 'Company website URL']
+  created_at timestamp [default: `now()`, note: 'When the company record was created']
+  updated_at timestamp [default: `now()`, note: 'When the company record was last updated']
+  deleted_at timestamp [note: 'Soft delete timestamp, null if not deleted']
+
+  Note: 'Insurance companies that offer products through our system'
+}
+
+Table insurance_products {
+  id integer [primary key, increment, note: 'Unique identifier for each insurance product']
+  company_id integer [ref: > insurance_companies.id, not null, note: 'Reference to the insurance company offering this product']
+  name varchar(255) [not null, note: 'Product name/title']
+  product_code varchar(50) [unique, not null, note: 'Unique product identifier code']
+  description text [note: 'Detailed product description and features']
+  coverage_amount decimal(15,2) [note: 'Maximum coverage amount in currency']
+  premium_amount decimal(10,2) [not null, note: 'Base premium amount']
+  premium_frequency premium_frequency [default: 'monthly', note: 'How often premiums are paid: monthly, quarterly, annually']
+  term_years integer [note: 'Policy term duration in years']
+  status status [default: 'active', note: 'Product availability status: active, inactive, deleted']
+  created_at timestamp [default: `now()`, note: 'When the product was added to system']
+  updated_at timestamp [default: `now()`, note: 'When the product was last modified']
+  deleted_at timestamp [note: 'Soft delete timestamp, null if not deleted']
+  
+  Note: 'Insurance products offered by partner companies'
+}
+
+enum premium_frequency {
+  monthly [note: 'Premiums are paid monthly']
+  quarterly [note: 'Premiums are paid quarterly']
+  annually [note: 'Premiums are paid annually']
+}
+
+Table sales {
+  id integer [primary key, increment, note: 'Unique identifier for each sale transaction']
+  user_id integer [ref: > users.id, not null, note: 'Reference to the sales agent/user who made the sale']
+  customer_name varchar(255) [not null, note: 'Name of the primary customer who purchased the policies']
+  sale_date date [not null, default: `now()`, note: 'Date when the sale was completed']
+  total_commission_amount decimal(10,2) [note: 'Total commission amount earned by the agent for this sale']
+  payment_frequency varchar(20) [default: 'monthly', note: 'How often customer pays premiums: monthly, quarterly, annually']
+  total_sale_value decimal(15,2) [note: 'Total value of all products in this sale']
+  notes text [note: 'Additional notes or comments about the sale']
+  created_at timestamp [default: `now()`, note: 'When the sale record was created']
+  updated_at timestamp [default: `now()`, note: 'When the sale record was last updated']
+  deleted_at timestamp [note: 'Soft delete timestamp, null if not deleted']
+
+  Note: 'Sales transactions - can contain multiple insurance products for different family members'
+}
+
+Table sale_items {
+  id integer [primary key, increment, note: 'Unique identifier for each sale item']
+  sale_id integer [ref: > sales.id, not null, note: 'Reference to the main sale transaction']
+  product_id integer [ref: > insurance_products.id, not null, note: 'Reference to the insurance product being sold']
+  insured_person_name varchar(255) [not null, note: 'Name of the person being insured (e.g., husband, wife, son)']
+  relationship varchar(50) [note: 'Relationship to primary customer (self, spouse, child, parent, etc.)']
+  premium_amount decimal(10,2) [not null, note: 'Premium amount for this specific product/person']
+  commission_rate decimal(5,2) [note: 'Commission percentage for this sale item']
+  commission_amount decimal(10,2) [note: 'Commission amount earned for this specific item']
+  policy_number varchar(100) [unique, not null, note: 'Unique policy identifier for this specific coverage']
+  policy_start_date date [not null, note: 'When this specific insurance coverage begins']
+  policy_end_date date [note: 'When this specific insurance coverage expires']
+  coverage_amount decimal(15,2) [note: 'Coverage amount for this specific policy']
+  notes text [note: 'Additional notes about this specific policy/person']
+  created_at timestamp [default: `now()`, note: 'When the sale item was created']
+  updated_at timestamp [default: `now()`, note: 'When the sale item was last updated']
+  deleted_at timestamp [note: 'Soft delete timestamp, null if not deleted']
+
+  Note: 'Individual products/policies within a sale - allows multiple policies per sale transaction'
+}
+
+
+// Simple Hierarchy System
+Table user_hierarchy {
+  id integer [primary key, increment, note: 'Unique identifier for hierarchy relationship']
+  user_id integer [ref: > users.id, not null, note: 'Reference to the user']
+  leader_id integer [ref: > users.id, note: 'Reference to this user\'s direct leader/manager']
+  region varchar(100) [note: 'Geographic region this user manages/belongs to']
+  division varchar(100) [note: 'Division or area this user manages/belongs to']
+  status status [default: 'active', note: 'Whether this hierarchy assignment is active']
+  created_at timestamp [default: `now()`, note: 'When this hierarchy record was created']
+  updated_at timestamp [default: `now()`, note: 'When this hierarchy record was last updated']
+  deleted_at timestamp [note: 'Soft delete timestamp, null if not deleted']
+
+
+  Note: 'Organizational hierarchy defining reporting relationships and levels'
+}
+
+
+Table user_permissions {
+    id integer [primary key, increment, note: 'Unique identifier for each permission']
+    user_id integer [ref: > users.id, not null, note: 'Reference to the user']
+    permission_name varchar(100) [not null, note: 'Name of the permission']
+    permission_description text [note: 'Description of the permission']
+    created_at timestamp [default: `now()`, note: 'When the permission record was created']
+    updated_at timestamp [default: `now()`, note: 'When the permission record was last updated']
+    deleted_at timestamp [note: 'Soft delete timestamp, null if not deleted']
+
+    Note: 'Permissions assigned to users - can be used for access control'
+}
+// Enums
+enum status {
+  active [note: 'User account is active and can login']
+  disabled [note: 'User account is temporarily disabled']
+  delete [note: 'User account is marked for deletion']
+}
+
+enum title {
+  NationalDirector [note: 'Highest level - oversees entire national operations']
+  RegionalDirector [note: 'Manages multiple divisions within a region']
+  DivisionalDirector [note: 'Manages a specific division or area']
+  AssociateDirector [note: 'Senior management role, assists directors']
+  PlatinumAssociate [note: 'Top tier sales associate with premium status']
+  SeniorAssociate [note: 'Experienced sales associate with seniority']
+  Associate [note: 'Regular sales associate position']
+
+  Leads [note: 'Entry level or lead generation role']
+}
+
+enum payment_status {
+  pending [note: 'Premium payment is due but not yet paid']
+  paid [note: 'Premium payment has been successfully completed']
+  overdue [note: 'Premium payment is past due date']
+  cancelled [note: 'Premium payment has been cancelled']
+  refunded [note: 'Premium payment has been refunded']
+}
