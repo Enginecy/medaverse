@@ -37,7 +37,9 @@ npm run build -> builds the app (next build)
 
 
 
-**npm run start -> previews the built app (next start)**
+```
+    **npm run start -> previews the built app (next start)** 
+```
 <br>
 
 **npm run preview -> builds then previews (next build && next start)**
