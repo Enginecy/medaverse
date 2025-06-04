@@ -22,9 +22,9 @@
   </table>
 </div>
 
-# H1 General Commands
+# General Commands
 
-> npm run dev -> runs in dev mode (next dev)
-> npm run build -> builds the app (next build)
-> npm run start -> previews the built app (next start)
-> npm run preview -> builds then previews (next build && next start) 
+**npm run dev -> runs in dev mode (next dev)**
+**npm run build -> builds the app (next build)**
+**npm run start -> previews the built app (next start)**
+**npm run preview -> builds then previews (next build && next start)**
