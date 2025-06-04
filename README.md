@@ -24,28 +24,28 @@
 
 # General Commands
 
-## Run in dev mode (next dev)
+### Run in dev mode (next dev)
 ```
     npm run dev 
 
 ```
 <br>
 
-## Builds the app (next build)
+### Builds the app (next build)
 ```
     npm run build 
 
 ```
 <br>
 
-## Previews the built app (next start)
+### Previews the built app (next start)
 ```
     npm run start 
 
 ```
 <br>
 
-## Builds then previews (next build && next start)
+### Builds then previews (next build && next start)
 
 ``` 
     npm run preview 
@@ -53,17 +53,17 @@
 ```
 <br>
 
-## Installs all dependencies needed
+### Installs all dependencies needed
 ```
 npm i --force 
 
 ```
-## OR
+### OR
 ```
      pnpm i  
 
 ```
-## OR
+### OR
 ```
     yarn i
 
