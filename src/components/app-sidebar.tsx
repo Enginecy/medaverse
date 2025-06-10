@@ -1,9 +1,10 @@
 "use client";
-import { Grid2x2 } from "lucide-react";
+import { Grid2x2, LogOut } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -12,6 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import { Logout } from "./logout";
 
 // Menu items.
 const items = [
@@ -50,8 +52,16 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      <SidebarFooter>
+        <Logout>
+          <SidebarMenuButton className="text-red-500 transition-colors hover:bg-red-50 hover:text-red-700 active:bg-red-100 active:text-red-800">
+            log out
+            <LogOut className="ml-auto" />
+          </SidebarMenuButton>
+        </Logout>
+      </SidebarFooter>
 
-      {/* Add Footer */}
     </Sidebar>
   );
 }

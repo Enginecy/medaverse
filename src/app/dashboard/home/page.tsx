@@ -15,7 +15,6 @@ export default async function Home() {
       <Authenticated>
         <p>You are authenticated</p>
       </Authenticated>
-      <Logout />
     </div>
   );
 }
