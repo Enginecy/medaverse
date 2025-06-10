@@ -17,7 +17,7 @@ import { usePathname } from "next/navigation";
 const items = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/dashboard/home",
     icon: Grid2x2,
   },
 ];
