@@ -1,6 +1,7 @@
 "use client";
 import { Grid2x2, LogOut } from "lucide-react";
 import Image from "next/image";
+import logo from "public/meda_health_logo.png";
 
 import {
   Sidebar,
@@ -33,7 +34,7 @@ export function AppSidebar() {
       <SidebarHeader className="border-b border-gray-200">
         <Image
           className="mx-auto w-40"
-          src="/meda_health_logo.png"
+          src={logo}
           width={300}
           height={300}
           alt="Picture of the author"
