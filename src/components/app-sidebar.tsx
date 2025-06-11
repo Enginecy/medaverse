@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { Logout } from "./logout";
+import { cn } from "@/lib/utils";
 
 // Menu items.
 const items = [
@@ -27,11 +28,15 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({
+  className,
+}: {
+  className?: React.HTMLAttributes<HTMLDivElement>["className"];
+}) {
   const pathName = usePathname();
   return (
-    <Sidebar className="bg-background" collapsible="icon">
-      <SidebarHeader className="border-b border-gray-200">
+    <Sidebar className={cn("bg-background", className)} collapsible="icon">
+      <SidebarHeader className="border-b border-gray-200 py-[22.5px]">
         <Image
           className="mx-auto w-40"
           src={logo}
