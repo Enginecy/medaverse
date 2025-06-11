@@ -1,17 +1,22 @@
 "use client";
-import { Grid2x2 } from "lucide-react";
+import { Grid2x2, LogOut } from "lucide-react";
+import Image from "next/image";
+import logo from "public/meda_health_logo.png";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import { Logout } from "./logout";
 
 // Menu items.
 const items = [
@@ -26,7 +31,15 @@ export function AppSidebar() {
   const pathName = usePathname();
   return (
     <Sidebar className="bg-background" collapsible="icon">
-      {/* Add Header */}
+      <SidebarHeader className="border-b border-gray-200">
+        <Image
+          className="mx-auto w-40"
+          src={logo}
+          width={300}
+          height={300}
+          alt="Picture of the author"
+        />
+      </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
@@ -51,7 +64,14 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Add Footer */}
+      <SidebarFooter>
+        <Logout>
+          <SidebarMenuButton className="text-red-500 transition-colors hover:bg-red-50 hover:text-red-700 active:bg-red-100 active:text-red-800">
+            log out
+            <LogOut className="ml-auto" />
+          </SidebarMenuButton>
+        </Logout>
+      </SidebarFooter>
     </Sidebar>
   );
 }

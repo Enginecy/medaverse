@@ -1,10 +1,10 @@
 import { Edit } from "lucide-react";
 import Image from "next/image";
-import profile from "../../../../public/profile.jpg";
-import { ChartHalfRadialText } from "../../../components/half-radial-chart";
-import { ChartRadialText } from "../../../components/radial-chart";
-import Spotlight from "../../../components/spotlight";
-import { Button } from "../../../components/ui/button";
+import profile from "public/profile.jpg";
+import { ChartHalfRadialText } from "@/components/half-radial-chart";
+import { ChartRadialText } from "@/components/radial-chart";
+import Spotlight from "@/components/spotlight";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -12,9 +12,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
-import { Progress } from "../../../components/ui/progress";
-import { cn } from "../../../lib/utils";
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 import { birthdayColumns } from "./birthday-columns";
 import { birthdays } from "./birthday-data";
 import { BirthdayTable } from "./birthday-table";

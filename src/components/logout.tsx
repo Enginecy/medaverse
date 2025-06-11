@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 import { useSupabase } from "../lib/supabase/provider";
 import { Button } from "./ui/button";
 
-export function Logout() {
+export function Logout(
+  {
+  children,
+}: Readonly<{ children: React.ReactNode }>
+) {
   const supabase = useSupabase();
   const router = useRouter();
 
@@ -13,5 +17,5 @@ export function Logout() {
     router.refresh();
   };
 
-  return <Button onClick={handleLogout}>Sign Out</Button>;
+  return <div className="cursor-pointer " onClick={handleLogout}>{children}</div>;
 }
