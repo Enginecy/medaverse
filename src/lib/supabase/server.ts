@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { env } from "@/env";
-import type { Database } from "@/database.types";
+import type { Database } from "database.types";
 import { ORM } from "./orm";
 
 export async function createClient() {

@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useSupabase } from "@/lib/supabase/provider";
-import { Button } from "./ui/button";
 
 export function Logout({ children }: Readonly<{ children: React.ReactNode }>) {
   const supabase = useSupabase();
