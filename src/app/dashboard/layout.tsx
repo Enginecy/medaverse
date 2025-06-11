@@ -10,10 +10,7 @@ export default function RootLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full">
-        <SidebarTrigger className="fixed" />
-        {children}
-      </main>
+      <main className="bg-sidebar w-full">{children}</main>
     </SidebarProvider>
   );
 }

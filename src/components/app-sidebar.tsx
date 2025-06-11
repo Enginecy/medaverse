@@ -29,7 +29,7 @@ const items = [
 export function AppSidebar() {
   const pathName = usePathname();
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar className="bg-background" collapsible="icon">
       <SidebarHeader className="border-b border-gray-200">
         <Image
           className="mx-auto w-40"
