@@ -20,9 +20,9 @@ export function AppBarDropdown() {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <DropdownMenu  open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger asChild >
-         <OutlinedButton >
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+        <OutlinedButton type="button" className="w-full">
+      <DropdownMenuTrigger asChild>
           <div className="flex flex-row items-center gap-2">
             <div className="flex flex-col items-end">
               <span className="text-sm font-bold">John Doe</span>
@@ -31,9 +31,9 @@ export function AppBarDropdown() {
             <Image
               src={Profile}
               alt="Profile"
-              className="h-10 w-10 rounded-full"
-              width={32}
-              height={32}
+              className="h-10 w-10 rounded-full border border-gray-200 object-cover shadow"
+              width={40}
+              height={40}
             />
             {open ? (
               <ChevronUp className="h-4 w-4" />
@@ -41,17 +41,29 @@ export function AppBarDropdown() {
               <ChevronDown className="h-4 w-4" />
             )}
           </div>
-        </OutlinedButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Account</DropdownMenuLabel>
+        </OutlinedButton>
+      <DropdownMenuContent className="z-[9999] w-56 rounded-xl border bg-white p-2 shadow-xl focus:outline-none">
+        <DropdownMenuLabel className="font-semibold text-gray-700">
+          Account
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuItem>Billing</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 rounded-md px-3 py-2">
+          Profile
+        </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 rounded-md px-3 py-2">
+          Settings
+        </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 rounded-md px-3 py-2">
+          Billing
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Help</DropdownMenuItem>
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 rounded-md px-3 py-2">
+          Help
+        </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:bg-red-100 text-red-600 rounded-md px-3 py-2">
+          Logout
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

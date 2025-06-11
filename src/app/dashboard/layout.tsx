@@ -1,11 +1,13 @@
 import Image from "next/image";
 import Profile from "public/profile.jpg";
+
 import { AppSidebar } from "@/components/app-sidebar";
 import { OutlinedButton } from "@/components/ui/outlined_button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Newspaper, ChevronDown, ChevronUp } from "lucide-react";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -13,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AppBarDropdown } from "@/app/dashboard/home/appbar_dropdown";
+import { Button } from "@/components/ui/button";
 
 export default function RootLayout({
   children,
@@ -26,13 +29,14 @@ export default function RootLayout({
           <div className="fixed top-0 right-0 flex h-16 w-full items-center justify-end gap-4 border-b border-gray-200 bg-white px-4">
             <OutlinedButton>
               <Newspaper className="h-5 w-5" />
+              
               <span>News</span>
             </OutlinedButton>
 
             <OutlinedButton>News</OutlinedButton>
-            <AppBarDropdown />
             <OutlinedButton>News</OutlinedButton>
-
+            <AppBarDropdown />
+          
           </div>
           // main content
           <main className="bg-sidebar flex w-full pt-16">{children}</main>
