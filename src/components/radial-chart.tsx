@@ -16,21 +16,23 @@ export function ChartRadialText({
   }
 
   return (
-    <Gauge
-      cornerRadius={6}
-      value={value}
-      sx={() => ({
-        [`& .${gaugeClasses.valueArc}`]: {
-          fill: "var(--color-primary)",
-        },
-        [`& .${gaugeClasses.referenceArc}`]: {
-          fill: "var(--color-primary-foreground)",
-        },
-        [`& .${gaugeClasses.valueText}`]: {
-          fontSize: 24,
-        },
-      })}
-      text={title}
-    />
+    <div className="h-full w-full">
+      <Gauge
+        cornerRadius={6}
+        value={value}
+        sx={() => ({
+          [`& .${gaugeClasses.valueArc}`]: {
+            fill: "var(--color-primary)",
+          },
+          [`& .${gaugeClasses.referenceArc}`]: {
+            fill: "var(--color-primary-foreground)",
+          },
+          [`& .${gaugeClasses.valueText}`]: {
+            fontSize: 24,
+          },
+        })}
+        text={title}
+      />
+    </div>
   );
 }

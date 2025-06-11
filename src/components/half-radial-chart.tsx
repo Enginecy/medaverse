@@ -19,25 +19,27 @@ export function ChartHalfRadialText({
   }, []);
 
   return (
-    <Gauge
-      ref={ref}
-      cornerRadius={6}
-      value={value}
-      startAngle={90}
-      endAngle={-90}
-      sx={() => ({
-        [`& .${gaugeClasses.valueArc}`]: {
-          fill: "var(--color-primary)",
-        },
-        [`& .${gaugeClasses.referenceArc}`]: {
-          fill: "var(--color-primary-foreground)",
-        },
-        [`& .${gaugeClasses.valueText}`]: {
-          fontSize: 24,
-          transform: `translate(0px, -${height / 3.5}px)`,
-        },
-      })}
-      text={title}
-    />
+    <div className="h-full w-full">
+      <Gauge
+        ref={ref}
+        cornerRadius={6}
+        value={value}
+        startAngle={90}
+        endAngle={-90}
+        sx={() => ({
+          [`& .${gaugeClasses.valueArc}`]: {
+            fill: "var(--color-primary)",
+          },
+          [`& .${gaugeClasses.referenceArc}`]: {
+            fill: "var(--color-primary-foreground)",
+          },
+          [`& .${gaugeClasses.valueText}`]: {
+            fontSize: 24,
+            transform: `translate(0px, -${height / 3.5}px)`,
+          },
+        })}
+        text={title}
+      />
+    </div>
   );
 }
