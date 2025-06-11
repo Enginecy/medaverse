@@ -1,5 +1,6 @@
 "use client";
 import { Grid2x2, LogOut } from "lucide-react";
+import Image from "next/image";
 
 import {
   Sidebar,
@@ -8,6 +9,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -28,7 +30,15 @@ export function AppSidebar() {
   const pathName = usePathname();
   return (
     <Sidebar collapsible="icon">
-      {/* Add Header */}
+      <SidebarHeader className="border-b border-gray-200">
+        <Image
+          className="mx-auto w-40"
+          src="/meda_health_logo.png"
+          width={300}
+          height={300}
+          alt="Picture of the author"
+        />
+      </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
@@ -52,7 +62,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      
+
       <SidebarFooter>
         <Logout>
           <SidebarMenuButton className="text-red-500 transition-colors hover:bg-red-50 hover:text-red-700 active:bg-red-100 active:text-red-800">
@@ -61,7 +71,6 @@ export function AppSidebar() {
           </SidebarMenuButton>
         </Logout>
       </SidebarFooter>
-
     </Sidebar>
   );
 }
