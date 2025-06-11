@@ -1,16 +1,14 @@
 "use client";
-import { OutlinedButton } from "@/components/ui/outlined_button";
-
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@radix-ui/react-dropdown-menu";
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import Profile from "public/profile.jpg";
@@ -21,8 +19,8 @@ export function AppBarDropdown() {
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
-        <OutlinedButton type="button" className="w-full">
       <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="py-6">
           <div className="flex flex-row items-center gap-2">
             <div className="flex flex-col items-end">
               <span className="text-sm font-bold">John Doe</span>
@@ -32,8 +30,6 @@ export function AppBarDropdown() {
               src={Profile}
               alt="Profile"
               className="h-10 w-10 rounded-full border border-gray-200 object-cover shadow"
-              width={40}
-              height={40}
             />
             {open ? (
               <ChevronUp className="h-4 w-4" />
@@ -41,29 +37,15 @@ export function AppBarDropdown() {
               <ChevronDown className="h-4 w-4" />
             )}
           </div>
+        </Button>
       </DropdownMenuTrigger>
-        </OutlinedButton>
-      <DropdownMenuContent className="z-[9999] w-56 rounded-xl border bg-white p-2 shadow-xl focus:outline-none">
-        <DropdownMenuLabel className="font-semibold text-gray-700">
-          Account
-        </DropdownMenuLabel>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 rounded-md px-3 py-2">
-          Profile
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 rounded-md px-3 py-2">
-          Settings
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 rounded-md px-3 py-2">
-          Billing
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 rounded-md px-3 py-2">
-          Help
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:bg-red-100 text-red-600 rounded-md px-3 py-2">
-          Logout
-        </DropdownMenuItem>
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Billing</DropdownMenuItem>
+        <DropdownMenuItem>Team</DropdownMenuItem>
+        <DropdownMenuItem>Subscription</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

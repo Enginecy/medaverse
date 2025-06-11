@@ -25,7 +25,7 @@ import { SalesCard } from "./sales-card";
 
 export default async function Home() {
   return (
-    <div className="flex h-screen w-full flex-col items-start gap-6 overflow-y-auto p-6">
+    <div className="flex w-full flex-col items-start gap-6 p-6">
       <div className="flex w-full items-stretch gap-6">
         <PersonalInfoCardSpotlight />
         <PersonalGoalsGrid />
