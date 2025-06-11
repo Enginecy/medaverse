@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Urbanist } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SupabaseClientProvider } from "@/lib/supabase/provider";
 import { QueryProvider } from "@/providers/client-query";
@@ -12,9 +12,8 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Geist({
+const geist = Urbanist({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
 });
 
 export default function RootLayout({
@@ -23,7 +22,7 @@ export default function RootLayout({
   return (
     <QueryProvider>
       <SupabaseClientProvider>
-        <html lang="en" className={`${geist.variable}`}>
+        <html lang="en" className={`${geist.className}`}>
           <body>
             {children}
             <Toaster />
