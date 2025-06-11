@@ -1,5 +1,5 @@
 import { AppSidebar } from "../../components/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar";
+import { SidebarProvider } from "../../components/ui/sidebar";
 
 export default function RootLayout({
   children,
@@ -7,10 +7,7 @@ export default function RootLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full">
-        <SidebarTrigger className="fixed" />
-        {children}
-      </main>
+      <main className="bg-sidebar w-full">{children}</main>
     </SidebarProvider>
   );
 }
