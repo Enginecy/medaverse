@@ -4,7 +4,7 @@ import { createContext, useContext } from "react";
 import { type SupabaseClient } from "@supabase/supabase-js";
 import { createBrowserClient } from "@supabase/ssr";
 import { env } from "@/env";
-import type { Database } from "../../../database.types";
+import type { Database } from "@/database.types";
 
 const Context = createContext<SupabaseClient<Database> | undefined>(undefined);
 

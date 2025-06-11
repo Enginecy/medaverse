@@ -1,10 +1,10 @@
-import "~/styles/globals.css";
+import "@/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
-import { Toaster } from "../components/ui/sonner";
-import { SupabaseClientProvider } from "../lib/supabase/provider";
-import { QueryProvider } from "../providers/client-query";
+import { Toaster } from "@/components/ui/sonner";
+import { SupabaseClientProvider } from "@/lib/supabase/provider";
+import { QueryProvider } from "@/providers/client-query";
 
 export const metadata: Metadata = {
   title: "Create T3 App",

@@ -7,10 +7,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
-import { SegmentedButton } from "../../../components/ui/segmented-button";
-import { ChartRadialText } from "../../../components/radial-chart";
-import { cn } from "../../../lib/utils";
+} from "@/components/ui/card";
+import { SegmentedButton } from "@/components/ui/segmented-button";
+import { ChartRadialText } from "@/components/radial-chart";
+import { cn } from "@/lib/utils";
 
 export function SalesCard({
   className,

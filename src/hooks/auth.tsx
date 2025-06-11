@@ -3,7 +3,7 @@
 import { useSupabase } from "@/lib/supabase/provider";
 import type { User } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
-import type { Tables } from "../../database.types";
+import type { Tables } from "@/database.types";
 import { useORM } from "./orm";
 
 type AuthUser = {
