@@ -78,15 +78,33 @@ export default function Home() {
   function OTPForm() {
     return (
       <Form {...pinForm}>
-        <form
+        <form 
           onSubmit={pinForm.handleSubmit((values) =>
             verifyOtp({
               email: emailForm.getValues("email"),
               code: values.code,
             }),
           )}
-          className="flex flex-col items-center gap-4"
+          className="flex flex-col items-center gap-4 w-full"
         >
+            <FormField
+            control={emailForm.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel className="text-sm">Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="email"
+                    {...field}
+                    className="w-full text-sm"
+                  />
+                </FormControl>
+                <FormMessage className="text-[0.625rem]" />
+              </FormItem>
+            )}
+          />
+          {/* TODO : make the green message  */}
           <FormField
             control={pinForm.control}
             name="code"
@@ -154,7 +172,7 @@ export default function Home() {
     <div className="fixed inset-0 flex h-screen w-full items-center justify-center bg-white p-4">
       <LoginGraphics />
       <div className="flex h-full w-1/2 flex-col items-center justify-center bg-white">
-        <div className="flex w-[50%] flex-col items-center gap-2">
+        <div className="flex w-[45%] flex-col items-center gap-2">
           <p className="rounded-2xl border px-4 py-1">Login</p>
           <p className="text-text-heading-primary text-2xl font-semibold">
             Sign in to your account
