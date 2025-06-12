@@ -20,13 +20,14 @@ export function SegmentedButton({
   return (
     <div
       className={cn(
-        "relative flex items-center justify-around rounded-xl bg-gray-100 p-1",
+        "bg-muted relative flex items-center justify-around rounded-xl p-1",
         className,
       )}
     >
       {/* Sliding background */}
       <div
-        className="absolute top-1 bottom-1 rounded-xl bg-blue-600 shadow-sm transition-all duration-300 ease-in-out"
+        className="bg-primary absolute top-1 bottom-1 rounded-xl shadow-sm
+          transition-all duration-300 ease-in-out"
         style={{
           width: `${100 / options.length}%`,
           left: `${(selectedIndex * 100) / options.length}%`,
@@ -41,8 +42,11 @@ export function SegmentedButton({
             key={option}
             onClick={() => onChange(option)}
             className={cn(
-              "relative z-10 cursor-pointer rounded-xl px-4 py-3 text-center font-medium transition-colors duration-300",
-              isSelected ? "text-white" : "text-gray-600 hover:text-gray-800",
+              `relative z-10 cursor-pointer rounded-xl px-4 py-3 text-center
+              font-medium transition-colors duration-300`,
+              isSelected
+                ? "text-background"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {option}

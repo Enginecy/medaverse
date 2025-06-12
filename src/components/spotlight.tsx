@@ -53,7 +53,9 @@ export default function Spotlight({
       >
         {isHovered && (
           <div
-            className="pointer-events-none absolute z-50 h-full w-full rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
+            className="pointer-events-none absolute z-50 h-full w-full
+              rounded-xl opacity-0 transition duration-300
+              group-hover:opacity-100"
             style={{
               background: `
             radial-gradient(
@@ -73,7 +75,10 @@ export default function Spotlight({
           }}
         ></div>
 
-        <div className="relative z-10 rounded-2xl border border-blue-100 bg-[#ffffffe9] bg-cover p-6 text-center shadow-lg">
+        <div
+          className="relative z-10 rounded-2xl border border-blue-100
+            bg-[#ffffffe9] bg-cover p-6 text-center shadow-lg"
+        >
           {children}
         </div>
       </div>

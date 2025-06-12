@@ -128,7 +128,7 @@ export default function Home() {
                 <FormControl>
                   <Input placeholder="email" {...field} className="text-sm" />
                 </FormControl>
-                <FormMessage className="text-[10px]" />
+                <FormMessage className="text-[0.625rem]" />
               </FormItem>
             )}
           />
@@ -142,8 +142,12 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-blue-500">
-      <div className="flex h-1/3 w-1/4 flex-col items-center justify-center gap-4 rounded-2xl bg-white px-3 py-40 text-black shadow-2xl shadow-blue-950">
+    <div className="bg-primary flex h-screen w-full items-center justify-center">
+      <div
+        className="flex h-1/3 w-1/4 flex-col items-center justify-center gap-4
+          rounded-2xl bg-white px-3 py-40 text-black shadow-2xl
+          shadow-neutral-800"
+      >
         <p className="font-bold capitalize">sign in</p>
 
         {step === "pin" ? <OTPForm /> : <EmailForm />}

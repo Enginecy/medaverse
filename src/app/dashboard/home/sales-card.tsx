@@ -34,11 +34,11 @@ export function SalesCard({
       <CardContent className="flex grow flex-col items-center justify-center">
         <p className="text-5xl font-bold">
           24
-          <span className="text-2xl text-gray-500">/122</span>
+          <span className="text-muted-foreground text-2xl">/122</span>
         </p>
       </CardContent>
       <CardFooter>
-        <CardTitle>Total Sales</CardTitle>
+        <CardTitle className="text-secondary-foreground">Total Sales</CardTitle>
       </CardFooter>
     </Card>
   );

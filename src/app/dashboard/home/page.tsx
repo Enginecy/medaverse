@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Edit } from "lucide-react";
 import Image from "next/image";
 import profile from "public/profile.jpg";
@@ -23,7 +25,7 @@ import { sales as data } from "./data";
 import { DataTable } from "./data-table";
 import { SalesCard } from "./sales-card";
 
-export default async function Home() {
+export default function Home() {
   return (
     <div className="flex w-full flex-col items-start gap-6 p-6">
       <div className="flex w-full items-stretch gap-6">
@@ -81,9 +83,9 @@ function GoalCard({
       </CardContent>
       <CardFooter className="flex-shrink-0">
         <CardTitle className="mx-auto text-center">
-          <p className="text-md font-semibold">
+          <p className="text-md text-chart-3 font-semibold">
             ${range.min}
-            <span className="text-sm font-normal text-gray-500">
+            <span className="text-muted-foreground text-sm font-normal">
               {" out off $" + range.max}
             </span>
           </p>
@@ -113,7 +115,7 @@ function CommissionCard({
         <CardTitle>
           <p className="text-md font-semibold">
             ${range.min}
-            <span className="text-sm font-normal text-gray-500">
+            <span className="text-muted-foreground text-sm font-normal">
               {" of target $" + range.max}
             </span>
           </p>
@@ -123,7 +125,7 @@ function CommissionCard({
         <ChartRadialText title={`${value}%`} value={value} />
       </CardContent>
       <CardFooter>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-secondary-foreground">{title}</CardTitle>
       </CardFooter>
     </Card>
   );
@@ -135,7 +137,7 @@ function PersonalInfoCardSpotlight() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
-          <Button variant="outline" className="text-[#094E87]">
+          <Button variant="outline" className="text-primary">
             <span>Edit Profile</span>
             <Edit />
           </Button>
@@ -153,13 +155,13 @@ function PersonalInfoCardSpotlight() {
           <div className="flex grow flex-col gap-6">
             <div className="flex flex-col items-start">
               <p className="text-lg font-semibold">John Doe</p>
-              <p className="text-md text-gray-500">Senior Associate</p>
+              <p className="text-md text-muted-foreground">Senior Associate</p>
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex justify-between">
                 <p className="text-md font-semibold">
                   $7,350
-                  <span className="text-sm font-normal text-gray-500">
+                  <span className="text-muted-foreground text-sm font-normal">
                     {" of target $15,000"}
                   </span>
                 </p>

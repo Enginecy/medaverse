@@ -24,12 +24,15 @@ export function AppBarDropdown() {
           <div className="flex flex-row items-center gap-2">
             <div className="flex flex-col items-end">
               <span className="text-sm font-bold">John Doe</span>
-              <span className="text-xs text-gray-500">Senior Associate</span>
+              <span className="text-muted-foreground text-xs">
+                Senior Associate
+              </span>
             </div>
             <Image
               src={Profile}
               alt="Profile"
-              className="h-10 w-10 rounded-full border border-gray-200 object-cover shadow"
+              className="border-border h-10 w-10 rounded-full border
+                object-cover shadow"
             />
             {open ? (
               <ChevronUp className="h-4 w-4" />
