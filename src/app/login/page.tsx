@@ -91,11 +91,11 @@ export default function Home() {
             control={pinForm.control}
             name="code"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>One-Time Password</FormLabel>
-                <FormControl>
-                  <InputOTP maxLength={6} {...field}>
-                    <InputOTPGroup>
+              <FormItem className="w-full">
+                <FormLabel>OTP</FormLabel>
+                <FormControl className="w-full">
+                  <InputOTP maxLength={6} {...field} className="w-full">
+                    <InputOTPGroup className="w-full">
                       <InputOTPSlot index={0} />
                       <InputOTPSlot index={1} />
                       <InputOTPSlot index={2} />
@@ -122,50 +122,50 @@ export default function Home() {
       <Form {...emailForm}>
         <form
           onSubmit={emailForm.handleSubmit((values) => sendOtp(values.email))}
-          className="flex flex-col items-center gap-4"
+          className="flex w-full flex-col items-center gap-4"
         >
           <input name="flow" type="hidden" value={"signIn"} />
           <FormField
             control={emailForm.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm">Username</FormLabel>
+              <FormItem className="w-full">
+                <FormLabel className="text-sm">Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="email" {...field} className="text-sm" />
+                  <Input
+                    placeholder="email"
+                    {...field}
+                    className="w-full text-sm"
+                  />
                 </FormControl>
                 <FormMessage className="text-[0.625rem]" />
               </FormItem>
             )}
           />
 
-          <Button type="submit" disabled={isSendingOtp}>
-            {isSendingOtp ? <PulseMultiple color="white" /> : "Submit"}
+          <Button type="submit" disabled={isSendingOtp} className="w-full bg-[#07406F]"> 
+            {isSendingOtp ? <PulseMultiple color="white" /> : "Log In"} 
           </Button>
         </form>
       </Form>
     );
   }
   return (
-    <div
-      className="fixed inset-0 flex h-screen w-full items-center justify-center
-        bg-white p-4"
-    >
+    <div className="fixed inset-0 flex h-screen w-full items-center justify-center bg-white p-4">
       <LoginGraphics />
-      <div
-        className="flex h-full w-1/2 flex-col items-center justify-center
-          bg-white"
-      >
-        <div className="flex w-[40%] flex-col items-center gap-2">
+      <div className="flex h-full w-1/2 flex-col items-center justify-center bg-white">
+        <div className="flex w-[50%] flex-col items-center gap-2">
           <p className="rounded-2xl border px-4 py-1">Login</p>
           <p className="text-text-heading-primary text-2xl font-semibold">
             Sign in to your account
           </p>
-          <p className="text-text-body-secondary text-center">
+          <p className="text-text-body-secondary text-center text-[#6D6D6D]">
             Please enter your email address below to receive an OTP code. Use
             this code to log in.
           </p>
-          <EmailForm />
+          {/* {step === "email" ? <EmailForm /> : <OTPForm />} */}
+
+          <OTPForm />
         </div>
       </div>
 
@@ -177,10 +177,7 @@ export default function Home() {
 function LoginGraphics() {
   return (
     <div className="bg-primary relative h-full w-1/2 rounded-lg">
-      <div
-        className="absolute z-10 flex h-full flex-col items-start
-          justify-between p-8"
-      >
+      <div className="absolute z-10 flex h-full flex-col items-start justify-between p-8">
         <Image
           src={logo}
           alt="logo"
