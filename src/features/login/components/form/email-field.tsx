@@ -6,7 +6,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import Input from "@mui/material/Input";
+import { Input } from "@/components/ui/input";
 import type { UseFormReturn } from "react-hook-form";
 
 export function EmailFormField({

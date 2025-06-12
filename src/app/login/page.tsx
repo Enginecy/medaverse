@@ -1,42 +1,26 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
-import {
-  Form,
- 
-} from "@/components/ui/form";
 import { toast } from "sonner";
-
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { LoginForm } from "@/features/login/components/form/login-form";
 import { LoginGraphics } from "@/features/login/components/login-graphics";
+import { createFormSchema } from "@/features/login/schemas/login-form-schema";
 import {
   sendEmailOTP,
   verifyEmailOtp,
 } from "@/features/login/server/actions/login";
-import { EmailFormField } from "@/features/login/components/form/email-field";
-import { createFormSchema } from "@/features/login/schemas/login-form-schema";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type z from "zod";
-import { OTPFormField } from "@/features/login/components/form/otp-field";
-import { SubmitButton } from "@/features/login/components/submit-button";
-import { LoginForm } from "@/features/login/components/form/login-form";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin">("email");
   const router = useRouter();
 
-  // Single form that handles both email and OTP
-  const form = useForm<{
-    email: string;
-    code?: string;
-  }>({
+  const form = useForm<z.infer<ReturnType<typeof createFormSchema>>>({
     resolver: zodResolver(createFormSchema(step)),
     defaultValues: {
       email: "",
@@ -67,10 +51,8 @@ export default function Home() {
   // Unified form submission handler
   const onSubmit = (values: z.infer<ReturnType<typeof createFormSchema>>) => {
     if (step === "email") {
-      // Send OTP
       sendOtp(values.email);
     } else {
-      // Verify OTP
       verifyOtp({
         email: values.email,
         code: values.code!,
@@ -78,35 +60,37 @@ export default function Home() {
     }
   };
 
-  //TODO: Move to feature components
-
-
-  
-
   return (
     <div
       className="fixed inset-0 flex h-screen w-full items-center justify-center
         bg-white p-4"
     >
       <LoginGraphics />
-      <LoginForm form={form} 
-        isLoading={isSendingOtp || isVerifyingOtp}
-        onSubmit={onSubmit}
-        step={step} />
-       {step === "pin" && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    setStep("email");
-                    form.setValue("code", "");
-                    form.trigger();
-                  }}
-                  className="text-sm text-gray-600"
-                >
-                  Back to email
-                </Button>
-              )}
+      <div
+        className="flex h-full w-1/2 flex-col items-center justify-center gap-6
+          bg-white"
+      >
+        <LoginForm
+          form={form}
+          isLoading={isSendingOtp || isVerifyingOtp}
+          onSubmit={onSubmit}
+          step={step}
+        />
+        {step === "pin" && (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => {
+              setStep("email");
+              form.setValue("code", "");
+              form.trigger();
+            }}
+            className="text-sm text-gray-600"
+          >
+            Back to email
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
