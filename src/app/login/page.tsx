@@ -6,21 +6,13 @@ export const fetchCache = "force-no-store";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { PulseMultiple } from "react-svg-spinners";
+
 import {
   Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+ 
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -32,6 +24,8 @@ import {
 import { EmailFormField } from "@/features/login/components/form/email-field";
 import { createFormSchema } from "@/features/login/schemas/login-form-schema";
 import type z from "zod";
+import { OTPFormField } from "@/features/login/components/form/otp-field";
+import { SubmitButton } from "@/features/login/components/submit-button";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin">("email");
@@ -85,66 +79,8 @@ export default function Home() {
 
   //TODO: Move to feature components
 
-  function OTPFormField() {
-    if (step !== "pin") return null;
 
-    return (
-      <FormField
-        control={form.control}
-        name="code"
-        render={({ field }) => (
-          <FormItem className="w-full">
-            <FormLabel>One-Time Password</FormLabel>
-            <FormControl className="w-full">
-              <InputOTP maxLength={6} {...field} className="w-full">
-                <InputOTPGroup className="w-full justify-between gap-1.5">
-                  <InputOTPSlot
-                    index={0}
-                    className="flex-1 rounded-md border"
-                  />
-                  <InputOTPSlot
-                    index={1}
-                    className="flex-1 rounded-md border"
-                  />
-                  <InputOTPSlot
-                    index={2}
-                    className="flex-1 rounded-md border"
-                  />
-                  <InputOTPSlot
-                    index={3}
-                    className="flex-1 rounded-md border"
-                  />
-                  <InputOTPSlot
-                    index={4}
-                    className="flex-1 rounded-md border"
-                  />
-                  <InputOTPSlot
-                    index={5}
-                    className="flex-1 rounded-md border"
-                  />
-                </InputOTPGroup>
-              </InputOTP>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  }
-
-  function SubmitButton() {
-    const isLoading = isSendingOtp || isVerifyingOtp;
-    const label = step === "email" ? "Send OTP" : "Verify";
-    return (
-      <Button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-[#07406F]"
-      >
-        {isLoading ? <PulseMultiple color="white" /> : label}
-      </Button>
-    );
-  }
+  
 
   return (
     <div
@@ -173,8 +109,8 @@ export default function Home() {
               className="flex w-full flex-col items-center gap-4"
             >
               <EmailFormField step={step} form={form} />
-              <OTPFormField />
-              <SubmitButton />
+              <OTPFormField step={step} form={form} />
+              <SubmitButton step = {step} isSendingOtp= {isSendingOtp} isVerifyingOtp={isVerifyingOtp}   />
 
               {step === "pin" && (
                 <Button
