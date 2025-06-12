@@ -78,16 +78,16 @@ export default function Home() {
   function OTPForm() {
     return (
       <Form {...pinForm}>
-        <form 
+        <form
           onSubmit={pinForm.handleSubmit((values) =>
             verifyOtp({
               email: emailForm.getValues("email"),
               code: values.code,
             }),
           )}
-          className="flex flex-col items-center gap-4 w-full"
+          className="flex w-full flex-col gap-4"
         >
-            <FormField
+          <FormField
             control={emailForm.control}
             name="email"
             render={({ field }) => (
@@ -95,16 +95,17 @@ export default function Home() {
                 <FormLabel className="text-sm">Email</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="email"
                     {...field}
-                    className="w-full text-sm"
+                    value={emailForm.getValues("email")}
+                    readOnly
+                    className="w-full cursor-not-allowed bg-gray-100 text-sm"
                   />
                 </FormControl>
                 <FormMessage className="text-[0.625rem]" />
               </FormItem>
             )}
           />
-          {/* TODO : make the green message  */}
+            <p className="text-[#39CE57] text-[12px]">An OTP code sent to your Email</p>
           <FormField
             control={pinForm.control}
             name="code"
@@ -127,7 +128,7 @@ export default function Home() {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isVerifyingOtp}>
+          <Button type="submit" disabled={isVerifyingOtp} className="bg-[#07406F]">
             {isVerifyingOtp ? <PulseMultiple color="white" /> : "Submit"}
           </Button>
         </form>
@@ -161,8 +162,12 @@ export default function Home() {
             )}
           />
 
-          <Button type="submit" disabled={isSendingOtp} className="w-full bg-[#07406F]"> 
-            {isSendingOtp ? <PulseMultiple color="white" /> : "Log In"} 
+          <Button
+            type="submit"
+            disabled={isSendingOtp}
+            className="w-full bg-[#07406F]"
+          >
+            {isSendingOtp ? <PulseMultiple color="white" /> : "Log In"}
           </Button>
         </form>
       </Form>
@@ -181,9 +186,9 @@ export default function Home() {
             Please enter your email address below to receive an OTP code. Use
             this code to log in.
           </p>
-          {/* {step === "email" ? <EmailForm /> : <OTPForm />} */}
+          {step === "email" ? <EmailForm /> : <OTPForm />}
 
-          <OTPForm />
+          {/* <OTPForm /> */}
         </div>
       </div>
 
