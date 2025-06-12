@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import type { Sale } from "../dummy/data";
+import type { Sale } from "../data/data";
 import Image from "next/image";
 
 export const columns: ColumnDef<Sale>[] = [

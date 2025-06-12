@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import type { Birthday } from "@/features/dashboard/home/dummy/birthday-data";
+import type { Birthday } from "@/features/dashboard/home/data/birthday-data";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 

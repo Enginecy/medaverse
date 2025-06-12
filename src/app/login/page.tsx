@@ -4,10 +4,8 @@ export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { PulseMultiple } from "react-svg-spinners";
 import {
   Form,
@@ -25,17 +23,15 @@ import {
 } from "@/components/ui/input-otp";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { sendEmailOTP, verifyEmailOtp } from "./mutations/actions";
 import { useRouter } from "next/navigation";
 import { LoginGraphics } from "@/features/login/components/login-graphics";
-import { cn } from "@/lib/utils";
-
-// Create a unified schema that conditionally validates based on step
-const createFormSchema = (step: "email" | "pin") =>
-  z.object({
-    email: z.string().email(),
-    code: step === "pin" ? z.string().min(6) : z.string().optional(),
-  });
+import {
+  sendEmailOTP,
+  verifyEmailOtp,
+} from "@/features/login/server/actions/login";
+import { EmailFormField } from "@/features/login/components/form/email-field";
+import { createFormSchema } from "@/features/login/schemas/login-form-schema";
+import type z from "zod";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin">("email");
@@ -74,7 +70,7 @@ export default function Home() {
   });
 
   // Unified form submission handler
-  const onSubmit = (values: { email: string; code?: string }) => {
+  const onSubmit = (values: z.infer<ReturnType<typeof createFormSchema>>) => {
     if (step === "email") {
       // Send OTP
       sendOtp(values.email);
@@ -87,36 +83,7 @@ export default function Home() {
     }
   };
 
-  function EmailFormField() {
-    return (
-      <FormField
-        control={form.control}
-        name="email"
-        render={({ field }) => (
-          <FormItem className="w-full">
-            <FormLabel className="text-sm">Email</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="email"
-                {...field}
-                className={cn(
-                  "w-full text-sm",
-                  step === "pin" && "cursor-not-allowed bg-gray-100",
-                )}
-                disabled={step === "pin"}
-              />
-            </FormControl>
-            <FormMessage
-              className="text-[0.625rem]"
-              success={
-                step === "pin" ? "An OTP code sent to your Email" : undefined
-              }
-            />
-          </FormItem>
-        )}
-      />
-    );
-  }
+  //TODO: Move to feature components
 
   function OTPFormField() {
     if (step !== "pin") return null;
@@ -205,7 +172,7 @@ export default function Home() {
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex w-full flex-col items-center gap-4"
             >
-              <EmailFormField />
+              <EmailFormField step={step} form={form} />
               <OTPFormField />
               <SubmitButton />
 

@@ -6,7 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import type { Birthday } from "../dummy/birthday-data";
+import type { Birthday } from "../data/birthday-data";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
