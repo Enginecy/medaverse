@@ -25,9 +25,9 @@ import {
 } from "@/components/ui/input-otp";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { sendEmailOTP, verifyEmailOtp } from "./actions";
+import { sendEmailOTP, verifyEmailOtp } from "./mutations/actions";
 import { useRouter } from "next/navigation";
-import { LoginGraphics } from "@/app/login/ui/login-graphics";
+import { LoginGraphics } from "@/features/login/components/login-graphics";
 import { cn } from "@/lib/utils";
 
 // Create a unified schema that conditionally validates based on step

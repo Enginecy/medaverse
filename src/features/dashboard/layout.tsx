@@ -1,4 +1,4 @@
-import { AppBarDropdown } from "@/app/dashboard/home/appbar_dropdown";
+import { AppBarDropdown } from "@/app/features/dashboard/home/appbar_dropdown";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";

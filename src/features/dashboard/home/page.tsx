@@ -18,12 +18,12 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { birthdayColumns } from "./birthday-columns";
-import { birthdays } from "./birthday-data";
-import { BirthdayTable } from "./birthday-table";
-import { columns } from "./columns";
-import { sales as data } from "./data";
-import { DataTable } from "./data-table";
-import { SalesCard } from "./sales-card";
+import { birthdays } from "./dummy/birthday-data";
+import { BirthdayTable } from "./components/birthday-table";
+import { columns } from "./components/columns";
+import { sales as data } from "./dummy/data";
+import { DataTable } from "./components/data-table";
+import { SalesCard } from "./components/sales-card";
 
 export default function Home() {
   return (
