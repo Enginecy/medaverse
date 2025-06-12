@@ -26,30 +26,29 @@ import {
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { sendEmailOTP, verifyEmailOtp } from "./actions";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { LoginGraphics } from "@/app/login/ui/login-graphics";
+import { cn } from "@/lib/utils";
 
-const pinSchema = z.object({
-  code: z.string().min(6),
-});
-const emailSchema = z.object({
-  email: z.string().email(),
-});
+// Create a unified schema that conditionally validates based on step
+const createFormSchema = (step: "email" | "pin") =>
+  z.object({
+    email: z.string().email(),
+    code: step === "pin" ? z.string().min(6) : z.string().optional(),
+  });
 
 export default function Home() {
-  const params = useSearchParams();
   const [step, setStep] = useState<"email" | "pin">("email");
   const router = useRouter();
 
-  const emailForm = useForm<z.infer<typeof emailSchema>>({
-    resolver: zodResolver(emailSchema),
+  // Single form that handles both email and OTP
+  const form = useForm<{
+    email: string;
+    code?: string;
+  }>({
+    resolver: zodResolver(createFormSchema(step)),
     defaultValues: {
       email: "",
-    },
-  });
-  const pinForm = useForm<z.infer<typeof pinSchema>>({
-    resolver: zodResolver(pinSchema),
-    defaultValues: {
       code: "",
     },
   });
@@ -59,6 +58,7 @@ export default function Home() {
     onSuccess: () => {
       toast.success("OTP sent to email");
       setStep("pin");
+      form.trigger();
     },
     onError: (error) => {
       toast.error(error.message);
@@ -73,126 +73,160 @@ export default function Home() {
     },
   });
 
-  function OTPForm() {
+  // Unified form submission handler
+  const onSubmit = (values: { email: string; code?: string }) => {
+    if (step === "email") {
+      // Send OTP
+      sendOtp(values.email);
+    } else {
+      // Verify OTP
+      verifyOtp({
+        email: values.email,
+        code: values.code!,
+      });
+    }
+  };
+
+  function EmailFormField() {
     return (
-      <Form {...pinForm}>
-        <form
-          onSubmit={pinForm.handleSubmit((values) =>
-            verifyOtp({
-              email: emailForm.getValues("email"),
-              code: values.code,
-            }),
-          )}
-          className="flex w-full flex-col gap-4"
-        >
-          <FormField
-            control={emailForm.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel className="text-sm">Email</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    value={emailForm.getValues("email")}
-                    readOnly
-                    className="w-full cursor-not-allowed bg-gray-100 text-sm"
-                  />
-                </FormControl>
-                <FormMessage className="text-[0.625rem]" />
-              </FormItem>
-            )}
-          />
-            <p className="text-[#39CE57] text-[12px]">An OTP code sent to your Email</p>
-          <FormField
-            control={pinForm.control}
-            name="code"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>OTP</FormLabel>
-                <FormControl className="w-full">
-                  <InputOTP maxLength={6} {...field} className="w-full">
-                    <InputOTPGroup className="w-full">
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" disabled={isVerifyingOtp} className="bg-[#07406F]">
-            {isVerifyingOtp ? <PulseMultiple color="white" /> : "Submit"}
-          </Button>
-        </form>
-      </Form>
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem className="w-full">
+            <FormLabel className="text-sm">Email</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="email"
+                {...field}
+                className={cn(
+                  "w-full text-sm",
+                  step === "pin" && "cursor-not-allowed bg-gray-100",
+                )}
+                disabled={step === "pin"}
+              />
+            </FormControl>
+            <FormMessage
+              className="text-[0.625rem]"
+              success={
+                step === "pin" ? "An OTP code sent to your Email" : undefined
+              }
+            />
+          </FormItem>
+        )}
+      />
     );
   }
 
-  function EmailForm() {
-    return (
-      <Form {...emailForm}>
-        <form
-          onSubmit={emailForm.handleSubmit((values) => sendOtp(values.email))}
-          className="flex w-full flex-col items-center gap-4"
-        >
-          <input name="flow" type="hidden" value={"signIn"} />
-          <FormField
-            control={emailForm.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel className="text-sm">Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="email"
-                    {...field}
-                    className="w-full text-sm"
-                  />
-                </FormControl>
-                <FormMessage className="text-[0.625rem]" />
-              </FormItem>
-            )}
-          />
+  function OTPFormField() {
+    if (step !== "pin") return null;
 
-          <Button
-            type="submit"
-            disabled={isSendingOtp}
-            className="w-full bg-[#07406F]"
-          >
-            {isSendingOtp ? <PulseMultiple color="white" /> : "Log In"}
-          </Button>
-        </form>
-      </Form>
+    return (
+      <FormField
+        control={form.control}
+        name="code"
+        render={({ field }) => (
+          <FormItem className="w-full">
+            <FormLabel>One-Time Password</FormLabel>
+            <FormControl className="w-full">
+              <InputOTP maxLength={6} {...field} className="w-full">
+                <InputOTPGroup className="w-full justify-between gap-1.5">
+                  <InputOTPSlot
+                    index={0}
+                    className="flex-1 rounded-md border"
+                  />
+                  <InputOTPSlot
+                    index={1}
+                    className="flex-1 rounded-md border"
+                  />
+                  <InputOTPSlot
+                    index={2}
+                    className="flex-1 rounded-md border"
+                  />
+                  <InputOTPSlot
+                    index={3}
+                    className="flex-1 rounded-md border"
+                  />
+                  <InputOTPSlot
+                    index={4}
+                    className="flex-1 rounded-md border"
+                  />
+                  <InputOTPSlot
+                    index={5}
+                    className="flex-1 rounded-md border"
+                  />
+                </InputOTPGroup>
+              </InputOTP>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     );
   }
+
+  function SubmitButton() {
+    const isLoading = isSendingOtp || isVerifyingOtp;
+    const label = step === "email" ? "Send OTP" : "Verify";
+    return (
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full bg-[#07406F]"
+      >
+        {isLoading ? <PulseMultiple color="white" /> : label}
+      </Button>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 flex h-screen w-full items-center justify-center bg-white p-4">
+    <div
+      className="fixed inset-0 flex h-screen w-full items-center justify-center
+        bg-white p-4"
+    >
       <LoginGraphics />
-      <div className="flex h-full w-1/2 flex-col items-center justify-center bg-white">
+      <div
+        className="flex h-full w-1/2 flex-col items-center justify-center
+          bg-white"
+      >
         <div className="flex w-[45%] flex-col items-center gap-2">
           <p className="rounded-2xl border px-4 py-1">Login</p>
           <p className="text-text-heading-primary text-2xl font-semibold">
             Sign in to your account
           </p>
           <p className="text-text-body-secondary text-center text-[#6D6D6D]">
-            Please enter your email address below to receive an OTP code. Use
-            this code to log in.
+            {step === "email"
+              ? "Please enter your email address below to receive an OTP code."
+              : "Enter the OTP code sent to your email to complete login."}
           </p>
-          {step === "email" ? <EmailForm /> : <OTPForm />}
 
-          {/* <OTPForm /> */}
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex w-full flex-col items-center gap-4"
+            >
+              <EmailFormField />
+              <OTPFormField />
+              <SubmitButton />
+
+              {step === "pin" && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setStep("email");
+                    form.setValue("code", "");
+                    form.trigger();
+                  }}
+                  className="text-sm text-gray-600"
+                >
+                  Back to email
+                </Button>
+              )}
+            </form>
+          </Form>
         </div>
       </div>
-
-      {/* {step === "pin" ? <OTPForm /> : <EmailForm />} */}
     </div>
   );
 }
-
-

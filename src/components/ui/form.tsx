@@ -104,13 +104,20 @@ function FormLabel({
   );
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
+function FormControl({
+  ...props
+}: React.ComponentProps<typeof Slot> & { success?: string | boolean }) {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
+
+  const success = props.success;
+  const isError = !!error;
+  const isSuccess = !error && !!success;
 
   return (
     <Slot
       data-slot="form-control"
+      data-success={isSuccess}
       id={formItemId}
       aria-describedby={
         !error
@@ -118,6 +125,11 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
           : `${formDescriptionId} ${formMessageId}`
       }
       aria-invalid={!!error}
+      className={cn(
+        isError && "border-destructive focus:border-destructive",
+        isSuccess && "border-green-600 focus:border-green-600",
+        props.className,
+      )}
       {...props}
     />
   );
@@ -136,19 +148,39 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
   );
 }
 
-function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
+function FormMessage({
+  className,
+  success,
+  ...props
+}: React.ComponentProps<"p"> & { success?: string | boolean }) {
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message ?? "") : props.children;
+
+  // Prioritize error over success
+  const body = error
+    ? String(error?.message ?? "")
+    : success
+      ? typeof success === "string"
+        ? success
+        : props.children
+      : props.children;
 
   if (!body) {
     return null;
   }
 
+  const isError = !!error;
+  const isSuccess = !error && !!success;
+
   return (
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn("text-destructive text-sm", className)}
+      className={cn(
+        "text-sm",
+        isError && "text-destructive",
+        isSuccess && "text-green-600",
+        className,
+      )}
       {...props}
     >
       {body}
