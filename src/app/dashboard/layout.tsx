@@ -11,7 +11,7 @@ const navItems = [
   },
   {
     title: "Docs",
-    icon: DockIcon,
+    icon: DockIcon, 
   },
   {
     title: "MedaMail",
