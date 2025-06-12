@@ -35,8 +35,8 @@ export function AppSidebar({
 }) {
   const pathName = usePathname();
   return (
-    <Sidebar className={cn("bg-background", className)} collapsible="icon">
-      <SidebarHeader className="border-b border-gray-200 py-[22.5px]">
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="border-border border-b py-[22.5px]">
         <Image
           className="mx-auto w-40"
           src={logo}
@@ -71,7 +71,10 @@ export function AppSidebar({
 
       <SidebarFooter>
         <Logout>
-          <SidebarMenuButton className="text-red-500 transition-colors hover:bg-red-50 hover:text-red-700 active:bg-red-100 active:text-red-800">
+          <SidebarMenuButton
+            className="text-red-500 transition-colors hover:bg-red-50
+              hover:text-red-700 active:bg-red-100 active:text-red-800"
+          >
             log out
             <LogOut className="ml-auto" />
           </SidebarMenuButton>

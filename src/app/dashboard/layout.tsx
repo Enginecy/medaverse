@@ -32,8 +32,8 @@ export default function RootLayout({
         <AppSidebar />
         <div className="flex flex-1 flex-col">
           <nav
-            className="flex h-24 w-full items-center justify-end gap-4 border-b
-              border-gray-200 bg-white px-4"
+            className="border-border bg-card flex h-24 w-full items-center
+              justify-end gap-4 border-b px-4"
           >
             {navItems.map((item) => (
               <Button key={item.title} variant={"outline"} className="py-6">
@@ -43,7 +43,7 @@ export default function RootLayout({
             ))}
             <AppBarDropdown />
           </nav>
-          <main className="bg-sidebar flex-1 overflow-auto">{children}</main>
+          <main className="bg-background flex-1 overflow-auto">{children}</main>
         </div>
       </div>
     </SidebarProvider>
