@@ -2,14 +2,13 @@ import Button from "@mui/material/Button";
 import type { UseFormReturn } from "react-hook-form";
 import { PulseMultiple } from "react-svg-spinners";
 
-export function SubmitButton({isSendingOtp , isVerifyingOtp , step } :{
+export function SubmitButton({isLoading , step } :{
 
 
-  isSendingOtp: boolean,
-  isVerifyingOtp : boolean , 
+  isLoading: boolean;
   step: "email" | "pin"
 }) {
-    const isLoading = isSendingOtp || isVerifyingOtp;
+    
     const label = step === "email" ? "Send OTP" : "Verify";
     return (
       <Button
