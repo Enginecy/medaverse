@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Urbanist({
+const urbanist = Urbanist({
   subsets: ["latin"],
 });
 
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <QueryProvider>
       <SupabaseClientProvider>
-        <html lang="en" className={`${geist.className}`}>
+        <html lang="en" className={`${urbanist.className}`}>
           <body>
             {children}
             <Toaster />
