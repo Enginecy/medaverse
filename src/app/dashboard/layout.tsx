@@ -1,7 +1,7 @@
-import { AppBarDropdown } from "@/app/dashboard/home/appbar_dropdown";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppBarDropdown } from "@/features/dashboard/home/components/appbar_dropdown";
 import { DockIcon, MailIcon, Newspaper, TruckIcon } from "lucide-react";
 
 const navItems = [
