@@ -45,6 +45,7 @@ import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { createAgent } from "@/features/user-management/server/actions/user-mangement";
 import { PulseMultiple } from "react-svg-spinners";
+import { FailureAlert } from "@/features/user-management/components/fialure-alert";
 
 export function AddUserDrawer() {
   const form = useForm<AddUserFormData>({
@@ -64,11 +65,17 @@ export function AddUserDrawer() {
       dateOfBirth: new Date(),
     },
   });
-  const {mutate  , isPending, isError  } = useMutation ({
-    mutationFn :  createAgent,
+  const { mutate, isPending, isError } = useMutation({
+    mutationFn: createAgent,
   });
   const onSubmit = (data: AddUserFormData) => {
     mutate();
+    isError && (
+      <FailureAlert
+        title="Failed to add agent. Please try again."
+        content="YA deen el Naby"
+      />
+    );
     console.log("Form submitted:", data);
   };
 
@@ -77,7 +84,7 @@ export function AddUserDrawer() {
   };
 
   return (
-  <SheetContent className="w-140 overflow-auto px-6 py-5  ">
+    <SheetContent className="w-140 overflow-auto px-6 py-5">
       <SheetHeader>
         <SheetTitle>Add New Agent</SheetTitle>
       </SheetHeader>
@@ -86,62 +93,55 @@ export function AddUserDrawer() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Profile Image Upload */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-           
-              {form.watch("profileImage") ? (
-                <div className="relative">
-                  <Image
-                    src={form.watch("profileImage")}
-                    alt="Profile preview"
-                    className="mx-auto h-48 w-48 rounded-lg object-cover"
-                    width={182}
-                    height={162}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
-                    onClick={removeImage}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </div>
-              ) : (
-                <DropzoneImageFormField form={form} />
+            {form.watch("profileImage") ? (
+              <div className="relative">
+                <Image
+                  src={form.watch("profileImage")}
+                  alt="Profile preview"
+                  className="mx-auto h-48 w-48 rounded-lg object-cover"
+                  width={182}
+                  height={162}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                  onClick={removeImage}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            ) : (
+              <DropzoneImageFormField form={form} />
+            )}
+             {/* Full Name and Username */}
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="name@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-               
-            
-
-            {/* Full Name and Username */}
-           
-              <FormField
-                control={form.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="name@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="name@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="name@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           {/* Email and Phone Number */}
@@ -205,37 +205,38 @@ export function AddUserDrawer() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date of Birth</FormLabel>
-                   <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    captionLayout="dropdown"
-                  />
-                </PopoverContent>
-              </Popover> <FormMessage />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        captionLayout="dropdown"
+                      />
+                    </PopoverContent>
+                  </Popover>{" "}
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -381,14 +382,13 @@ export function AddUserDrawer() {
           />
 
           <SheetFooter className="w-auto p-0">
-            
             <Button
               variant={"default"}
               type="submit"
-              disabled={isPending }
-              className="w-full bg-primary-600 text-white"
+              disabled={isPending}
+              className="bg-primary-600 w-full text-white"
             >
-            {isPending ?  <PulseMultiple color="white" />:  "Add Agent"}
+              {isPending ? <PulseMultiple color="white" /> : "Add Agent"}
             </Button>
           </SheetFooter>
         </form>
