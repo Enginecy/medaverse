@@ -9,6 +9,8 @@ export const addUserSchema = z.object({
   address: z.string().min(5, "Address must be at least 5 characters"),
   dateOfBirth: z.date({
     required_error: "Date of birth is required",
+  }).refine((date) => date <= new Date() , {
+    message: "Date of birth cannot be in the future",
   }),
   contractId: z.string().min(1, "Please select a contract ID"),
   regional: z.string().min(1, "Please select a regional"),
@@ -16,6 +18,7 @@ export const addUserSchema = z.object({
   npnNumber: z.string().min(1, "Please select an NPN number"),
   states: z.string().min(1, "Please select a state"),
   profileImage: z.string().min(1, "Please select a profile image"),
+
 });
 
 export type AddUserFormData = z.infer<typeof addUserSchema>;

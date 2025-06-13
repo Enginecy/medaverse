@@ -41,6 +41,10 @@ import {
 } from "@/features/user-management/schemas/add-user-schema";
 import { DropzoneImageFormField } from "@/features/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
+import { createAgent } from "@/features/user-management/server/actions/user-mangement";
+import { PulseMultiple } from "react-svg-spinners";
 
 export function AddUserDrawer() {
   const form = useForm<AddUserFormData>({
@@ -60,8 +64,11 @@ export function AddUserDrawer() {
       dateOfBirth: new Date(),
     },
   });
-
+  const {mutate  , isPending, isError  } = useMutation ({
+    mutationFn :  createAgent,
+  });
   const onSubmit = (data: AddUserFormData) => {
+    mutate();
     console.log("Form submitted:", data);
   };
 
@@ -198,39 +205,37 @@ export function AddUserDrawer() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date of Birth</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          data-empty={!field.value}
-                          className="data-[empty=true]:text-muted-foreground
-                            w-full justify-start text-left font-normal"
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={(date) => {
-                          if (date) field.onChange(date);
-                        }}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
+                   <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    captionLayout="dropdown"
+                  />
+                </PopoverContent>
+              </Popover> <FormMessage />
                 </FormItem>
               )}
             />
@@ -376,12 +381,14 @@ export function AddUserDrawer() {
           />
 
           <SheetFooter className="w-auto p-0">
+            
             <Button
-            variant={"default"}
+              variant={"default"}
               type="submit"
+              disabled={isPending }
               className="w-full bg-primary-600 text-white"
             >
-              Add Agent
+            {isPending ?  <PulseMultiple color="white" />:  "Add Agent"}
             </Button>
           </SheetFooter>
         </form>
