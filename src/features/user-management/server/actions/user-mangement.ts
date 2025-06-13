@@ -5,8 +5,8 @@ export async function createAgent(
     
 ) { 
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+    // throw new Error("Failed to create agent: simulated error state.");
     return {
         id: "agent-123",
         name: "New Agent",

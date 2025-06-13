@@ -2,7 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, X } from "lucide-react";
+import {
+  AlertCircleIcon,
+  Calendar as CalendarIcon,
+  CheckCircle,
+  CheckCircle2Icon,
+  X,
+} from "lucide-react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
@@ -46,8 +52,11 @@ import { useMutation } from "@tanstack/react-query";
 import { createAgent } from "@/features/user-management/server/actions/user-mangement";
 import { PulseMultiple } from "react-svg-spinners";
 import { FailureAlert } from "@/features/user-management/components/fialure-alert";
+import { toast } from "sonner";
+import { SuccessAlert } from "@/features/user-management/components/success-alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export function AddUserDrawer() {
+export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
   const form = useForm<AddUserFormData>({
     resolver: zodResolver(addUserSchema),
     defaultValues: {
@@ -67,15 +76,35 @@ export function AddUserDrawer() {
   });
   const { mutate, isPending, isError } = useMutation({
     mutationFn: createAgent,
+    onSuccess: () => {
+      toast.custom(() => {
+        return (
+          <Alert className="w-100">
+            <AlertTitle>
+              <div className="flex flex-row items-center">
+                <CheckCircle className="mx-2 h-4 w-4 text-green-500" />
+                <p className="font-semibold text-gray-500">
+                  New agent added successfully
+                </p>
+              </div>
+            </AlertTitle>
+          </Alert>
+        );
+      });
+      props.resolve(true);
+    },
+    onError: (error: Error) => {
+      toast.custom(() => (
+        <FailureAlert
+          title="Failed to add agent. Please try again."
+          content="YA deen el Naby"
+        />
+      ));
+    },
   });
   const onSubmit = (data: AddUserFormData) => {
     mutate();
-    isError && (
-      <FailureAlert
-        title="Failed to add agent. Please try again."
-        content="YA deen el Naby"
-      />
-    );
+
     console.log("Form submitted:", data);
   };
 
