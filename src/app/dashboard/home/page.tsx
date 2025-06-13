@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div className="flex w-full flex-col items-start gap-6 p-6">
       <div className="flex w-full items-stretch gap-6">
-        <PersonalInfoCardSpotlight />
+        <PersonalInfoCard />
         <PersonalGoalsGrid />
       </div>
       <div className="flex w-full gap-6">
@@ -131,58 +131,63 @@ function CommissionCard({
   );
 }
 
-function PersonalInfoCardSpotlight() {
+function PersonalInfoCard() {
   return (
-    <Spotlight className="w-1/2 flex-shrink-0">
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
+    <Card className="w-1/2 flex-shrink-0">
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
           <Button variant="outline" className="text-primary">
             <span>Edit Profile</span>
             <Edit />
           </Button>
-        </div>
-
-        <div className="flex gap-6">
-          <div className="relative h-[150px] w-[150px] rounded-lg">
-            <Image
-              src={profile}
-              alt="profile"
-              fill
-              className="rounded-lg object-cover object-top"
-            />
-          </div>
-          <div className="flex grow flex-col gap-6">
-            <div className="flex flex-col items-start">
-              <p className="text-lg font-semibold">John Doe</p>
-              <p className="text-md text-muted-foreground">Senior Associate</p>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col gap-6">
+          <div className="flex gap-6">
+            <div className="relative h-[150px] w-[150px] rounded-lg">
+              <Image
+                src={profile}
+                alt="profile"
+                fill
+                className="rounded-lg object-cover object-top"
+              />
             </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex justify-between">
-                <p className="text-md font-semibold">
-                  $7,350
-                  <span className="text-muted-foreground text-sm font-normal">
-                    {" of target $15,000"}
-                  </span>
+            <div className="flex grow flex-col gap-6">
+              <div className="flex flex-col items-start">
+                <p className="text-lg font-semibold">John Doe</p>
+                <p className="text-md text-muted-foreground">
+                  Senior Associate
                 </p>
-                <p className="text-md font-semibold">{"49%"}</p>
               </div>
-              <Progress value={49} />
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between">
+                  <p className="text-md font-semibold">
+                    $7,350
+                    <span className="text-muted-foreground text-sm font-normal">
+                      {" of target $15,000"}
+                    </span>
+                  </p>
+                  <p className="text-md font-semibold">{"49%"}</p>
+                </div>
+                <Progress value={49} />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex gap-4">
-          <CommissionCard
-            title="Commission"
-            range={{ min: 4200, max: 12000 }}
-            className="flex aspect-square w-full flex-col gap-0"
-          />
+          <div className="flex gap-4">
+            <CommissionCard
+              title="Commission"
+              range={{ min: 4200, max: 12000 }}
+              className="flex aspect-square w-full flex-col gap-0"
+            />
 
-          <SalesCard className="flex aspect-square w-full flex-col gap-0" />
+            <SalesCard className="flex aspect-square w-full flex-col gap-0" />
+          </div>
         </div>
-      </div>
-    </Spotlight>
+      </CardContent>
+    </Card>
   );
 }
 
