@@ -70,7 +70,7 @@ export function AddUserDrawer() {
   };
 
   return (
-    <SheetContent className="w-full max-w-2xl overflow-auto">
+  <SheetContent className="w-140 overflow-auto px-20  ">
       <SheetHeader>
         <SheetTitle>Add New Agent</SheetTitle>
       </SheetHeader>
@@ -79,22 +79,21 @@ export function AddUserDrawer() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Profile Image Upload */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="space-y-2">
+           
               {form.watch("profileImage") ? (
                 <div className="relative">
                   <Image
                     src={form.watch("profileImage")}
                     alt="Profile preview"
-                    className="mx-auto h-32 w-32 rounded-lg object-cover"
-                    width={128}
-                    height={128}
+                    className="mx-auto h-48 w-48 rounded-lg object-cover"
+                    width={182}
+                    height={162}
                   />
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full
-                      p-0"
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
                     onClick={removeImage}
                   >
                     <X className="h-3 w-3" />
@@ -104,10 +103,10 @@ export function AddUserDrawer() {
                 <DropzoneImageFormField form={form} />
               )}
                
-            </div>
+            
 
             {/* Full Name and Username */}
-            <div className="space-y-4">
+           
               <FormField
                 control={form.control}
                 name="fullName"
@@ -135,7 +134,7 @@ export function AddUserDrawer() {
                   </FormItem>
                 )}
               />
-            </div>
+            
           </div>
 
           {/* Email and Phone Number */}
@@ -221,7 +220,9 @@ export function AddUserDrawer() {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          if (date) field.onChange(date);
+                        }}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
                         }
@@ -376,8 +377,9 @@ export function AddUserDrawer() {
 
           <SheetFooter className="mt-8">
             <Button
+            variant={"default"}
               type="submit"
-              className="w-full bg-blue-600 text-white hover:bg-blue-700"
+              className="w-full bg-primary-600 text-white "
             >
               Add Agent
             </Button>
