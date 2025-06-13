@@ -70,7 +70,7 @@ export function AddUserDrawer() {
   };
 
   return (
-  <SheetContent className="w-140 overflow-auto px-20  ">
+  <SheetContent className="w-140 overflow-auto px-6 py-5  ">
       <SheetHeader>
         <SheetTitle>Add New Agent</SheetTitle>
       </SheetHeader>
@@ -375,11 +375,11 @@ export function AddUserDrawer() {
             )}
           />
 
-          <SheetFooter className="mt-8">
+          <SheetFooter className="w-auto p-0">
             <Button
             variant={"default"}
               type="submit"
-              className="w-full bg-primary-600 text-white "
+              className="w-full bg-primary-600 text-white"
             >
               Add Agent
             </Button>
