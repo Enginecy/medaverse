@@ -1,5 +1,5 @@
 "use client";
-import { Grid2x2, LogOut } from "lucide-react";
+import { Grid2x2, LogOut, Users } from "lucide-react";
 import Image from "next/image";
 import logo from "public/meda_health_logo.png";
 
@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { Logout } from "./logout";
-import { cn } from "@/lib/utils";
 
 // Menu items.
 const items = [
@@ -26,13 +25,14 @@ const items = [
     url: "/dashboard/home",
     icon: Grid2x2,
   },
+  {
+    title: "User Management",
+    url: "/dashboard/user-management",
+    icon: Users,
+  },
 ];
 
-export function AppSidebar({
-  className,
-}: {
-  className?: React.HTMLAttributes<HTMLDivElement>["className"];
-}) {
+export function AppSidebar() {
   const pathName = usePathname();
   return (
     <Sidebar collapsible="icon">

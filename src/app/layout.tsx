@@ -5,6 +5,7 @@ import { Urbanist } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SupabaseClientProvider } from "@/lib/supabase/provider";
 import { QueryProvider } from "@/providers/client-query";
+import { ModalProvider } from "@/providers/modal";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -24,8 +25,10 @@ export default function RootLayout({
       <SupabaseClientProvider>
         <html lang="en" className={`${urbanist.className}`}>
           <body>
-            {children}
-            <Toaster />
+            <ModalProvider>
+              {children}
+              <Toaster />
+            </ModalProvider>
           </body>
         </html>
       </SupabaseClientProvider>
