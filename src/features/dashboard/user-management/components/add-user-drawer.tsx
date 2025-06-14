@@ -44,16 +44,16 @@ import {
 import {
   addUserSchema,
   type AddUserFormData,
-} from "@/features/user-management/schemas/add-user-schema";
-import { DropzoneImageFormField } from "@/features/user-management/components/form/dropzone-image-form-field";
+} from "@/features/dashboard/user-management/schemas/add-user-schema";
+import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import { createAgent } from "@/features/user-management/server/actions/user-mangement";
+import { createAgent } from "@/features/dashboard/user-management/server/actions/user-mangement";
 import { PulseMultiple } from "react-svg-spinners";
-import { FailureAlert } from "@/features/user-management/components/fialure-alert";
+import { FailureAlert } from "@/features/dashboard/user-management/components/fialure-alert";
 import { toast } from "sonner";
-import { SuccessAlert } from "@/features/user-management/components/success-alert";
+import { SuccessAlert } from "@/features/dashboard/user-management/components/success-alert";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {

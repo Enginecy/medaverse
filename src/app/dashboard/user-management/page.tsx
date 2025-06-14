@@ -1,6 +1,6 @@
 import { DataTableDemo } from "@/app/dashboard/user-management/data-table";
 import { Button } from "@/components/ui/button";
-import { AddUsersButton } from "@/features/user-management/components/add-users-button";
+import { AddUsersButton } from "@/features/dashboard/user-management/components/add-users-button";
 import { Download } from "lucide-react";
 
 export default function UserManagement() {

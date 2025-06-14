@@ -5,7 +5,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import type { AddUserFormData } from "@/features/user-management/schemas/add-user-schema";
+import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 import { SquareArrowUp } from "lucide-react";
 import React from "react";
 import { useDropzone } from "react-dropzone";
