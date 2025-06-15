@@ -26,3 +26,5 @@ export async function getUsers() {
 }
 
 export type User = Awaited<ReturnType<typeof getUsers>>[number];
+// export type User = Awaited<ReturnType<typeof getUsers>>[];
+

@@ -34,7 +34,9 @@ import { columns } from "@/app/dashboard/user-management/columns";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SkeletonTheme } from "react-loading-skeleton";
+
+import { ErrorComponent } from "@/components/ui/error-component";
+import { UserTableSkeleton } from "@/components/ui/user-table-skeleton";
 
 export function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -44,6 +46,7 @@ export function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [retryKey, setRetryKey] = React.useState(0);
 
   const {
     data: users,
@@ -51,7 +54,7 @@ export function DataTableDemo() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["users", retryKey],
     queryFn: getUsers,
   });
 
@@ -77,17 +80,20 @@ export function DataTableDemo() {
   if (isPending)
     return (
       <div className="flex min-h-[300px] w-full items-center justify-center">
-        <SkeletonTheme baseColor="#d1d5db" highlightColor="#ffffff">
-          <div className="flex w-full flex-col gap-4">
-            <Skeleton className="h-10 w-1/3" />
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
-        </SkeletonTheme>
+
+      <UserTableSkeleton/>
+
       </div>
     );
-  if (isError) return <div>Error {error?.message}</div>;
+  if (isError)
+    return (
+      <div className="flex min-h-[500px] w-full items-center justify-center">
+        <ErrorComponent
+          message={error.message}
+          onRetry={() => setRetryKey((k) => k + 1)}
+        />
+      </div>
+    );
 
   const selectedRowCount = table.getFilteredSelectedRowModel().rows.length;
   const rowCount = table.getFilteredRowModel().rows.length;
