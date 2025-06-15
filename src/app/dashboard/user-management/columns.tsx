@@ -1,4 +1,4 @@
-import type { User } from "@/app/dashboard/user-management/data";
+import type { User } from "@/features/dashboard/user-management/server/db/user-management";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -45,8 +45,8 @@ export const columns: ColumnDef<User>[] = [
       return (
         <div className="flex items-center gap-2">
           <Image
-            src={row.original.imageUrl}
-            alt={row.original.name}
+            src={row.original.avatar_url!}
+            alt={row.original.name!}
             width={40}
             height={40}
             className="aspect-square rounded-full object-cover"
@@ -60,12 +60,12 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "username",
     header: "Username",
-    cell: ({ row }) => <p>{row.getValue("username")}</p>,
+    cell: ({ row }) => <p>{row.original.username}</p>,
   },
   {
     accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => <p>{row.getValue("email")}</p>,
+    cell: ({ row }) => <p>{row.original.email}</p>,
   },
   {
     accessorKey: "status",
@@ -75,7 +75,7 @@ export const columns: ColumnDef<User>[] = [
         className={cn(
           `rounded-full border-none text-xs font-normal text-green-800
           focus-visible:outline-none`,
-          row.original.status === "Active"
+          row.original.status === "active"
             ? "bg-green-100 text-green-800"
             : "bg-red-200 text-red-800",
         )}
@@ -87,7 +87,7 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <p>{row.getValue("role")}</p>,
+    cell: ({ row }) => <p>{row.original.role}</p>,
   },
   {
     id: "actions",

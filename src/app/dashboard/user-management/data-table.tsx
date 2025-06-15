@@ -31,7 +31,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { columns } from "@/app/dashboard/user-management/columns";
-import { users } from "@/app/dashboard/user-management/data";
+import { useQuery } from "@tanstack/react-query";
+import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
 
 export function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -42,8 +43,18 @@ export function DataTableDemo() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const table = useReactTable({
+  const {
     data: users,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+  });
+
+  const table = useReactTable({
+    data: users!,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -60,6 +71,9 @@ export function DataTableDemo() {
       rowSelection,
     },
   });
+
+  if (isPending) return <div>Loading...</div>;
+  if (isError) return <div>Error {error?.message}</div>;
 
   const selectedRowCount = table.getFilteredSelectedRowModel().rows.length;
   const rowCount = table.getFilteredRowModel().rows.length;
