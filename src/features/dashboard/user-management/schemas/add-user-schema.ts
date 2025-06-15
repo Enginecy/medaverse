@@ -26,7 +26,7 @@ export const addUserSchema = z.object({
       }),
     )
     .min(1, "Please select at least one state"),
-  profileImage: z.string().min(1, "Please select a profile image"),
+  profileImage: z.instanceof(File),
 });
 
 export type AddUserFormData = z.infer<typeof addUserSchema>;

@@ -54,8 +54,7 @@ export function DropzoneImageFormField({
       onDropAccepted(files) {
         const firstFile = files[0];
         if (firstFile) {
-          const fileUrl = URL.createObjectURL(firstFile);
-          form.setValue("profileImage", fileUrl);
+          form.setValue("profileImage", firstFile);
         }
       },
       maxFiles: 1,

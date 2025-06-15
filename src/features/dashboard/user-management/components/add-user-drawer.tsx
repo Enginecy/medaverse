@@ -80,7 +80,7 @@ export function AddUserDrawer({
       upline: "",
       npnNumber: "",
       states: [],
-      profileImage: "",
+      profileImage: new File([], ""),
       dateOfBirth: new Date(),
     },
   });
@@ -105,11 +105,11 @@ export function AddUserDrawer({
     },
   });
   const onSubmit = (data: AddUserFormData) => {
-    mutate();
+    mutate(data);
   };
 
   const removeImage = () => {
-    form.setValue("profileImage", "");
+    form.setValue("profileImage", new File([], ""));
   };
 
   return (
@@ -122,10 +122,10 @@ export function AddUserDrawer({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Profile Image Upload */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {form.watch("profileImage") ? (
+            {form.watch("profileImage").size ? (
               <div className="relative">
                 <Image
-                  src={form.watch("profileImage")}
+                  src={URL.createObjectURL(form.watch("profileImage"))}
                   alt="Profile preview"
                   className="mx-auto h-48 w-48 rounded-lg object-cover"
                   width={182}
@@ -144,7 +144,7 @@ export function AddUserDrawer({
             ) : (
               <DropzoneImageFormField form={form} />
             )}
-             {/* Full Name and Username */}
+            {/* Full Name and Username */}
             <FormField
               control={form.control}
               name="fullName"
