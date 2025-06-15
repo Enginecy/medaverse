@@ -6,6 +6,11 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
+  experimental:{
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
   images: {
     domains: ["images.unsplash.com", "axdfmmwtobzrqbdcikrt.supabase.co"],
   },

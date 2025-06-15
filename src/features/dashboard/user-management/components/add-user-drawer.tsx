@@ -48,7 +48,7 @@ import {
 import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createAgent } from "@/features/dashboard/user-management/server/actions/user-mangement";
 import { PulseMultiple } from "react-svg-spinners";
 import { showSonnerToast } from "@/lib/react-utils";
@@ -67,6 +67,8 @@ export function AddUserDrawer({
 }: {
   closeDrawer: (value?: unknown) => void;
 }) {
+  const queryClient = useQueryClient();
+    
   const form = useForm<AddUserFormData>({
     resolver: zodResolver(addUserSchema),
     defaultValues: {
@@ -84,7 +86,6 @@ export function AddUserDrawer({
       dateOfBirth: new Date(),
     },
   });
-
   const { mutate, isPending } = useMutation({
     mutationFn: createAgent,
     onSuccess: () => {
@@ -95,6 +96,9 @@ export function AddUserDrawer({
         type: "success",
       });
       closeDrawer();
+        queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
     },
     onError: (error: Error) => {
       showSonnerToast({
