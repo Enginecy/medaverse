@@ -19,6 +19,7 @@ CREATE TABLE public.profile (
     status status,
     name VARCHAR,
     address VARCHAR,
+    avatar_url VARCHAR,
     dob TIMESTAMP,
     role title,
     created_at TIMESTAMP DEFAULT NOW(),
@@ -33,6 +34,7 @@ COMMENT ON COLUMN public.profile.status IS 'User account status - active, disabl
 COMMENT ON COLUMN public.profile.name IS 'Full name of the user';
 COMMENT ON COLUMN public.profile.address IS 'Physical address of the user';
 COMMENT ON COLUMN public.profile.dob IS 'Date of birth';
+COMMENT ON COLUMN public.profile.avatar_url IS 'URL of the user''s avatar image';
 COMMENT ON COLUMN public.profile.role IS 'User role/position in the organization hierarchy';
 COMMENT ON COLUMN public.profile.created_at IS 'When the profile record was created';
 COMMENT ON COLUMN public.profile.updated_at IS 'When the profile record was last updated';
