@@ -7,18 +7,26 @@ export const addUserSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   phoneNumber: z.string().min(10, "Please enter a valid phone number"),
   address: z.string().min(5, "Address must be at least 5 characters"),
-  dateOfBirth: z.date({
-    required_error: "Date of birth is required",
-  }).refine((date) => date <= new Date() , {
-    message: "Date of birth cannot be in the future",
-  }),
+  dateOfBirth: z
+    .date({
+      required_error: "Date of birth is required",
+    })
+    .refine((date) => date <= new Date(), {
+      message: "Date of birth cannot be in the future",
+    }),
   contractId: z.string().min(1, "Please select a contract ID"),
   regional: z.string().min(1, "Please select a regional"),
   upline: z.string().min(1, "Please select an upline"),
   npnNumber: z.string().min(1, "Please select an NPN number"),
-  states: z.string().min(1, "Please select a state"),
+  states: z
+    .array(
+      z.object({
+        name: z.string(),
+        code: z.string(),
+      }),
+    )
+    .min(1, "Please select at least one state"),
   profileImage: z.string().min(1, "Please select a profile image"),
-
 });
 
 export type AddUserFormData = z.infer<typeof addUserSchema>;

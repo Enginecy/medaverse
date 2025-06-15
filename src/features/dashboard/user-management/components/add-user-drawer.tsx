@@ -3,13 +3,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import {
-  AlertCircleIcon,
   Calendar as CalendarIcon,
-  CheckCircle,
-  CheckCircle2Icon,
+  Check,
+  ChevronsUpDown,
   X,
 } from "lucide-react";
-import * as React from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -51,12 +51,22 @@ import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { createAgent } from "@/features/dashboard/user-management/server/actions/user-mangement";
 import { PulseMultiple } from "react-svg-spinners";
-import { FailureAlert } from "@/features/dashboard/user-management/components/fialure-alert";
-import { toast } from "sonner";
-import { SuccessAlert } from "@/features/dashboard/user-management/components/success-alert";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { showSonnerToast } from "@/lib/react-utils";
+import { states } from "@/lib/data";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
-export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
+export function AddUserDrawer({
+  closeDrawer,
+}: {
+  closeDrawer: (value?: unknown) => void;
+}) {
   const form = useForm<AddUserFormData>({
     resolver: zodResolver(addUserSchema),
     defaultValues: {
@@ -69,43 +79,33 @@ export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
       regional: "",
       upline: "",
       npnNumber: "",
-      states: "",
+      states: [],
       profileImage: "",
       dateOfBirth: new Date(),
     },
   });
-  const { mutate, isPending, isError } = useMutation({
+
+  const { mutate, isPending } = useMutation({
     mutationFn: createAgent,
     onSuccess: () => {
-      toast.custom(() => {
-        return (
-          <Alert className="w-100">
-            <AlertTitle>
-              <div className="flex flex-row items-center">
-                <CheckCircle className="mx-2 h-4 w-4 text-green-500" />
-                <p className="font-semibold text-gray-500">
-                  New agent added successfully
-                </p>
-              </div>
-            </AlertTitle>
-          </Alert>
-        );
+      showSonnerToast({
+        message: "New agent added successfully",
+        description:
+          "An email will be sent to the agent with their login instructions",
+        type: "success",
       });
-      props.resolve(true);
+      closeDrawer();
     },
     onError: (error: Error) => {
-      toast.custom(() => (
-        <FailureAlert
-          title="Failed to add agent. Please try again."
-          content="YA deen el Naby"
-        />
-      ));
+      showSonnerToast({
+        message: "Failed to add agent.",
+        description: error.message,
+        type: "error",
+      });
     },
   });
   const onSubmit = (data: AddUserFormData) => {
     mutate();
-
-    console.log("Form submitted:", data);
   };
 
   const removeImage = () => {
@@ -240,7 +240,7 @@ export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
+                            "font-normal",
                             !field.value && "text-muted-foreground",
                           )}
                         >
@@ -284,7 +284,7 @@ export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="name@example.com" />
                       </SelectTrigger>
                     </FormControl>
@@ -310,7 +310,7 @@ export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="name@example.com" />
                       </SelectTrigger>
                     </FormControl>
@@ -340,7 +340,7 @@ export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="name@example.com" />
                       </SelectTrigger>
                     </FormControl>
@@ -366,7 +366,7 @@ export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="name@example.com" />
                       </SelectTrigger>
                     </FormControl>
@@ -386,28 +386,134 @@ export function AddUserDrawer(props: { resolve: (value: unknown) => void }) {
           <FormField
             control={form.control}
             name="states"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>States</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="name@example.com" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="california">California</SelectItem>
-                    <SelectItem value="texas">Texas</SelectItem>
-                    <SelectItem value="florida">Florida</SelectItem>
-                    <SelectItem value="newyork">New York</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem className="flex flex-col">
+                  <FormLabel>States</FormLabel>
+
+                  <Popover modal>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-1/2 justify-between",
+                            field.value.length === 0 && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value.length === 0
+                            ? "Select states"
+                            : field.value.length === 1
+                              ? `${field.value[0]?.name}`
+                              : `${field.value.length} states selected`}
+                          <ChevronsUpDown className="opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search states..."
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>No states found.</CommandEmpty>
+                          <CommandGroup>
+                            <CommandItem
+                              key={"select-all"}
+                              className="text-primary-600 hover:bg-primary-100"
+                              onSelect={() => {
+                                if (field.value.length === states.length) {
+                                  form.setValue("states", []);
+                                } else {
+                                  form.setValue("states", states);
+                                  form.trigger("states");
+                                }
+                              }}
+                            >
+                              {field.value.length === states.length
+                                ? "Deselect all "
+                                : "Select all "}
+                            </CommandItem>
+                            {states.map((state) => (
+                              <CommandItem
+                                value={state.name}
+                                key={state.code}
+                                onSelect={() => {
+                                  if (
+                                    field.value.some(
+                                      (s) => s.code === state.code,
+                                    )
+                                  ) {
+                                    form.setValue(
+                                      "states",
+                                      field.value.filter(
+                                        (s) => s.code !== state.code,
+                                      ),
+                                    );
+                                  } else {
+                                    form.setValue("states", [
+                                      ...field.value,
+                                      state,
+                                    ]);
+                                  }
+                                  form.trigger("states");
+                                }}
+                              >
+                                {state.name}
+                                <Check
+                                  className={cn(
+                                    "ml-auto",
+                                    field.value.some(
+                                      (s) => s.code === state.code,
+                                    )
+                                      ? "opacity-100"
+                                      : "opacity-0",
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription className="flex flex-wrap gap-2">
+                    {/* build chip for each state */}
+                    {field.value.map((state) => (
+                      <div
+                        key={state.code}
+                        className="bg-primary-100 text-primary-600 flex
+                          items-start justify-between rounded-md p-2"
+                      >
+                        <div className="flex flex-col items-center">
+                          <p className="text-sm font-semibold">{state.code}</p>
+                          <p className="text-xs">{state.name}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              form.setValue(
+                                "states",
+                                field.value.filter(
+                                  (s) => s.code !== state.code,
+                                ),
+                              );
+                            }}
+                          >
+                            <X className="text-destructive h-2 w-2" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
 
           <SheetFooter className="w-auto p-0">
