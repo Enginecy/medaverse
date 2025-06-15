@@ -283,3 +283,18 @@ CREATE INDEX IF NOT EXISTS idx_sale_items_sale_id ON public.sale_items(sale_id);
 -- Grant necessary permissions to authenticated users
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO authenticated;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO authenticated;
+
+-- Allow users to upload their own images or SuperAdmins to upload any images
+CREATE POLICY "Users can upload their own profile images" 
+ON storage.objects FOR INSERT 
+WITH CHECK (bucket_id = 'profile-images' AND (auth.uid()::text = (storage.foldername(name))[1] OR isSuperAdmin()));
+
+-- Allow users to view their own images or SuperAdmins to view any images
+CREATE POLICY "Users can view their own profile images" 
+ON storage.objects FOR SELECT 
+USING (bucket_id = 'profile-images' AND (auth.uid()::text = (storage.foldername(name))[1] OR isSuperAdmin()));
+
+-- Allow public read access
+CREATE POLICY "Profile images are publicly viewable" 
+ON storage.objects FOR SELECT 
+USING (bucket_id = 'profile-images');
