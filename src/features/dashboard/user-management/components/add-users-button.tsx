@@ -9,10 +9,7 @@ export function AddUsersButton() {
   const showDrawer = useShowDrawer();
 
   const handleAddUser = async () => {
-    const result = await showDrawer((resolve) => (
-      <AddUserDrawer resolve={resolve} />
-    ));
-    console.log(result);
+    await showDrawer((resolve) => <AddUserDrawer closeDrawer={resolve} />);
   };
 
   return (

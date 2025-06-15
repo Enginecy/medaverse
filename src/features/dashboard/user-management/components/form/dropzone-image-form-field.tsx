@@ -14,7 +14,6 @@ import styled from "styled-components";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getColor = (props: any) => {
-  console.log(props);
   if (props.isDragAccept) {
     return "#00c951";
   }
