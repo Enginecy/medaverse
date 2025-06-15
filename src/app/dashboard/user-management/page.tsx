@@ -10,7 +10,7 @@ export default function UserManagement() {
         <h1 className="text-2xl font-semibold">User Management</h1>
         <UsersActions />
       </div>
-      <DataTableDemo />
+        <DataTableDemo />
     </div>
   );
 }

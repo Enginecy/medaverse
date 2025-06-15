@@ -33,6 +33,8 @@ import {
 import { columns } from "@/app/dashboard/user-management/columns";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonTheme } from "react-loading-skeleton";
 
 export function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -72,7 +74,19 @@ export function DataTableDemo() {
     },
   });
 
-  if (isPending) return <div>Loading...</div>;
+  if (isPending)
+    return (
+      <div className="flex min-h-[300px] w-full items-center justify-center">
+        <SkeletonTheme baseColor="#d1d5db" highlightColor="#ffffff">
+          <div className="flex w-full flex-col gap-4">
+            <Skeleton className="h-10 w-1/3" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        </SkeletonTheme>
+      </div>
+    );
   if (isError) return <div>Error {error?.message}</div>;
 
   const selectedRowCount = table.getFilteredSelectedRowModel().rows.length;
