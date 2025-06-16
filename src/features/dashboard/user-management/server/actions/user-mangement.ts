@@ -1,25 +1,27 @@
 "use server";
 
+import { createDrizzleSupabaseClient } from "@/db/db";
+import { profile } from "@/db/schema";
 import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
+import { eq } from "drizzle-orm";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
-import type { Prisma } from "generated/prisma";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
   const supabase = await createClient();
-  // Pre-validate that username doesn't exist
-  const existingProfile = await prisma.profile.findUnique({
-    where: { username: data.username },
-  });
+  const db = await createDrizzleSupabaseClient();
+
+  // Check if username already exists
+  const existingProfile = await db.admin
+    .select()
+    .from(profile)
+    .where(eq(profile.username, data.username));
 
   if (existingProfile) {
     throw { message: "Username already exists" };
   }
-
-  let createdUser: Prisma.usersGetPayload<{ select: { id: true } }> | null =
-    null;
+  let createdUser: { id: string } | null = null;
   let uploadedFileName: string | null = null;
 
   try {
@@ -58,25 +60,25 @@ export async function createAgent(data: AddUserFormData) {
     } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
     // Step 5: Database operations in transaction
-    const profile = await prisma.$transaction(async (tx) => {
-      const newProfile = await tx.profile.create({
-        data: {
+
+    const profileData = await db.rls((tx) => {
+      return tx
+        .insert(profile)
+        .values({
           id: userId,
           name: data.fullName,
           username: data.username,
-          address: data.address || null,
+          address: data.address ?? null,
           dob: data.dateOfBirth.toISOString(),
           role: "Associate",
           status: "active",
-          avatar_url: publicUrl,
-          user_id: user.id,
-        },
-      });
-
-      return newProfile;
+          avatarUrl: publicUrl,
+          userId: user.id,
+        })
+        .returning();
     });
 
-    return { success: true, profile };
+    return { success: true, profile: profileData };
   } catch (error) {
     // Rollback operations in reverse order
     console.error("Error in createAgent, rolling back:", error);

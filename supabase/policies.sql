@@ -282,7 +282,11 @@ CREATE INDEX IF NOT EXISTS idx_sale_items_sale_id ON public.sale_items(sale_id);
 
 -- Grant necessary permissions to authenticated users
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO authenticated;
+GRANT SELECT ON auth.users TO authenticated;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO authenticated;
+
+-- Allow users to read auth.users table if they are authenticated
+CREATE POLICY "Users can read auth.users table" ON auth.users FOR SELECT USING (auth.uid() = id OR isSuperAdmin());
 
 -- Allow users to upload their own images or SuperAdmins to upload any images
 CREATE POLICY "Users can upload their own profile images" 

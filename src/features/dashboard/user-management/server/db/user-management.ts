@@ -1,30 +1,24 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { createDrizzleSupabaseClient } from "@/db/db";
+import { profile, users } from "@/db/schema";
+import { desc, getTableColumns, eq } from "drizzle-orm";
 
 export async function getUsers() {
-  const users = await prisma.profile.findMany({
-    include: {
-      users: {
-        select: {
-          email: true,
-        },
-      },
-    },
-    omit: {
-      user_id: true,
-    },
-    orderBy: {
-      created_at: "desc",
-    },
+  const db = await createDrizzleSupabaseClient();
+
+  const profiles = await db.rls((tx) => {
+    return tx
+      .select({
+        ...getTableColumns(profile),
+        email: users.email,
+      })
+      .from(profile)
+      .leftJoin(users, eq(profile.userId, users.id))
+      .orderBy(desc(profile.createdAt));
   });
-  const results = users.map((user) => ({
-    ...user,
-    email: user.users?.email ?? null,
-  }));
-  return results;
+
+  return profiles;
 }
 
 export type User = Awaited<ReturnType<typeof getUsers>>[number];
-// export type User = Awaited<ReturnType<typeof getUsers>>[];
-

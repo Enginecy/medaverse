@@ -15,7 +15,7 @@
   font-weight: normal;
   src:
     local("Druk Wide Bold Bold"),
-    url("public/DrukWideBold.woff") format("woff");
+    url("../../public/DrukWideBold.woff") format("woff");
 }
 
 @theme inline {
