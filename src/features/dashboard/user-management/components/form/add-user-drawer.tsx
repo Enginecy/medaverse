@@ -69,6 +69,7 @@ import { RegionalField } from "@/features/dashboard/user-management/components/f
 import { AddressField } from "@/features/dashboard/user-management/components/form/address-field";
 import { DobField } from "@/features/dashboard/user-management/components/form/dob-field";
 import { EmailField } from "@/features/dashboard/user-management/components/form/email-field";
+import { PhoneField } from "@/features/dashboard/user-management/components/form/phone-field";
 
 export function AddUserDrawer({
   closeDrawer,
@@ -187,8 +188,8 @@ export function AddUserDrawer({
 
           {/* Email and Phone Number */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-         <EmailField form={form} />
-
+            <EmailField form={form} />
+            <PhoneField form={form} />
           </div>
 
           {/* Address and Date of Birth */}
