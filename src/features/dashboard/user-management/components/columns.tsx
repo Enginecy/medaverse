@@ -94,7 +94,7 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       return (
-        <DropdownMenu >
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -103,18 +103,18 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="rounded-2xl p-2">
             <DropdownMenuItem>
-              <SquarePen className="text-black"/>
+              <SquarePen className="text-black" />
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem>
-             <Copy className="text-black"/>
+              <Copy className="text-black" />
               Copy Data
             </DropdownMenuItem>
 
             <DropdownMenuItem>
-              <Trash2 className="text-red-500" />
+              <Trash2 className="text-destructive" />
 
-              <span className="text-red-500">Delete</span>
+              <span className="text-destructive">Delete</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
