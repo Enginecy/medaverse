@@ -45,7 +45,7 @@ export const columns: ColumnDef<User>[] = [
       return (
         <div className="flex items-center gap-2">
           <Image
-            src={row.original.avatar_url!}
+            src={row.original.avatarUrl!}
             alt={row.original.name!}
             width={40}
             height={40}
