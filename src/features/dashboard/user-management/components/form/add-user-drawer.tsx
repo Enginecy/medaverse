@@ -64,6 +64,10 @@ import {
 import { FormFooter } from "@/features/dashboard/user-management/components/form/form-footer";
 import { StatesField } from "@/features/dashboard/user-management/components/form/states-field";
 import { NpnNumberForm } from "@/features/dashboard/user-management/components/form/npn-no-field";
+import { ContractIdField } from "@/features/dashboard/user-management/components/form/contract-id-field";
+import { RegionalField } from "@/features/dashboard/user-management/components/form/regional-field";
+import { AddressField } from "@/features/dashboard/user-management/components/form/address-field";
+import { DobField } from "@/features/dashboard/user-management/components/form/dob-field";
 
 export function AddUserDrawer({
   closeDrawer,
@@ -221,121 +225,18 @@ export function AddUserDrawer({
 
           {/* Address and Date of Birth */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="dateOfBirth"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date of Birth</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "font-normal",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        captionLayout="dropdown"
-                      />
-                    </PopoverContent>
-                  </Popover>{" "}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <AddressField form={form} />
+            <DobField form={form} />
           </div>
 
           {/* Contract ID and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="contractId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contract ID</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="name@example.com" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="contract1">Contract 1</SelectItem>
-                      <SelectItem value="contract2">Contract 2</SelectItem>
-                      <SelectItem value="contract3">Contract 3</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="regional"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Regional</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="name@example.com" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="north">North</SelectItem>
-                      <SelectItem value="south">South</SelectItem>
-                      <SelectItem value="east">East</SelectItem>
-                      <SelectItem value="west">West</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <ContractIdField form={form} />
+            <RegionalField form={form} />
           </div>
 
           {/* Upline and NPN Number */}
-          <NpnNumberForm  form={form}/>
+          <NpnNumberForm form={form} />
           {/* States */}
           <FormField
             control={form.control}
