@@ -70,6 +70,8 @@ import { AddressField } from "@/features/dashboard/user-management/components/fo
 import { DobField } from "@/features/dashboard/user-management/components/form/dob-field";
 import { EmailField } from "@/features/dashboard/user-management/components/form/email-field";
 import { PhoneField } from "@/features/dashboard/user-management/components/form/phone-field";
+import { UsernameField } from "@/features/dashboard/user-management/components/form/username-field";
+import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
 
 export function AddUserDrawer({
   closeDrawer,
@@ -158,32 +160,8 @@ export function AddUserDrawer({
               <DropzoneImageFormField form={form} />
             )}
             {/* Full Name and Username */}
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FullNameField form={form} />
+            <UsernameField form={form} />
           </div>
 
           {/* Email and Phone Number */}
