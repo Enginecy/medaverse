@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { Copy, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -101,11 +101,21 @@ export const columns: ColumnDef<User>[] = [
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+          <DropdownMenuContent align="end" className="rounded-2xl p-2">
+            <DropdownMenuItem>
+              <SquarePen className="text-black" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Copy className="text-black" />
+              Copy Data
+            </DropdownMenuItem>
+
+            <DropdownMenuItem>
+              <Trash2 className="text-destructive" />
+
+              <span className="text-destructive">Delete</span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
