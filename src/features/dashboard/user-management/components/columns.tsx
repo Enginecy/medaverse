@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { Copy, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -94,18 +94,28 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       return (
-        <DropdownMenu>
+        <DropdownMenu >
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+          <DropdownMenuContent align="end" className="rounded-2xl p-2">
+            <DropdownMenuItem>
+              <SquarePen className="text-black"/>
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+             <Copy className="text-black"/>
+              Copy Data
+            </DropdownMenuItem>
+
+            <DropdownMenuItem>
+              <Trash2 className="text-red-500" />
+
+              <span className="text-red-500">Delete</span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
