@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
 import {
   Calendar as CalendarIcon,
   Check,
@@ -12,7 +11,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -22,19 +20,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   SheetContent,
   SheetFooter,
@@ -48,8 +38,11 @@ import {
 import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createAgent } from "@/features/dashboard/user-management/server/actions/user-mangement";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  createAgent,
+  updateAgent,
+} from "@/features/dashboard/user-management/server/actions/user-mangement";
 import { PulseMultiple } from "react-svg-spinners";
 import { showSonnerToast } from "@/lib/react-utils";
 import { states } from "@/lib/data";
@@ -61,8 +54,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { FormFooter } from "@/features/dashboard/user-management/components/form/form-footer";
-import { StatesField } from "@/features/dashboard/user-management/components/form/states-field";
 import { NpnNumberForm } from "@/features/dashboard/user-management/components/form/npn-no-field";
 import { ContractIdField } from "@/features/dashboard/user-management/components/form/contract-id-field";
 import { RegionalField } from "@/features/dashboard/user-management/components/form/regional-field";
@@ -72,32 +63,53 @@ import { EmailField } from "@/features/dashboard/user-management/components/form
 import { PhoneField } from "@/features/dashboard/user-management/components/form/phone-field";
 import { UsernameField } from "@/features/dashboard/user-management/components/form/username-field";
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
+import type { User } from "@/features/dashboard/user-management/server/db/user-management";
 
 export function AddUserDrawer({
+  user,
   closeDrawer,
 }: {
+  user?: User;
   closeDrawer: (value?: unknown) => void;
 }) {
+  const isEditing = !!user;
+  const defaultValues = isEditing
+    ? {
+        fullName: user!.name!,
+        username: user!.username!,
+        email: user!.email!,
+        phoneNumber: "",
+        address: user!.address!,
+        contractId: "",
+        regional: "",
+        upline: "",
+        npnNumber: "",
+        states: [],
+        profileImage: user!.avatarUrl!,
+        dateOfBirth: new Date(user!.dob!),
+      }
+    : {
+        fullName: "",
+        username: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        contractId: "",
+        regional: "",
+        upline: "",
+        npnNumber: "",
+        states: [],
+        profileImage: new File([], ""),
+        dateOfBirth: new Date(),
+      };
   const queryClient = useQueryClient();
 
   const form = useForm<AddUserFormData>({
     resolver: zodResolver(addUserSchema),
-    defaultValues: {
-      fullName: "",
-      username: "",
-      email: "",
-      phoneNumber: "",
-      address: "",
-      contractId: "",
-      regional: "",
-      upline: "",
-      npnNumber: "",
-      states: [],
-      profileImage: new File([], ""),
-      dateOfBirth: new Date(),
-    },
+    defaultValues,
   });
-  const { mutate, isPending } = useMutation({
+
+  const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
     mutationFn: createAgent,
     onSuccess: () => {
       showSonnerToast({
@@ -119,14 +131,43 @@ export function AddUserDrawer({
       });
     },
   });
+
+  const { mutate: submitUpdateAgent, isPending: isUpdating } = useMutation({
+    mutationFn: (data: AddUserFormData) => updateAgent(data, user!.id!),
+    onSuccess: () => {
+      showSonnerToast({
+        message: "Agent updated successfully",
+        type: "success",
+      });
+      closeDrawer();
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+    },
+  });
+
   const onSubmit = (data: AddUserFormData) => {
-    mutate(data);
+    if (isEditing) {
+      submitUpdateAgent(data);
+    } else {
+      submitCreateAgent(data);
+    }
   };
 
   const removeImage = () => {
     form.setValue("profileImage", new File([], ""));
   };
 
+  const hasImage =
+    (form.watch("profileImage") as File).size > 0 ||
+    (form.watch("profileImage") as string).length > 0;
+
+  const imageSrc =
+    form.getValues("profileImage") instanceof File
+      ? URL.createObjectURL(form.getValues("profileImage") as File)
+      : (form.getValues("profileImage") as string);
+
+  const isPending = isCreating || isUpdating;
   return (
     <SheetContent className="w-140 overflow-auto px-6 py-5">
       <SheetHeader>
@@ -137,10 +178,10 @@ export function AddUserDrawer({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Profile Image Upload */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {form.watch("profileImage").size ? (
+            {hasImage ? (
               <div className="relative">
                 <Image
-                  src={URL.createObjectURL(form.watch("profileImage"))}
+                  src={imageSrc}
                   alt="Profile preview"
                   className="mx-auto h-48 w-48 rounded-lg object-cover"
                   width={182}
@@ -316,7 +357,22 @@ export function AddUserDrawer({
               );
             }}
           />
-          <FormFooter isPending={isPending} />
+          <SheetFooter className="w-auto p-0">
+            <Button
+              variant={"default"}
+              type="submit"
+              disabled={isPending}
+              className="bg-primary-600 w-full text-white"
+            >
+              {isPending ? (
+                <PulseMultiple color="white" />
+              ) : isEditing ? (
+                "Update Agent"
+              ) : (
+                "Add Agent"
+              )}
+            </Button>
+          </SheetFooter>
         </form>
       </Form>
     </SheetContent>

@@ -40,7 +40,7 @@ export async function createAgent(data: AddUserFormData) {
     createdUser = user;
 
     // Step 2: Prepare file upload details
-    const file = data.profileImage;
+    const file = data.profileImage as File;
     const userId = crypto.randomUUID();
     const fileExt = file.name.split(".").pop();
     const fileName = `${userId}/avatar.${fileExt}`;
@@ -82,6 +82,97 @@ export async function createAgent(data: AddUserFormData) {
   } catch (error) {
     // Rollback operations in reverse order
     console.error("Error in createAgent, rolling back:", error);
+
+    // Clean up uploaded file if it exists
+    if (uploadedFileName) {
+      try {
+        await supabase.storage
+          .from("profile-images")
+          .remove([uploadedFileName]);
+      } catch (cleanupError) {
+        console.error("Failed to cleanup uploaded file:", cleanupError);
+      }
+    }
+
+    // Clean up created user if it exists
+    if (createdUser?.id) {
+      try {
+        await auth.admin.deleteUser(createdUser.id);
+      } catch (cleanupError) {
+        console.error("Failed to cleanup created user:", cleanupError);
+      }
+    }
+
+    throw error;
+  }
+}
+
+export async function updateAgent(data: AddUserFormData, id: string) {
+  const { auth } = createAdminClient();
+  const supabase = await createClient();
+  const db = await createDrizzleSupabaseClient();
+  const [existingProfile] = await db.admin
+    .select()
+    .from(profile)
+    .where(eq(profile.id, id));
+
+  if (!existingProfile) {
+    throw { message: "User not found" };
+  }
+
+  let createdUser: { id: string } | null = null;
+  let uploadedFileName: string | null = null;
+
+  try {
+    const {
+      data: { user },
+      error: userError,
+    } = await auth.admin.updateUserById(existingProfile!.userId!, {
+      email: data.email,
+    });
+    if (userError || !user?.id) {
+      throw { message: "Failed to update user", error: userError };
+    }
+    createdUser = user;
+
+    if (data.profileImage instanceof File) {
+      const file = data.profileImage;
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${id}/avatar.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("profile-images")
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError)
+        throw { message: "Failed to upload file", error: uploadError };
+      uploadedFileName = fileName;
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("profile-images").getPublicUrl(fileName);
+
+      const profileData = await db.rls((tx) => {
+        return tx
+          .update(profile)
+          .set({
+            name: data.fullName,
+            username: data.username,
+            address: data.address ?? null,
+            dob: data.dateOfBirth.toISOString(),
+            role: "Associate",
+            status: "active",
+            avatarUrl: publicUrl,
+          })
+          .where(eq(profile.id, id))
+          .returning();
+      });
+
+      return { success: true, profile: profileData };
+    }
+  } catch (error) {
+    // Rollback operations in reverse order
+    console.error("Error in updateAgent, rolling back:", error);
 
     // Clean up uploaded file if it exists
     if (uploadedFileName) {
