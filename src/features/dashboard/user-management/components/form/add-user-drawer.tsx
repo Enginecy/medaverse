@@ -68,6 +68,7 @@ import { ContractIdField } from "@/features/dashboard/user-management/components
 import { RegionalField } from "@/features/dashboard/user-management/components/form/regional-field";
 import { AddressField } from "@/features/dashboard/user-management/components/form/address-field";
 import { DobField } from "@/features/dashboard/user-management/components/form/dob-field";
+import { EmailField } from "@/features/dashboard/user-management/components/form/email-field";
 
 export function AddUserDrawer({
   closeDrawer,
@@ -186,41 +187,8 @@ export function AddUserDrawer({
 
           {/* Email and Phone Number */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="name@example.com"
-                      type="email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+         <EmailField form={form} />
 
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="name@example.com"
-                      type="tel"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
 
           {/* Address and Date of Birth */}
