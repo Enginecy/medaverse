@@ -61,6 +61,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { FormFooter } from "@/features/dashboard/user-management/components/drawer/form-footer";
 
 export function AddUserDrawer({
   closeDrawer,
@@ -519,17 +520,8 @@ export function AddUserDrawer({
               );
             }}
           />
-
-          <SheetFooter className="w-auto p-0">
-            <Button
-              variant={"default"}
-              type="submit"
-              disabled={isPending}
-              className="bg-primary-600 w-full text-white"
-            >
-              {isPending ? <PulseMultiple color="white" /> : "Add Agent"}
-            </Button>
-          </SheetFooter>
+        {/*TODO: Footer with submit button */}
+          <FormFooter isPending = {isPending} />
         </form>
       </Form>
     </SheetContent>
