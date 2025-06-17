@@ -1,19 +1,10 @@
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Copy, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { RowActionsDropdown } from "@/features/dashboard/user-management/components/row-actions-dropdown";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -93,32 +84,8 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-2xl p-2">
-            <DropdownMenuItem>
-              <SquarePen className="text-black" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Copy className="text-black" />
-              Copy Data
-            </DropdownMenuItem>
-
-            <DropdownMenuItem>
-              <Trash2 className="text-destructive" />
-
-              <span className="text-destructive">Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      const user = row.original;
+      return <RowActionsDropdown user={user} />;
     },
   },
 ];
