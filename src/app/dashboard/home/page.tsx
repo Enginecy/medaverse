@@ -47,9 +47,7 @@ export default function Home() {
 
         <Card className="w-1/3 flex-shrink-0">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              Upcoming Birthdays
-            </CardTitle>
+            <CardTitle>Upcoming Birthdays</CardTitle>
           </CardHeader>
           <CardContent className="px-6">
             <BirthdayTable columns={birthdayColumns} data={birthdays} />
