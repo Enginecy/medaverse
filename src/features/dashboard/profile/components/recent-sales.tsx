@@ -74,10 +74,10 @@ export function RecentSales({
                     ></div>
                   )}
 
-                  {/* Sale details - pushed right by the dot/line width + margin */}
+                  
                   <div className="ml-8 flex-1">
                     {" "}
-                    {/* 8px to clear dot (16px) + some margin */}
+                  
                     <p className="text-base font-semibold text-gray-900">
                       {sale.clientName}
                     </p>
