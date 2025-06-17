@@ -47,11 +47,7 @@ export function PersonalInfoCard() {
           title="Address"
           content={user?.profile?.address}
         />
-        <InfoTile
-          icon={<MapPin />}
-          title="Address"
-          content={user?.profile?.address}
-        />
+      
         <InfoTile icon={<Mails />} title="Email" content={user?.user.email} /> 
       </CardContent>
     </Card>
