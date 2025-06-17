@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import { StatesCard } from "@/components/states-card";
 import { PersonalInfoCard } from "@/features/dashboard/profile/components/personal-info-card";
 import Container from "@mui/material/Container";
-import { AgentGoals } from "@/components/ui/agent-goals";
+import { AgentGoals } from "@/features/dashboard/profile/components/agent-goals";
 
 export default function Profile() {
   const Item = styled(Paper)(({ theme }) => ({
