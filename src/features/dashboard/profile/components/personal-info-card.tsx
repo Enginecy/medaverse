@@ -1,10 +1,13 @@
-import { Edit } from "lucide-react";
+"use client";
+import { Edit, Mails, MapPin, Phone, User } from "lucide-react";
 import Image from "next/image";
-import profile from "public/profile.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { InfoTile } from "@/features/dashboard/profile/components/info-tile";
+import { useAuth } from "@/hooks/auth";
 
 export function PersonalInfoCard() {
+  const { isLoading, user } = useAuth();
   return (
     <Card className="w-1/3 rounded-4xl">
       <CardHeader>
@@ -21,7 +24,7 @@ export function PersonalInfoCard() {
           <div className="flex gap-6">
             <div className="relative h-[150px] w-[150px] rounded-lg">
               <Image
-                src={profile}
+                src={user?.profile?.avatar_url || ""}
                 alt="profile"
                 fill
                 className="rounded-lg object-cover object-top"
@@ -29,14 +32,22 @@ export function PersonalInfoCard() {
             </div>
             <div className="flex grow flex-col gap-6">
               <div className="flex flex-col items-start">
-                <p className="text-lg font-semibold">John Doe</p>
+                <p className="text-lg font-semibold">{user?.profile?.name}</p>
                 <p className="text-md text-muted-foreground">
-                  Senior Associate
+                  {user?.profile?.role}
                 </p>
               </div>
             </div>
           </div>
         </div>
+        <InfoTile icon={<User />} title="Username" content={user?.profile?.username} />
+        <InfoTile icon={<Phone />} title="Phone" content={user?.user.phone} />
+        <InfoTile
+          icon={<MapPin />}
+          title="Address"
+          content={user?.profile?.address}
+        />
+        <InfoTile icon={<Mails />} title="Email" content={user?.user.email} /> 
       </CardContent>
     </Card>
   );

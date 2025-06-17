@@ -39,25 +39,31 @@ export function useAuth() {
   );
 
   useEffect(() => {
-    getUser().then(({ user, error }) => {
-      if (user) {
-        getProfile(user).then(({ data, error }) => {
-          if (data) {
-            setUser({
-              user,
-              profile: data as unknown as Tables<"profile">,
-            });
-          }
-          if (error) {
-            console.error(error);
-          }
-        });
-      }
+    const loadData = async () => {
+      const { user, error } = await getUser();
       if (error) {
         console.error(error);
         setUser(null);
+        setIsLoading(false);
+        return;
       }
-    });
+      if (!user) {
+        console.error(error);
+        setUser(null);
+        setIsLoading(false);
+        return;
+      }
+
+      const { data: profile, error: profileError } = await getProfile(user);
+      if (profileError) {
+        console.error(error);
+      }
+      setUser({
+        user,
+        profile: profile?.[0] ?? null,
+      } ) ;
+    };
+    loadData();
   }, [getUser, getProfile]);
 
   return { user, isLoading };
