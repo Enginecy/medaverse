@@ -35,7 +35,7 @@ export default function Profile() {
         <PersonalInfoCard />
      
         <StatesCard />
-        <AgentGoals size={100}/>
+        <AgentGoals size={100} color=""/>
       </Box>
     
     </div>
