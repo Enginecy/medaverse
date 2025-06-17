@@ -13,7 +13,7 @@ export function AgentGoals(
     { label: "Yearly Goal", currentValue: 11560, targetValue: 25000, trend: 7 },
   ];
   return (
-    <div className="rounded-3xl border border-[#E5ECF6] bg-white p-6 w-2/3">
+    <div className="rounded-3xl border border-[#E5ECF6] bg-white p-6 w-2/3 h-auto">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-gray-900">Agent Goals</h2>
         <button className="flex items-center gap-2 rounded-lg border border-[#E5ECF6] px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
