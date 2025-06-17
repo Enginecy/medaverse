@@ -1,4 +1,3 @@
-import { User } from "lucide-react";
 import React from "react";
 
 export function InfoTile({
@@ -17,9 +16,10 @@ export function InfoTile({
     }
     if(content === undefined){
         return (<div></div>)
+
     }
   return (
-    <div className="h-full flex flex-row p-2 items-center">
+    <div className=" flex flex-row p-2 items-center">
       <div
         className="max-h-9 bg-primary-100 flex items-center justify-center rounded-lg
           p-2"

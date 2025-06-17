@@ -9,7 +9,7 @@ export function StatesCard() {
   const selectedStates: State[] = [...states];
 
   return (
-    <Card className="w-2/3">
+    <Card className="flex-1 min-w-[630px] items-center justify-center">
       <CardContent className="flex gap-4">
         <div className="flex w-1/3 flex-col gap-6">
           <CardTitle className="flex items-center justify-between gap-2">
@@ -21,7 +21,7 @@ export function StatesCard() {
             </Button>
           </CardTitle>
           {/* chips for selected states */}
-          <div className="flex max-h-[250px] flex-wrap gap-2 overflow-y-auto">
+          <div className="flex max-h-[300px] flex-wrap gap-2 overflow-y-auto">
             {selectedStates
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((state) => (
