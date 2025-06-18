@@ -1,9 +1,15 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/auth";
 import Image from "next/image";
 import Link from "next/link";
 import Profile from "public/profile.jpg";
 
 export function ProfileButton() {
+  const { user, isLoading } = useAuth();
+
   return (
     <Button variant="outline" className="py-6" asChild>
       <Link href="/dashboard/profile">
@@ -11,15 +17,34 @@ export function ProfileButton() {
           <div className="flex flex-col items-end">
             <span className="text-sm font-bold">John Doe</span>
             <span className="text-muted-foreground text-xs">
-              Senior Associate
+              {isLoading ? (
+                <Skeleton className="bg-muted h-4 w-24 rounded-md" />
+              ) : (
+                user?.user.email || ""
+              )}
             </span>
           </div>
-          <Image
+          {isLoading ? (
+            <Skeleton className="bg-muted h-10 w-10 rounded-full" />
+          ) : (
+            user?.profile?.avatar_url && (
+              <Image
+                src={user.profile.avatar_url}
+                alt="Profile"
+                className="border-border h-10 w-10 rounded-full border
+                  object-cover shadow"
+                width={40}
+                height={40}
+              />
+            )
+          )}
+
+          {/* <Image
             src={Profile}
             alt="Profile"
             className="border-border h-10 w-10 rounded-full border object-cover
               shadow"
-          />
+          /> */}
         </div>
       </Link>
     </Button>
