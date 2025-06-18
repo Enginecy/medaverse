@@ -1,18 +1,26 @@
-'use client'
+"use client";
 
 import { ChartRadialText } from "@/components/radial-chart";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SalesCard } from "@/features/dashboard/home/components/sales-card";
 import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
 import { Edit } from "lucide-react";
 
 export function PersonalInfoCard() {
-    const { isLoading , user} = useAuth();
+  const { isLoading, user } = useAuth();
   return (
-    <Card className="w-1/2 flex-shrink-0">
+    <Card className="w-1/2 flex-shrink-0 h-1/3   ">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
@@ -26,44 +34,86 @@ export function PersonalInfoCard() {
         <div className="flex flex-col gap-6">
           <div className="flex gap-6">
             <div className="relative h-[150px] w-[150px] rounded-lg">
-              {/* <Image
-                src={profile}
-                alt="profile"
-                fill
-                className="rounded-lg object-cover object-top"
-              /> */}
+              {isLoading ? (
+                <Skeleton
+                  className="relative h-[150px] w-[150px] rounded-lg
+                    bg-gray-300"
+                />
+              ) : (
+                <div>
+                  <Image
+                    src={user?.profile?.avatar_url ?? ""}
+                    alt="profile"
+                    fill
+                    className="rounded-lg object-cover object-top"
+                  />
+                </div>
+              )}
             </div>
             <div className="flex grow flex-col gap-6">
               <div className="flex flex-col items-start">
-                <p className="text-lg font-semibold">John Doe</p>
-                <p className="text-md text-muted-foreground">
-                  Senior Associate
-                </p>
+                {isLoading ? (
+                  <div className="flex flex-col gap-3">
+                    <Skeleton className="h-4 w-25 rounded-2xl bg-gray-300" />
+                    <Skeleton className="h-4 w-30 rounded-2xl bg-gray-300" />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    <p className="text-lg font-semibold">John Doe</p>
+                    <p className="text-md text-muted-foreground">
+                      {user?.profile?.role || ""}
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between">
-                  <p className="text-md font-semibold">
-                    $7,350
-                    <span className="text-muted-foreground text-sm font-normal">
-                      {" of target $15,000"}
-                    </span>
-                  </p>
-                  <p className="text-md font-semibold">{"49%"}</p>
+                  {isLoading ? (
+                    <div className="flex w-full flex-col gap-1">
+                      <Skeleton className="h-4 w-20 rounded-2xl bg-gray-300" />
+                      <Skeleton className="h-3 w-full rounded-2xl bg-gray-300" />
+                    </div>
+                  ) : (
+                    //TODO: Make the actual data  || delete it
+                    <div className="flex flex-col justify-between">
+                      <div className="flex justify-between">
+                        <p className="text-md font-semibold">
+                          $7,350
+                          <span
+                            className="text-muted-foreground text-sm
+                              font-normal"
+                          >
+                            {" of target $15,000"}
+                          </span>
+                        </p>
+                        <p className="text-md font-semibold">{"49%"}</p>
+                      </div>
+                      <Progress value={49} />
+                    </div>
+                  )}
                 </div>
-                <Progress value={49} />
               </div>
             </div>
           </div>
 
-          <div className="flex gap-4">
-            <CommissionCard
-              title="Commission"
-              range={{ min: 4200, max: 12000 }}
-              className="flex aspect-square w-full flex-col gap-0"
-            />
+         
+            {isLoading ? (
+              <div className="flex flex-row gap-3">
+                <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
+                <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
+              </div>
+            ) : (
+              <div className="flex flex-row gap-2">
+                <CommissionCard
+                  title="Commission"
+                  range={{ min: 4200, max: 12000 }}
+                  className="flex aspect-square w-full flex-col gap-0"
+                />
 
-            <SalesCard className="flex aspect-square w-full flex-col gap-0" />
-          </div>
+                <SalesCard className="flex aspect-square w-full flex-col gap-0" />
+              </div>
+            )}
+         
         </div>
       </CardContent>
     </Card>
