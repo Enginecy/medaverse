@@ -40,15 +40,26 @@ export function PersonalInfoCard() {
             </div>
           </div>
         </div>
-        <InfoTile icon={<User />} title="Username" content={user?.profile?.username} />
-        <InfoTile icon={<Phone />} title="Phone" content={user?.user.phone} />
-        <InfoTile
-          icon={<MapPin />}
-          title="Address"
-          content={user?.profile?.address}
-        />
-      
-        <InfoTile icon={<Mails />} title="Email" content={user?.user.email} /> 
+        {user?.profile?.username && (
+          <InfoTile
+            icon={<User />}
+            title="Username"
+            content={user?.profile?.username}
+          />
+        )}
+        {user?.user.phone && (
+          <InfoTile icon={<Phone />} title="Phone" content={user?.user.phone} />
+        )}
+        {user?.profile?.address && (
+          <InfoTile
+            icon={<MapPin />}
+            title="Address"
+            content={user?.profile?.address}
+          />
+        )}
+        {user?.user.email && (
+          <InfoTile icon={<Mails />} title="Email" content={user?.user.email} />
+        )}
       </CardContent>
     </Card>
   );

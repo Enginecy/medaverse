@@ -8,16 +8,10 @@ export function InfoTile({
   icon: React.ReactNode;
   title: string;
   content: string  
-  | null | undefined
+  
   ;
 }) {
-    if(!content ){
-        return (<div></div>)
-    }
-    if(content === undefined){
-        return (<div></div>)
-
-    }
+    
   return (
     <div className=" flex flex-row p-2 items-center">
       <div
