@@ -7,7 +7,7 @@ import { InfoTile } from "@/features/dashboard/profile/components/info-tile";
 import { useAuth } from "@/hooks/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function PersonalInfoCard() {
+export function ProfilePersonalInfoCard() {
   const { isLoading, user } = useAuth();
 
   return (

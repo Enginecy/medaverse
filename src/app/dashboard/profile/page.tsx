@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { StatesCard } from "@/components/states-card";
-import { PersonalInfoCard } from "@/features/dashboard/profile/components/personal-info-card";
+import { ProfilePersonalInfoCard } from "@/features/dashboard/profile/components/profile-personal-info-card";
 import { AgentGoals } from "@/features/dashboard/profile/components/agent-goals";
 import { RecentSales } from "@/features/dashboard/profile/components/recent-sales";
 
@@ -17,7 +17,7 @@ export default function Profile() {
           gap: 2,
         }}
       >
-        <PersonalInfoCard />
+        <ProfilePersonalInfoCard />
         <StatesCard />
         <div className="flex flex-row gap-4">
           <AgentGoals size={100} color="" />
