@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppBarDropdown } from "@/features/dashboard/home/components/appbar_dropdown";
+import { ProfileButton } from "@/features/dashboard/home/components/profile_button";
 import { DockIcon, MailIcon, Newspaper, TruckIcon } from "lucide-react";
 
 const navItems = [
@@ -41,7 +41,7 @@ export default function RootLayout({
                 <span>{item.title}</span>
               </Button>
             ))}
-            <AppBarDropdown />
+            <ProfileButton />
           </nav>
           <main className="bg-background flex-1 overflow-auto">{children}</main>
         </div>
