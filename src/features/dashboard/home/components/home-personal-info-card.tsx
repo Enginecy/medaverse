@@ -75,8 +75,8 @@ export function PersonalInfoCard() {
                     </div>
                   ) : (
                     //TODO: Make the actual data  || delete it
-                    <div className="flex flex-col justify-between">
-                      <div className="flex justify-between">
+                    <div className="flex flex-col w-full justify-between gap-1">
+                      <div className="flex flex-row justify-between">
                         <p className="text-md font-semibold">
                           $7,350
                           <span

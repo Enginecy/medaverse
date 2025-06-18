@@ -1,11 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { Edit } from "lucide-react";
-import Image from "next/image";
-import profile from "public/profile.jpg";
 import { ChartHalfRadialText } from "@/components/half-radial-chart";
-import { ChartRadialText } from "@/components/radial-chart";
-import Spotlight from "@/components/spotlight";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,16 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
 import { birthdays } from "@/features/dashboard/home/data/birthday-data";
 import { BirthdayTable } from "@/features/dashboard/home/components/birthday-table";
 import { columns } from "@/features/dashboard/home/components/columns";
 import { sales as data } from "@/features/dashboard/home/data/data";
 import { DataTable } from "@/features/dashboard/home/components/data-table";
-import { SalesCard } from "@/features/dashboard/home/components/sales-card";
 import { birthdayColumns } from "@/features/dashboard/home/components/birthday-columns";
 import { PersonalInfoCard } from "@/features/dashboard/home/components/home-personal-info-card";
+import { GoalCard } from "@/features/dashboard/home/components/goal-card";
 
 export default function Home() {
   return (
@@ -59,47 +52,12 @@ export default function Home() {
   );
 }
 
-function GoalCard({
-  title,
-  range,
-}: {
-  title: string;
-  range: {
-    min: number;
-    max: number;
-  };
-}) {
-  const value = Math.round((range.min / range.max) * 100);
-  return (
-    <Card className="flex min-h-0 w-full flex-col gap-0 overflow-hidden">
-      <CardHeader className="flex-shrink-0">
-        <CardTitle className="mx-auto text-center text-lg font-semibold">
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="min-h-0 flex-1 py-6">
-        <ChartHalfRadialText title={`${value}%`} value={value} />
-      </CardContent>
-      <CardFooter className="flex-shrink-0">
-        <CardTitle className="mx-auto text-center">
-          <p className="text-md text-chart-3 font-semibold">
-            ${range.min}
-            <span className="text-muted-foreground text-sm font-normal">
-              {" out off $" + range.max}
-            </span>
-          </p>
-        </CardTitle>
-      </CardFooter>
-    </Card>
-  );
-}
-
 
 
 
 function PersonalGoalsGrid() {
   return (
-    <div className="grid min-h-0 w-1/2 flex-shrink-0 grid-cols-2 gap-6">
+    <div className="grid h-126 w-1/2 grid-cols-2 gap-6">
       <GoalCard title="Weekly Goal" range={{ min: 850, max: 2500 }} />
       <GoalCard title="Monthly Goal" range={{ min: 6200, max: 18000 }} />
       <GoalCard title="Quarterly Goal" range={{ min: 15400, max: 45000 }} />
