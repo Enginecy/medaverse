@@ -47,24 +47,6 @@ export function AgentGoals(
     </div>
   );
 }
-function RadialProgress({
-  percent,
-  size,
-  stroke,
-  color,
-  bg = "#E5ECF6",
-} = {
-  percent: 0,
-  size: 72,
-  stroke: 10,
-  color: "#1766A6",
-  bg: "#E5ECF6",
-}) {
-
-  return ( 
-    <ChartRadialText title={'30%'} value={30} />
-  )
-}
 
 function Trend({ value }: { value: number }) {
   const isPositive = value >= 0;
@@ -118,7 +100,8 @@ function GoalCard({
         <Trend value={trend} />
       </div>
       <div className="flex items-center justify-center">
-        <RadialProgress percent={percent} size={size} stroke={7} color={color} /> {/* Adjusted stroke to 7 */}
+           <ChartRadialText title={'30%'} value={30} />
+
       </div>
     </div>
   );
