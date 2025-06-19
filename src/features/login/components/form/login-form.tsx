@@ -36,10 +36,11 @@ export function LoginForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex w-full flex-col items-center gap-4 p-0"
+          className="flex w-full flex-col items-center gap-4"
         >
-          {process.env.NODE_ENV === "development" && step == "pin" ? (
-            <div className="flex flex-col ">
+          {process.env.NODE_ENV === "development" ? (
+            
+            <div className="flex flex-col w-full gap-4">
               <div className="text-red-500">
                 <p>Development Mode: OTP will be auto-filled.</p>
               </div>
@@ -47,7 +48,7 @@ export function LoginForm({
               <PasswordField step="pin" form={form} />
             </div>
           ) : (
-            <div className="flex flex-col">
+            <div className="flex flex-col w-full gap-4">
               <EmailFormField step={step} form={form} />
               <OTPFormField step={step} form={form} />
             </div>
