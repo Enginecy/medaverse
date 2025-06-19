@@ -8,6 +8,7 @@ import { LoginForm } from "@/features/login/components/form/login-form";
 import { LoginGraphics } from "@/features/login/components/login-graphics";
 import { createFormSchema } from "@/features/login/schemas/login-form-schema";
 import {
+  login,
   sendEmailOTP,
   verifyEmailOtp,
 } from "@/features/login/server/actions/login";
@@ -48,13 +49,23 @@ export default function Home() {
     },
   });
 
+  const {mutate :passwordLogin , isPending: isLoading} = useMutation({
+    mutationFn : login ,
+    onSuccess: router.refresh, 
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  })
+
   // Unified form submission handler
   const onSubmit = (values: z.infer<ReturnType<typeof createFormSchema>>) => {
     if(process.env.NODE_ENV === "development") {
-      verifyOtp({
+      console.log(values.code +'\n' + values.email);
+      passwordLogin({
         email: values.email,
-        code: values.code!, 
+        password: values.code!, 
       });
+      return;
     }
     if (step === "email") {
       sendOtp(values.email);
@@ -78,7 +89,7 @@ export default function Home() {
       >
         <LoginForm
           form={form}
-          isLoading={isSendingOtp || isVerifyingOtp}
+          isLoading={isSendingOtp || isVerifyingOtp || isLoading}
           onSubmit={onSubmit}
           step={step}
         />
