@@ -16,6 +16,9 @@ export function EmailFormField({
   step: "email" | "pin";
   form: UseFormReturn<{ email: string; code?: string }>;
 }) {
+  if (process.env.NODE_ENV === "development") {
+    step = "email";
+  }
   return (
     <FormField
       control={form.control}

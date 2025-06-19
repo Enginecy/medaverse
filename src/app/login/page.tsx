@@ -24,7 +24,7 @@ export default function Home() {
     resolver: zodResolver(createFormSchema(step)),
     defaultValues: {
       email: "",
-      code: "",
+      code:  process.env.NODE_ENV === "development"? "12345678" : "", 
     },
   });
 
@@ -50,6 +50,12 @@ export default function Home() {
 
   // Unified form submission handler
   const onSubmit = (values: z.infer<ReturnType<typeof createFormSchema>>) => {
+    if(process.env.NODE_ENV === "development") {
+      verifyOtp({
+        email: values.email,
+        code: values.code!, 
+      });
+    }
     if (step === "email") {
       sendOtp(values.email);
     } else {
