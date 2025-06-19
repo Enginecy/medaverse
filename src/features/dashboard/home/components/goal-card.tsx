@@ -13,31 +13,31 @@ export function GoalCard({
   };
 }) {
   const value = Math.round((range.min / range.max) * 100);
-  return(
-    <GoalCardSkeleton/>
-  ) 
-//   return (
-//     <Card className="flex min-h-0 w-full flex-col gap-0 overflow-hidden">
-//       <CardHeader className="flex-shrink-0">
-//         <CardTitle className="mx-auto text-center text-lg font-semibold">
-//           {title}
-//         </CardTitle>
-//       </CardHeader>
-//       <CardContent className="min-h-0 flex-1 py-6">
-//         <ChartHalfRadialText title={`${value}%`} value={value} />
-//       </CardContent>
-//       <CardFooter className="flex-shrink-0">
-//         <CardTitle className="mx-auto text-center">
-//           <p className="text-md text-chart-3 font-semibold">
-//             ${range.min}
-//             <span className="text-muted-foreground text-sm font-normal">
-//               {" out off $" + range.max}
-//             </span>
-//           </p>
-//         </CardTitle>
-//       </CardFooter>
-//     </Card>
-//   );
+//   return(
+//     <GoalCardSkeleton/>
+//   ) 
+  return (
+    <Card className="flex min-h-0 w-full flex-col gap-0 overflow-hidden">
+      <CardHeader className="flex-shrink-0">
+        <CardTitle className="mx-auto text-center text-lg font-semibold">
+          {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="min-h-0 flex-1 py-6">
+        <ChartHalfRadialText title={`${value}%`} value={value} />
+      </CardContent>
+      <CardFooter className="flex-shrink-0">
+        <CardTitle className="mx-auto text-center">
+          <p className="text-md text-chart-3 font-semibold">
+            ${range.min}
+            <span className="text-muted-foreground text-sm font-normal">
+              {" out off $" + range.max}
+            </span>
+          </p>
+        </CardTitle>
+      </CardFooter>
+    </Card>
+  );
 }
 export function GoalCardSkeleton() {
     return (

@@ -20,7 +20,7 @@ import { Edit } from "lucide-react";
 export function PersonalInfoCard() {
   const { isLoading, user } = useAuth();
   return (
-    <Card className="w-1/2 flex-shrink-0 h-1/3   ">
+    <Card className="h-125 w-1/2 flex-shrink-0">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
@@ -75,7 +75,7 @@ export function PersonalInfoCard() {
                     </div>
                   ) : (
                     //TODO: Make the actual data  || delete it
-                    <div className="flex flex-col w-full justify-between gap-1">
+                    <div className="flex w-full flex-col justify-between gap-1">
                       <div className="flex flex-row justify-between">
                         <p className="text-md font-semibold">
                           $7,350
@@ -96,24 +96,24 @@ export function PersonalInfoCard() {
             </div>
           </div>
 
-         
-            {isLoading ? (
-              <div className="flex flex-row gap-3">
-                <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
-                <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
-              </div>
-            ) : (
-              <div className="flex flex-row gap-2">
-                <CommissionCard
-                  title="Commission"
-                  range={{ min: 4200, max: 12000 }}
-                  className="flex aspect-square w-full flex-col gap-0"
-                />
+          {isLoading ? (
+            <div className="flex flex-row gap-3">
+              <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
+              <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
+            </div>
+          ) : (
+            <div className="flex flex-row gap-2">
+              <CommissionCard
+                title="Commission"
+                range={{ min: 4200, max: 12000 }}
+                className="flex aspect-square h-50 w-full flex-col gap-0"
+              />
 
-                <SalesCard className="flex aspect-square w-full flex-col gap-0" />
-              </div>
-            )}
-         
+              <SalesCard
+                className="flex aspect-square h-50 w-full flex-col gap-0"
+              />
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -145,7 +145,7 @@ function CommissionCard({
           </p>
         </CardTitle>
       </CardHeader>
-      <CardContent className="grow py-6">
+      <CardContent className="grow">
         <ChartRadialText title={`${value}%`} value={value} />
       </CardContent>
       <CardFooter>
