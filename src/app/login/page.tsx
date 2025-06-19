@@ -17,7 +17,7 @@ import { useState } from "react";
 import type z from "zod";
 
 export default function Home() {
-  const [step, setStep] = useState<"email" | "pin">("email");
+  const [step, setStep] = useState<"email" | "pin" >("email");
   const router = useRouter();
 
   const form = useForm<z.infer<ReturnType<typeof createFormSchema>>>({
