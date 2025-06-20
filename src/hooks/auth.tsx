@@ -48,16 +48,14 @@ export function useAuth() {
         return;
       }
       if (!user) {
-        console.error(error);
         setUser(null);
         setIsLoading(false);
         return;
       }
 
       const { data: profile, error: profileError } = await getProfile(user);
-      if (profileError) {
-        console.error(error);
-      }
+      if (profileError) console.error(profileError);
+
       setUser({
         user,
         profile: profile?.[0] ?? null,
