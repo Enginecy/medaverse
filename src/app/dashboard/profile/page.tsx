@@ -20,7 +20,7 @@ export default function Profile() {
         <ProfilePersonalInfoCard />
         <StatesCard />
         <div className="flex flex-row gap-4">
-          <AgentGoals size={100} color="" />
+          <AgentGoals />
           <RecentSales sales={salesData} />
         </div>
       </Box>
