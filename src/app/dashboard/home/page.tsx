@@ -1,12 +1,10 @@
 export const dynamic = "force-dynamic";
 
-import { ChartHalfRadialText } from "@/components/half-radial-chart";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -51,9 +49,6 @@ export default function Home() {
     </div>
   );
 }
-
-
-
 
 function PersonalGoalsGrid() {
   return (

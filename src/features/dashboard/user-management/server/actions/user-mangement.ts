@@ -6,6 +6,7 @@ import type { AddUserFormData } from "@/features/dashboard/user-management/schem
 
 import { eq } from "drizzle-orm";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { env } from "@/env";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
@@ -32,7 +33,7 @@ export async function createAgent(data: AddUserFormData) {
     } = await auth.admin.createUser({
       email: data.email,
       email_confirm: true,
-      password: crypto.randomUUID(),
+      password: env.AUTOMATIC_LOGIN_PASSWORD,
     });
 
     if (userError || !user?.id)

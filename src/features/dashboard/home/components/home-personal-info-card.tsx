@@ -1,5 +1,3 @@
-"use client";
-
 import { ChartRadialText } from "@/components/radial-chart";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -16,11 +14,15 @@ import { SalesCard } from "@/features/dashboard/home/components/sales-card";
 import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
 import { Edit } from "lucide-react";
+import { getUser } from "@/lib/supabase/server";
+import { Suspense } from "react";
 
-export function PersonalInfoCard() {
-  const { isLoading, user } = useAuth();
+export async function PersonalInfoCard() {
+  const { profile } = await getUser();
+
+  console.log(profile);
   return (
-    <Card className="h-125 w-1/2 flex-shrink-0">
+    <Card className="w-1/2 flex-shrink-0">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
@@ -34,47 +36,50 @@ export function PersonalInfoCard() {
         <div className="flex flex-col gap-6">
           <div className="flex gap-6">
             <div className="relative h-[150px] w-[150px] rounded-lg">
-              {isLoading ? (
-                <Skeleton
-                  className="relative h-[150px] w-[150px] rounded-lg
-                    bg-gray-300"
-                />
-              ) : (
-                <div>
-                  <Image
-                    src={user?.profile?.avatar_url ?? ""}
-                    alt="profile"
-                    fill
-                    className="rounded-lg object-cover object-top"
+              <Suspense
+                fallback={
+                  <Skeleton
+                    className="relative h-[150px] w-[150px] rounded-lg
+                      bg-gray-300"
                   />
-                </div>
-              )}
+                }
+              >
+                <Image
+                  src={profile?.avatarUrl!}
+                  alt="profile"
+                  fill
+                  className="rounded-lg object-cover object-top"
+                />
+              </Suspense>
             </div>
             <div className="flex grow flex-col gap-6">
               <div className="flex flex-col items-start">
-                {isLoading ? (
+                <Suspense
+                  fallback={
+                    <div className="flex flex-col gap-3">
+                      <Skeleton className="h-4 w-25 rounded-2xl bg-gray-300" />
+                      <Skeleton className="h-4 w-30 rounded-2xl bg-gray-300" />
+                    </div>
+                  }
+                >
                   <div className="flex flex-col gap-3">
-                    <Skeleton className="h-4 w-25 rounded-2xl bg-gray-300" />
-                    <Skeleton className="h-4 w-30 rounded-2xl bg-gray-300" />
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-3">
-                    <p className="text-lg font-semibold">John Doe</p>
+                    <p className="text-lg font-semibold">{profile?.name}</p>
                     <p className="text-md text-muted-foreground">
-                      {user?.profile?.role || ""}
+                      {profile?.role}
                     </p>
                   </div>
-                )}
+                </Suspense>
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between">
-                  {isLoading ? (
-                    <div className="flex w-full flex-col gap-1">
-                      <Skeleton className="h-4 w-20 rounded-2xl bg-gray-300" />
-                      <Skeleton className="h-3 w-full rounded-2xl bg-gray-300" />
-                    </div>
-                  ) : (
-                    //TODO: Make the actual data  || delete it
+                  <Suspense
+                    fallback={
+                      <div className="flex w-full flex-col gap-1">
+                        <Skeleton className="h-4 w-20 rounded-2xl bg-gray-300" />
+                        <Skeleton className="h-3 w-full rounded-2xl bg-gray-300" />
+                      </div>
+                    }
+                  >
                     <div className="flex w-full flex-col justify-between gap-1">
                       <div className="flex flex-row justify-between">
                         <p className="text-md font-semibold">
@@ -90,18 +95,19 @@ export function PersonalInfoCard() {
                       </div>
                       <Progress value={49} />
                     </div>
-                  )}
+                  </Suspense>
                 </div>
               </div>
             </div>
           </div>
-
-          {isLoading ? (
-            <div className="flex flex-row gap-3">
-              <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
-              <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
-            </div>
-          ) : (
+          <Suspense
+            fallback={
+              <div className="flex flex-row gap-3">
+                <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
+                <Skeleton className="h-55 w-full rounded-2xl bg-gray-300" />
+              </div>
+            }
+          >
             <div className="flex flex-row gap-2">
               <CommissionCard
                 title="Commission"
@@ -113,7 +119,7 @@ export function PersonalInfoCard() {
                 className="flex aspect-square h-50 w-full flex-col gap-0"
               />
             </div>
-          )}
+          </Suspense>
         </div>
       </CardContent>
     </Card>

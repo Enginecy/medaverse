@@ -1,4 +1,5 @@
 "use server";
+import { env } from "@/env";
 import { createClient } from "@/lib/supabase/server";
 
 export async function sendEmailOTP(email: string) {
@@ -30,16 +31,11 @@ export async function verifyEmailOtp({
   return data;
 }
 
-export async function login({
-  email, password
-}: {
-  email: string;
-  password: string;
-}){
+export async function debugLoginWithPassword({ email }: { email: string }) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
-    password,
+    password: env.AUTOMATIC_LOGIN_PASSWORD,
   });
 
   if (error) throw error;
