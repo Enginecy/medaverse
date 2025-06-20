@@ -18,11 +18,11 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
   const getUser = useCallback(async () => {
     const {
-      data: { user },
+      data: { session },
       error,
-    } = await auth.getUser();
+    } = await auth.getSession();
     setIsLoading(false);
-    return { user, error };
+    return { user: session?.user, error };
   }, [auth]);
 
   const getProfile = useCallback(
@@ -48,20 +48,18 @@ export function useAuth() {
         return;
       }
       if (!user) {
-        console.error(error);
         setUser(null);
         setIsLoading(false);
         return;
       }
 
       const { data: profile, error: profileError } = await getProfile(user);
-      if (profileError) {
-        console.error(error);
-      }
+      if (profileError) console.error(profileError);
+
       setUser({
         user,
         profile: profile?.[0] ?? null,
-      } ) ;
+      });
     };
     loadData();
   }, [getUser, getProfile]);

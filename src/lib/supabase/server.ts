@@ -2,8 +2,11 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { env } from "@/env";
 import type { Database } from "database.types";
-import { ORM } from "./orm";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { createDrizzleSupabaseClient } from "@/db/db";
+import { eq } from "drizzle-orm";
+import { profile } from "@/db/schema";
+import { tryCatch } from "@/lib/utils";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -39,7 +42,36 @@ export function createAdminClient() {
   );
 }
 
-export async function createORM() {
+export async function getUser() {
   const supabase = await createClient();
-  return new ORM(supabase);
+
+  const {
+    data: { session },
+    error: userError,
+  } = await supabase.auth.getSession();
+  if (userError) {
+    throw { message: "Error fetching user", error: userError };
+  }
+  if (!session?.user) {
+    throw { message: "User not found" };
+  }
+
+  const drizzle = await createDrizzleSupabaseClient();
+  const { data: userProfile, error } = await tryCatch(
+    drizzle.rls((tx) => {
+      return tx
+        .select()
+        .from(profile)
+        .where(eq(profile.userId, session.user.id))
+        .limit(1);
+    }),
+  );
+  if (error) {
+    throw { message: "Error fetching profile", error };
+  }
+  if (!userProfile) {
+    throw { message: "User profile not found" };
+  }
+
+  return { user: session.user, profile: userProfile[0] };
 }

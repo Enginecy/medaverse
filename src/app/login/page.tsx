@@ -8,6 +8,7 @@ import { LoginForm } from "@/features/login/components/form/login-form";
 import { LoginGraphics } from "@/features/login/components/login-graphics";
 import { createFormSchema } from "@/features/login/schemas/login-form-schema";
 import {
+  debugLoginWithPassword,
   sendEmailOTP,
   verifyEmailOtp,
 } from "@/features/login/server/actions/login";
@@ -15,6 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type z from "zod";
+import { env } from "@/env";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin">("email");
@@ -48,8 +50,20 @@ export default function Home() {
     },
   });
 
+  const { mutate: debugLogin, isPending: isLoggingIn } = useMutation({
+    mutationFn: debugLoginWithPassword,
+    onSuccess: router.refresh,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   // Unified form submission handler
   const onSubmit = (values: z.infer<ReturnType<typeof createFormSchema>>) => {
+    if (env.NODE_ENV === "development") {
+      debugLogin({ email: values.email });
+      return;
+    }
     if (step === "email") {
       sendOtp(values.email);
     } else {
@@ -72,7 +86,7 @@ export default function Home() {
       >
         <LoginForm
           form={form}
-          isLoading={isSendingOtp || isVerifyingOtp}
+          isLoading={isSendingOtp || isVerifyingOtp || isLoggingIn}
           onSubmit={onSubmit}
           step={step}
         />
