@@ -32,7 +32,7 @@ export function ProfilePersonalInfoCard() {
                 />
               ) : (
                 <Image
-                  src={user?.profile?.avatar_url || ""}
+                  src={user!.profile!.avatar_url!}
                   alt="profile"
                   fill
                   className="rounded-lg object-cover object-top"

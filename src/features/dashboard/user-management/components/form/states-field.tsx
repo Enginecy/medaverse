@@ -1,12 +1,35 @@
 import { Button } from "@/components/ui/button";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "cmdk";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@radix-ui/react-popover";
+import {
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "cmdk";
 import { Check, ChevronsUpDown, Command, X } from "lucide-react";
 import { states } from "@/lib/data";
+import type { UseFormReturn } from "react-hook-form";
+import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
-export function StatesField({ form }: { form: any }) {
+export function StatesField({
+  form,
+}: {
+  form: UseFormReturn<AddUserFormData>;
+}) {
   return (
     <FormField
       control={form.control}
@@ -29,15 +52,18 @@ export function StatesField({ form }: { form: any }) {
                     {field.value.length === 0
                       ? "Select states"
                       : field.value.length === 1
-                      ? `${field.value[0]?.name}`
-                      : `${field.value.length} states selected`}
+                        ? `${field.value[0]?.name}`
+                        : `${field.value.length} states selected`}
                     <ChevronsUpDown className="opacity-50" />
                   </Button>
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent className="w-full p-0">
                 <Command>
-                  <CommandInput placeholder="Search states..." className="h-9" />
+                  <CommandInput
+                    placeholder="Search states..."
+                    className="h-9"
+                  />
                   <CommandList>
                     <CommandEmpty>No states found.</CommandEmpty>
                     <CommandGroup>
@@ -53,17 +79,23 @@ export function StatesField({ form }: { form: any }) {
                           }
                         }}
                       >
-                        {field.value.length === states.length ? "Deselect all " : "Select all "}
+                        {field.value.length === states.length
+                          ? "Deselect all "
+                          : "Select all "}
                       </CommandItem>
-                      {states.map((state: any) => (
+                      {states.map((state) => (
                         <CommandItem
                           value={state.name}
                           key={state.code}
                           onSelect={() => {
-                            if (field.value.some((s: any) => s.code === state.code)) {
+                            if (
+                              field.value.some((s) => s.code === state.code)
+                            ) {
                               form.setValue(
                                 "states",
-                                field.value.filter((s: any) => s.code !== state.code),
+                                field.value.filter(
+                                  (s) => s.code !== state.code,
+                                ),
                               );
                             } else {
                               form.setValue("states", [...field.value, state]);
@@ -75,7 +107,7 @@ export function StatesField({ form }: { form: any }) {
                           <Check
                             className={cn(
                               "ml-auto",
-                              field.value.some((s: any) => s.code === state.code)
+                              field.value.some((s) => s.code === state.code)
                                 ? "opacity-100"
                                 : "opacity-0",
                             )}
@@ -89,10 +121,11 @@ export function StatesField({ form }: { form: any }) {
             </Popover>
             <FormDescription className="flex flex-wrap gap-2">
               {/* build chip for each state */}
-              {field.value.map((state: any) => (
+              {field.value.map((state) => (
                 <div
                   key={state.code}
-                  className="bg-primary-100 text-primary-600 flex items-start justify-between rounded-md p-2"
+                  className="bg-primary-100 text-primary-600 flex items-start
+                    justify-between rounded-md p-2"
                 >
                   <div className="flex flex-col items-center">
                     <p className="text-sm font-semibold">{state.code}</p>
@@ -105,7 +138,7 @@ export function StatesField({ form }: { form: any }) {
                       onClick={() => {
                         form.setValue(
                           "states",
-                          field.value.filter((s: any) => s.code !== state.code),
+                          field.value.filter((s) => s.code !== state.code),
                         );
                       }}
                     >

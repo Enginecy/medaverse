@@ -1,7 +1,6 @@
 import { sql } from "drizzle-orm";
 import type { PgDatabase } from "drizzle-orm/pg-core";
 import type * as schema from "./schema";
-import type * as relations from "./relations";
 import type { DrizzleClient } from "./db";
 
 type SupabaseToken = {

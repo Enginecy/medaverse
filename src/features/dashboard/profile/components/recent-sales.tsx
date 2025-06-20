@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "@/lib/utils";
 
 export function RecentSales({
   sales,
@@ -74,10 +73,8 @@ export function RecentSales({
                     ></div>
                   )}
 
-                  
                   <div className="ml-8 flex-1">
                     {" "}
-                  
                     <p className="text-base font-semibold text-gray-900">
                       {sale.clientName}
                     </p>

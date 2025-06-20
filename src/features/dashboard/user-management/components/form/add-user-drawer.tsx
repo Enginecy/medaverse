@@ -1,12 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Calendar as CalendarIcon,
-  Check,
-  ChevronsUpDown,
-  X,
-} from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -278,20 +273,20 @@ export function AddUserDrawer({
                                 ? "Deselect all "
                                 : "Select all "}
                             </CommandItem>
-                            {states.map((state: any) => (
+                            {states.map((state) => (
                               <CommandItem
                                 value={state.name}
                                 key={state.code}
                                 onSelect={() => {
                                   if (
                                     field.value.some(
-                                      (s: any) => s.code === state.code,
+                                      (s) => s.code === state.code,
                                     )
                                   ) {
                                     form.setValue(
                                       "states",
                                       field.value.filter(
-                                        (s: any) => s.code !== state.code,
+                                        (s) => s.code !== state.code,
                                       ),
                                     );
                                   } else {
@@ -308,7 +303,7 @@ export function AddUserDrawer({
                                   className={cn(
                                     "ml-auto",
                                     field.value.some(
-                                      (s: any) => s.code === state.code,
+                                      (s) => s.code === state.code,
                                     )
                                       ? "opacity-100"
                                       : "opacity-0",
@@ -323,7 +318,7 @@ export function AddUserDrawer({
                   </Popover>
                   <FormDescription className="flex flex-wrap gap-2">
                     {/* build chip for each state */}
-                    {field.value.map((state: any) => (
+                    {field.value.map((state) => (
                       <div
                         key={state.code}
                         className="bg-primary-100 text-primary-600 flex
@@ -341,7 +336,7 @@ export function AddUserDrawer({
                               form.setValue(
                                 "states",
                                 field.value.filter(
-                                  (s: any) => s.code !== state.code,
+                                  (s) => s.code !== state.code,
                                 ),
                               );
                             }}
