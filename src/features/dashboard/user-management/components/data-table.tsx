@@ -46,15 +46,16 @@ export function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [retryKey, setRetryKey] = React.useState(0);
 
   const {
     data: users,
     isPending,
+    isFetching,
     isError,
+    refetch,
     error,
   } = useQuery({
-    queryKey: ["users", retryKey],
+    queryKey: ["users"],
     queryFn: getUsers,
   });
 
@@ -77,21 +78,16 @@ export function DataTableDemo() {
     },
   });
 
-  if (isPending)
+  if (isPending || (isFetching && isError))
     return (
       <div className="flex min-h-[300px] w-full items-center justify-center">
-
-      <UserTableSkeleton/>
-
+        <UserTableSkeleton />
       </div>
     );
   if (isError)
     return (
       <div className="flex min-h-[500px] w-full items-center justify-center">
-        <ErrorComponent
-          message={error.message}
-          onRetry={() => setRetryKey((k) => k + 1)}
-        />
+        <ErrorComponent message={error.message} onRetry={refetch} />
       </div>
     );
 
