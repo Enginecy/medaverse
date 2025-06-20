@@ -18,11 +18,11 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
   const getUser = useCallback(async () => {
     const {
-      data: { user },
+      data: { session },
       error,
-    } = await auth.getUser();
+    } = await auth.getSession();
     setIsLoading(false);
-    return { user, error };
+    return { user: session?.user, error };
   }, [auth]);
 
   const getProfile = useCallback(
@@ -61,7 +61,7 @@ export function useAuth() {
       setUser({
         user,
         profile: profile?.[0] ?? null,
-      } ) ;
+      });
     };
     loadData();
   }, [getUser, getProfile]);

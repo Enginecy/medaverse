@@ -46,13 +46,13 @@ export async function getUser() {
   const supabase = await createClient();
 
   const {
-    data: { user },
+    data: { session },
     error: userError,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getSession();
   if (userError) {
     throw { message: "Error fetching user", error: userError };
   }
-  if (!user) {
+  if (!session?.user) {
     throw { message: "User not found" };
   }
 
@@ -62,7 +62,7 @@ export async function getUser() {
       return tx
         .select()
         .from(profile)
-        .where(eq(profile.userId, user.id))
+        .where(eq(profile.userId, session.user.id))
         .limit(1);
     }),
   );
@@ -73,5 +73,5 @@ export async function getUser() {
     throw { message: "User profile not found" };
   }
 
-  return { user, profile: userProfile[0] };
+  return { user: session.user, profile: userProfile[0] };
 }
