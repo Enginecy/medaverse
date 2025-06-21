@@ -9,7 +9,6 @@ import {
   getSortedRowModel,
   type SortingState,
   useReactTable,
-  type VisibilityState,
 } from "@tanstack/react-table";
 import { ChevronDown } from "lucide-react";
 import * as React from "react";
@@ -36,18 +35,18 @@ import { useQuery } from "@tanstack/react-query";
 import { ErrorComponent } from "@/components/ui/error-component";
 import { UserTableSkeleton } from "@/components/ui/user-table-skeleton";
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
+import { useState } from "react";
 
 export function SalesTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20,
+  });
 
   const {
-    data: users,
+    data: sales,
     isPending,
     isFetching,
     isError,
@@ -59,7 +58,7 @@ export function SalesTable() {
   });
 
   const table = useReactTable({
-    data: users!,
+    data: sales!,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -67,13 +66,11 @@ export function SalesTable() {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
-      columnVisibility,
-      rowSelection,
+      pagination,
     },
   });
 
@@ -90,20 +87,21 @@ export function SalesTable() {
       </div>
     );
 
-  const selectedRowCount = table.getFilteredSelectedRowModel().rows.length;
-  const rowCount = table.getFilteredRowModel().rows.length;
+  const rowCount = sales?.[0]?._count;
 
   const canPreviousPage = table.getCanPreviousPage();
   const canNextPage = table.getCanNextPage();
 
   return (
-    <div className="w-full">
+    <div className="flex h-full w-full flex-col">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter sales..."
+          value={
+            (table.getColumn("customerName")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("customerName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -127,16 +125,19 @@ export function SalesTable() {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {column.columnDef.header as string}
                   </DropdownMenuCheckboxItem>
                 );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div
+        className="max-h-[calc(100vh-350px)] overflow-y-scroll rounded-md
+          border"
+      >
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -157,10 +158,7 @@ export function SalesTable() {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -184,9 +182,11 @@ export function SalesTable() {
           </TableBody>
         </Table>
       </div>
+      <div className="grow" />
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
-          {selectedRowCount} of {rowCount} row(s) selected.
+          {"Total Sales: "}
+          <span className="text-foreground font-bold">{rowCount}</span>
         </div>
         <div className="space-x-2">
           <Button
