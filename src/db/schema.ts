@@ -62,9 +62,9 @@ export const insuranceProducts = pgTable(
     premiumFrequency: premiumFrequency("premium_frequency").default("monthly"),
     termYears: integer("term_years"),
     status: status().default("active"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
   },
   (table) => [
     foreignKey({
@@ -107,7 +107,7 @@ export const sales = pgTable(
       .references(() => users.id)
       .notNull(),
     customerName: varchar("customer_name", { length: 255 }).notNull(),
-    saleDate: date("sale_date").defaultNow().notNull(),
+    saleDate: date("sale_date", { mode: "date" }).defaultNow().notNull(),
     totalCommissionAmount: numeric("total_commission_amount", {
       precision: 10,
       scale: 2,
@@ -117,9 +117,9 @@ export const sales = pgTable(
     ),
     totalSaleValue: numeric("total_sale_value", { precision: 15, scale: 2 }),
     notes: text(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
   },
   (table) => [
     index("idx_sales_user_id").using(
@@ -165,11 +165,11 @@ export const profile = pgTable(
     status: status(),
     name: varchar(),
     address: varchar(),
-    dob: timestamp({ mode: "string" }),
+    dob: timestamp({ mode: "date" }),
     role: title(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
     avatarUrl: text("avatar_url"),
   },
   (table) => [
@@ -218,9 +218,9 @@ export const insuranceCompanies = pgTable(
     email: varchar({ length: 255 }),
     phone: varchar({ length: 20 }),
     website: varchar({ length: 255 }),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
   },
   (table) => [
     unique("insurance_companies_code_key").on(table.code),
@@ -275,9 +275,9 @@ export const saleItems = pgTable(
     policyEndDate: date("policy_end_date"),
     coverageAmount: numeric("coverage_amount", { precision: 15, scale: 2 }),
     notes: text(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
   },
   (table) => [
     index("idx_sale_items_sale_id").using(
@@ -327,9 +327,9 @@ export const userPermissions = pgTable(
       .notNull(),
     permissionName: varchar("permission_name", { length: 100 }).notNull(),
     permissionDescription: text("permission_description"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
   },
   (table) => [
     foreignKey({
@@ -373,9 +373,9 @@ export const userHierarchy = pgTable(
     region: varchar({ length: 100 }),
     division: varchar({ length: 100 }),
     status: status().default("active"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
   },
   (table) => [
     index("idx_user_hierarchy_leader_id")
