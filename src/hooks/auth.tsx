@@ -4,7 +4,6 @@ import { useSupabase } from "@/lib/supabase/provider";
 import type { User } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 import type { Tables } from "database.types";
-import { useORM } from "./orm";
 
 type AuthUser = {
   user: User;
@@ -12,10 +11,12 @@ type AuthUser = {
 };
 
 export function useAuth() {
-  const { auth } = useSupabase();
-  const orm = useORM();
+  const supabase = useSupabase();
+  const auth = supabase.auth;
+
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
   const getUser = useCallback(async () => {
     const {
       data: { session },
@@ -27,15 +28,13 @@ export function useAuth() {
 
   const getProfile = useCallback(
     async (user: User) => {
-      const { data, error } = await orm.find({
-        table: "profile",
-        filters: {
-          user_id: { eq: user.id },
-        },
-      });
+      const { data, error } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("user_id", user.id);
       return { data, error };
     },
-    [orm],
+    [supabase],
   );
 
   useEffect(() => {

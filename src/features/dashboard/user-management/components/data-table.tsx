@@ -33,7 +33,6 @@ import {
 import { columns } from "@/features/dashboard/user-management/components/columns";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
-import { Skeleton } from "@/components/ui/skeleton";
 
 import { ErrorComponent } from "@/components/ui/error-component";
 import { UserTableSkeleton } from "@/components/ui/user-table-skeleton";

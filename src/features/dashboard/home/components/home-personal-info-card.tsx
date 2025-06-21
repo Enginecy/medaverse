@@ -11,16 +11,20 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SalesCard } from "@/features/dashboard/home/components/sales-card";
-import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
 import { Edit } from "lucide-react";
 import { getUser } from "@/lib/supabase/server";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
 export async function PersonalInfoCard() {
   const { profile } = await getUser();
 
-  console.log(profile);
+  if (!profile) {
+    console.error("No profile found");
+    redirect("/login");
+  }
+
   return (
     <Card className="w-1/2 flex-shrink-0">
       <CardHeader>
@@ -45,7 +49,7 @@ export async function PersonalInfoCard() {
                 }
               >
                 <Image
-                  src={profile?.avatarUrl!}
+                  src={profile.avatarUrl!}
                   alt="profile"
                   fill
                   className="rounded-lg object-cover object-top"

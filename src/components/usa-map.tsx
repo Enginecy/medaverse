@@ -13,9 +13,7 @@ interface State {
   onClick?: () => void;
 }
 
-type CustomStateSet = {
-  [key in USAStateAbbreviation]?: State;
-};
+type CustomStateSet = Partial<Record<USAStateAbbreviation, State>>;
 
 type USAMapComponentProps = {
   selectedStates: USState[];
@@ -243,7 +241,8 @@ export function USAMapComponent({
     REGION_TRANSFORMS[dominantRegion as keyof typeof REGION_TRANSFORMS] ||
     REGION_TRANSFORMS.DEFAULT;
 
-  const isInteractive = onSelectState || onDeselectState;
+  const isInteractive =
+    onSelectState !== undefined || onDeselectState !== undefined;
 
   const isInteractiveStyle = (
     <style jsx global>

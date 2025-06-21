@@ -2,21 +2,34 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { ChartRadialText } from "@/components/radial-chart";
 
-
-export function AgentGoals(
-  { size , color = "#1766A6" }: { size: number ; color: string } 
-) {
+export function AgentGoals() {
   const goals = [
     { label: "Weekly Goal", currentValue: 11560, targetValue: 18000, trend: 7 },
-    { label: "Monthly Goal", currentValue: 11560, targetValue: 20000, trend: 7 },
-    { label: "Quarterly Goal", currentValue: 11560, targetValue: 15000, trend: -8 },
+    {
+      label: "Monthly Goal",
+      currentValue: 11560,
+      targetValue: 20000,
+      trend: 7,
+    },
+    {
+      label: "Quarterly Goal",
+      currentValue: 11560,
+      targetValue: 15000,
+      trend: -8,
+    },
     { label: "Yearly Goal", currentValue: 11560, targetValue: 25000, trend: 7 },
   ];
   return (
-    <div className="rounded-3xl border border-[#E5ECF6] bg-white p-6 w-2/3 h-auto">
-      <div className="flex items-center justify-between mb-4">
+    <div
+      className="h-auto w-2/3 rounded-3xl border border-[#E5ECF6] bg-white p-6"
+    >
+      <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900">Agent Goals</h2>
-        <button className="flex items-center gap-2 rounded-lg border border-[#E5ECF6] px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+        <button
+          className="flex items-center gap-2 rounded-lg border border-[#E5ECF6]
+            px-4 py-2 text-sm font-medium text-gray-700 transition
+            hover:bg-gray-50"
+        >
           <svg
             width="18"
             height="18"
@@ -31,11 +44,9 @@ export function AgentGoals(
           Edit
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+      <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
         {goals.map((goal) => (
           <GoalCard
-            size={size}
-            color={color}
             key={goal.label}
             label={goal.label}
             currentValue={goal.currentValue}
@@ -53,9 +64,9 @@ function Trend({ value }: { value: number }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-1 text-xs font-medium mt-2",
-        isPositive ? "text-green-600 bg-green-50" : "text-red-500 bg-red-50",
-        "rounded-full px-2 py-0.5 w-fit"
+        "mt-2 flex items-center gap-1 text-xs font-medium",
+        isPositive ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500",
+        "w-fit rounded-full px-2 py-0.5",
       )}
     >
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -77,31 +88,32 @@ function GoalCard({
   currentValue,
   targetValue,
   trend,
-  size,
-  color,
 }: {
   label: string;
   currentValue: number;
   targetValue: number;
   trend: number;
-  size: number;
-  color: string;
 }) {
   const percent = Math.round((currentValue / targetValue) * 100);
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between rounded-2xl border border-[#E5ECF6] bg-white p-6 min-w-[260px] min-h-[150px] shadow-sm w-full gap-4">
-      <div className="flex flex-col items-start gap-1 flex-1"> {/* Adjusted gap */}
-        <span className="text-md text-gray-500 font-medium">{label}</span>
-        <span className="text-3xl font-bold text-gray-900">${currentValue.toLocaleString()}</span>
-        <span className=" text-sm font-normal text-gray-700"> 
+    <div
+      className="flex min-h-[150px] w-full min-w-[260px] flex-col items-center
+        justify-between gap-4 rounded-2xl border border-[#E5ECF6] bg-white p-6
+        shadow-sm md:flex-row"
+    >
+      <div className="flex flex-1 flex-col items-start gap-1">
+        <span className="text-md font-medium text-gray-500">{label}</span>
+        <span className="text-3xl font-bold text-gray-900">
+          {currentValue.toLocaleString()}
+        </span>
+        <span className="text-sm font-normal text-gray-700">
           {"of target $" + targetValue.toLocaleString()}
         </span>
         <Trend value={trend} />
       </div>
       <div className="flex items-center justify-center">
-           <ChartRadialText title={'30%'} value={30} />
-
+        <ChartRadialText title={`${percent}%`} value={percent} />
       </div>
     </div>
   );
