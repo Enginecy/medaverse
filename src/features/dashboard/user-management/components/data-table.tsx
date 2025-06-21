@@ -37,7 +37,7 @@ import { getUsers } from "@/features/dashboard/user-management/server/db/user-ma
 import { ErrorComponent } from "@/components/ui/error-component";
 import { UserTableSkeleton } from "@/components/ui/user-table-skeleton";
 
-export function DataTableDemo() {
+export function UserManagementTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
