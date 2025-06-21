@@ -1,3 +1,5 @@
+"use server";
+
 import { createDrizzleSupabaseClient } from "@/db/db";
 import {
   insuranceCompanies,
@@ -5,11 +7,12 @@ import {
   saleItems,
   sales,
 } from "@/db/schema";
-import { desc, eq, sql } from "drizzle-orm";
+import { count, desc, eq, sql } from "drizzle-orm";
 
 export async function getSales() {
   const db = await createDrizzleSupabaseClient();
-  const salesData = await db.rls((tx) => {
+  const salesData = await db.rls(async (tx) => {
+    const _count = await tx.select({ count: count() }).from(sales).limit(1);
     return tx
       .select({
         id: sales.id,
@@ -17,11 +20,12 @@ export async function getSales() {
         saleDate: sales.saleDate,
         notes: sales.notes,
         customerName: sales.customerName,
-        items: sql`json_agg(sale_items)`,
+        //items: sql`json_agg(sale_items)`,
         productName: insuranceProducts.name,
         companyName: insuranceCompanies.name,
         createdAt: sales.createdAt,
         updatedAt: sales.updatedAt,
+        _count: sql<number>`${_count[0]?.count}`,
       })
       .from(sales)
       .innerJoin(saleItems, eq(sales.id, saleItems.saleId))
