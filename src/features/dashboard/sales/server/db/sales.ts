@@ -20,7 +20,17 @@ export async function getSales() {
         saleDate: sales.saleDate,
         notes: sales.notes,
         customerName: sales.customerName,
-        //items: sql`json_agg(sale_items)`,
+        products: sql<SaleItem[]>`json_agg(
+          json_build_object(
+            'product_name', ${insuranceProducts.name},
+            'insured_person_name', ${saleItems.insuredPersonName},
+            'premium_amount', ${saleItems.premiumAmount},
+            'policy_number', ${saleItems.policyNumber},
+            'policy_start_date', ${saleItems.policyStartDate},
+            'policy_end_date', ${saleItems.policyEndDate},
+            'coverage_amount', ${saleItems.coverageAmount}
+          )
+        )`.as("products"),
         productName: insuranceProducts.name,
         companyName: insuranceCompanies.name,
         createdAt: sales.createdAt,
@@ -37,10 +47,19 @@ export async function getSales() {
         insuranceCompanies,
         eq(insuranceProducts.companyId, insuranceCompanies.id),
       )
+      .groupBy(sales.id, insuranceProducts.name, insuranceCompanies.name)
       .orderBy(desc(sales.createdAt));
   });
 
   return salesData;
 }
-
+type SaleItem = {
+  productName: string;
+  insuredPersonName: string;
+  premiumAmount: number;
+  policyNumber: string;
+  policyStartDate: Date;
+  policyEndDate: Date;
+  coverageAmount: number;
+};
 export type Sale = Awaited<ReturnType<typeof getSales>>[number];
