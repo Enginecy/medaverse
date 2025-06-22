@@ -23,12 +23,8 @@ export async function getSales() {
         products: sql<SaleItem[]>`json_agg(
           json_build_object(
             'product_name', ${insuranceProducts.name},
-            'insured_person_name', ${saleItems.insuredPersonName},
             'premium_amount', ${saleItems.premiumAmount},
-            'policy_number', ${saleItems.policyNumber},
-            'policy_start_date', ${saleItems.policyStartDate},
-            'policy_end_date', ${saleItems.policyEndDate},
-            'coverage_amount', ${saleItems.coverageAmount}
+            'policy_number', ${saleItems.policyNumber}
           )
         )`.as("products"),
         productName: insuranceProducts.name,
@@ -45,7 +41,7 @@ export async function getSales() {
       )
       .innerJoin(
         insuranceCompanies,
-        eq(insuranceProducts.companyId, insuranceCompanies.id),
+        eq(saleItems.companyId, insuranceCompanies.id),
       )
       .groupBy(sales.id, insuranceProducts.name, insuranceCompanies.name)
       .orderBy(desc(sales.createdAt));
@@ -55,11 +51,43 @@ export async function getSales() {
 }
 type SaleItem = {
   productName: string;
-  insuredPersonName: string;
   premiumAmount: number;
   policyNumber: string;
-  policyStartDate: Date;
-  policyEndDate: Date;
-  coverageAmount: number;
 };
 export type Sale = Awaited<ReturnType<typeof getSales>>[number];
+
+export async function getProducts() {
+  const db = await createDrizzleSupabaseClient();
+  const products = await db.rls(async (tx) => {
+    return tx
+      .select({
+        id: insuranceProducts.id,
+        name: insuranceProducts.name,
+        productCode: insuranceProducts.productCode,
+      })
+      .from(insuranceProducts);
+  });
+  return products;
+}
+export type Product = Awaited<ReturnType<typeof getProducts>>[number];
+
+export async function getCompanies() {
+  const db = await createDrizzleSupabaseClient();
+  const companies = await db.rls(async (tx) => {
+    return tx
+      .select({
+        id: insuranceCompanies.id,
+        name: insuranceCompanies.name,
+        companyCode: insuranceCompanies.code,
+      })
+      .from(insuranceCompanies);
+  });
+  return companies;
+}
+export type Company = Awaited<ReturnType<typeof getCompanies>>[number];
+
+export async function getProductsAndCompanies() {
+  const products = await getProducts();
+  const companies = await getCompanies();
+  return { products, companies };
+}
