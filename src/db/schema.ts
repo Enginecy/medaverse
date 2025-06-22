@@ -47,7 +47,7 @@ export const title = pgEnum("title", [
 export const insuranceProducts = pgTable(
   "insurance_products",
   {
-    id: uuid().primaryKey().notNull().defaultRandom(),
+    id: uuid().primaryKey().notNull().defaultRandom(), // 
     companyId: uuid("company_id").references(() => insuranceCompanies.id, {
       onDelete: "cascade",
     }),
