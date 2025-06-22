@@ -7,7 +7,6 @@ import {
   varchar,
   text,
   numeric,
-  integer,
   timestamp,
   index,
   date,
@@ -48,30 +47,14 @@ export const insuranceProducts = pgTable(
   "insurance_products",
   {
     id: uuid().primaryKey().notNull(),
-    companyId: uuid("company_id").references(() => insuranceCompanies.id, {
-      onDelete: "cascade",
-    }),
     name: varchar({ length: 255 }).notNull(),
     productCode: varchar("product_code", { length: 50 }).notNull(),
-    description: text(),
-    coverageAmount: numeric("coverage_amount", { precision: 15, scale: 2 }),
-    premiumAmount: numeric("premium_amount", {
-      precision: 10,
-      scale: 2,
-    }).notNull(),
-    premiumFrequency: premiumFrequency("premium_frequency").default("monthly"),
-    termYears: integer("term_years"),
     status: status().default("active"),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "date" }),
   },
   (table) => [
-    foreignKey({
-      columns: [table.companyId],
-      foreignColumns: [insuranceCompanies.id],
-      name: "insurance_products_company_id_fkey",
-    }),
     unique("insurance_products_product_code_key").on(table.productCode),
     pgPolicy("All active users can view active insurance products", {
       as: "permissive",
@@ -108,13 +91,6 @@ export const sales = pgTable(
       .notNull(),
     customerName: varchar("customer_name", { length: 255 }).notNull(),
     saleDate: date("sale_date", { mode: "date" }).defaultNow().notNull(),
-    totalCommissionAmount: numeric("total_commission_amount", {
-      precision: 10,
-      scale: 2,
-    }),
-    paymentFrequency: varchar("payment_frequency", { length: 20 }).default(
-      "monthly",
-    ),
     totalSaleValue: numeric("total_sale_value", { precision: 15, scale: 2 }),
     notes: text(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
@@ -260,20 +236,14 @@ export const saleItems = pgTable(
     productId: uuid("product_id")
       .references(() => insuranceProducts.id)
       .notNull(),
-    insuredPersonName: varchar("insured_person_name", {
-      length: 255,
-    }).notNull(),
-    relationship: varchar({ length: 50 }),
+    companyId: uuid("company_id")
+      .references(() => insuranceCompanies.id)
+      .notNull(),
     premiumAmount: numeric("premium_amount", {
       precision: 10,
       scale: 2,
     }).notNull(),
-    commissionRate: numeric("commission_rate", { precision: 5, scale: 2 }),
-    commissionAmount: numeric("commission_amount", { precision: 10, scale: 2 }),
     policyNumber: varchar("policy_number", { length: 100 }).notNull(),
-    policyStartDate: date("policy_start_date").notNull(),
-    policyEndDate: date("policy_end_date"),
-    coverageAmount: numeric("coverage_amount", { precision: 15, scale: 2 }),
     notes: text(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
@@ -288,6 +258,11 @@ export const saleItems = pgTable(
       columns: [table.productId],
       foreignColumns: [insuranceProducts.id],
       name: "sale_items_product_id_fkey",
+    }),
+    foreignKey({
+      columns: [table.companyId],
+      foreignColumns: [insuranceCompanies.id],
+      name: "sale_items_company_id_fkey",
     }),
     foreignKey({
       columns: [table.saleId],
@@ -423,11 +398,7 @@ export const userHierarchy = pgTable(
 
 export const insuranceProductsRelations = relations(
   insuranceProducts,
-  ({ one, many }) => ({
-    insuranceCompany: one(insuranceCompanies, {
-      fields: [insuranceProducts.companyId],
-      references: [insuranceCompanies.id],
-    }),
+  ({ many }) => ({
     saleItems: many(saleItems),
   }),
 );
@@ -435,7 +406,7 @@ export const insuranceProductsRelations = relations(
 export const insuranceCompaniesRelations = relations(
   insuranceCompanies,
   ({ many }) => ({
-    insuranceProducts: many(insuranceProducts),
+    saleItems: many(saleItems),
   }),
 );
 
@@ -470,6 +441,10 @@ export const saleItemsRelations = relations(saleItems, ({ one }) => ({
   insuranceProduct: one(insuranceProducts, {
     fields: [saleItems.productId],
     references: [insuranceProducts.id],
+  }),
+  insuranceCompany: one(insuranceCompanies, {
+    fields: [saleItems.companyId],
+    references: [insuranceCompanies.id],
   }),
   sale: one(sales, {
     fields: [saleItems.saleId],
