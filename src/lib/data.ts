@@ -1,3 +1,4 @@
+import type { title } from "@/db/schema";
 import { pgEnum } from "drizzle-orm/pg-core";
 
 export type State = {
@@ -58,21 +59,11 @@ export const states: State[] = [
   { name: "Wyoming", code: "WY" },
 ];
 type Role = {
-  value: (typeof rolesEnum.enumValues[number]) ;
+  value: (typeof title.enumValues[number]) ;
   label: string;
   
 };
-export const rolesEnum = pgEnum('role' ,[
-  "SuperAdmin",
-  "NationalDirector",
-  "RegionalDirector",
-  "DivisionalDirector",
-  "AssociateDirector",
-  "PlatinumAssociate",
-  "SeniorAssociate",
-  "Associate",
-  "Leads",
-]);
+
 export const roles: Role[] = [
   { value: "SuperAdmin", label: "Super Admin" },
   { value: "NationalDirector", label: "National Director" },
