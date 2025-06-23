@@ -8,15 +8,12 @@ import { eq } from "drizzle-orm";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
 
-import { roles } from "@/lib/data";
+import { roles, rolesEnum } from "@/lib/data";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
-
-  console.log("Creating agent with data: <==========================");
-  console.log(data);
 
   // Check if username already exists
   const existingProfile = await db.admin
@@ -75,7 +72,7 @@ export async function createAgent(data: AddUserFormData) {
           username: data.username,
           address: data.address ?? null,
           dob: data.dateOfBirth.toISOString(),
-          role: data.contractId,
+          role:  data.contractId  ,
           status: "active",
           avatarUrl: publicUrl,
           userId: user.id,

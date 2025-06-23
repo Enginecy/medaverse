@@ -1,3 +1,5 @@
+import { pgEnum } from "drizzle-orm/pg-core";
+
 export type State = {
   name: string;
   code: string;
@@ -56,10 +58,21 @@ export const states: State[] = [
   { name: "Wyoming", code: "WY" },
 ];
 type Role = {
-  value: string ;
+  value: (typeof rolesEnum.enumValues[number]) ;
   label: string;
   
 };
+export const rolesEnum = pgEnum('role' ,[
+  "SuperAdmin",
+  "NationalDirector",
+  "RegionalDirector",
+  "DivisionalDirector",
+  "AssociateDirector",
+  "PlatinumAssociate",
+  "SeniorAssociate",
+  "Associate",
+  "Leads",
+]);
 export const roles: Role[] = [
   { value: "SuperAdmin", label: "Super Admin" },
   { value: "NationalDirector", label: "National Director" },
@@ -71,3 +84,4 @@ export const roles: Role[] = [
   { value: "Associate", label: "Associate" },
   { value: "Leads", label: "Leads" },
 ];
+
