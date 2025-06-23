@@ -74,7 +74,7 @@ export async function createAgent(data: AddUserFormData) {
           username: data.username,
           address: data.address ?? null,
           dob: data.dateOfBirth.toISOString(),
-          role: data.contractId ,
+          role: "Associate",
           status: "active",
           avatarUrl: publicUrl,
           userId: user.id,
