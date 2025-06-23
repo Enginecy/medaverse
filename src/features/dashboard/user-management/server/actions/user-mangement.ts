@@ -13,6 +13,9 @@ export async function createAgent(data: AddUserFormData) {
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
 
+  console.log("Creating agent with data: <==========================");
+  console.log(data);
+
   // Check if username already exists
   const existingProfile = await db.admin
     .select()
@@ -71,7 +74,7 @@ export async function createAgent(data: AddUserFormData) {
           username: data.username,
           address: data.address ?? null,
           dob: data.dateOfBirth.toISOString(),
-          role: "Associate",
+          role: data.contractId ,
           status: "active",
           avatarUrl: publicUrl,
           userId: user.id,
