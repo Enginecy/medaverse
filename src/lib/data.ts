@@ -55,3 +55,15 @@ export const states: State[] = [
   { name: "Wisconsin", code: "WI" },
   { name: "Wyoming", code: "WY" },
 ];
+
+export enum UserRole {
+  SuperAdmin = "Super Admin",
+  NationalDirector = "National Director",
+  RegionalDirector = "Regional Director",
+  DivisionalDirector = "Divisional Director",
+  AssociateDirector = "Associate Director",
+  PlatinumAssociate = "Platinum Associate",
+  SeniorAssociate = "Senior Associate",
+  Associate = "Associate",
+  Leads = "Leads"
+}
