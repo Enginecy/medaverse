@@ -22,7 +22,7 @@ export async function createAgent(data: AddUserFormData) {
     .from(profile)
     .where(eq(profile.username, data.username));
 
-  if (existingProfile) {
+  if (existingProfile.length > 0) {
     throw { message: "Username already exists" };
   }
   let createdUser: { id: string } | null = null;
