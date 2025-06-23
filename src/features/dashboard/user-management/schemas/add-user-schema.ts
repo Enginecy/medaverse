@@ -14,7 +14,19 @@ export const addUserSchema = z.object({
     .refine((date) => date <= new Date(), {
       message: "Date of birth cannot be in the future",
     }),
-  contractId: z.string().min(1, "Please select a contract ID"),
+  contractId:  z.enum([
+    "SuperAdmin",
+    "NationalDirector",
+    "RegionalDirector",
+    "DivisionalDirector",
+    "AssociateDirector",
+    "PlatinumAssociate",
+    "SeniorAssociate",
+    "Associate",
+    "Leads",
+  ], {
+    required_error: "Please select a role",
+  }),
   regional: z.string().min(1, "Please select a regional"),
   upline: z.string().min(1, "Please select an upline"),
   npnNumber: z.string().min(1, "Please select an NPN number"),
@@ -27,6 +39,7 @@ export const addUserSchema = z.object({
     )
     .min(1, "Please select at least one state"),
   profileImage: z.union([z.instanceof(File), z.string().url()]),
+  
 });
 
 export type AddUserFormData = z.infer<typeof addUserSchema>;
