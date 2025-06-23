@@ -1,8 +1,8 @@
 {
-    "typescript.preferences.importModuleSpecifier": "non-relative",
-    "editor.foldingImportsByDefault": true,
-    "workbench.editor.customLabels.patterns": {
-        "**/app/**/*.{tsx,jsx,ts}": "${dirname}/${filename}.${extname}",
-        "**/components/**": "${dirname}/${filename}.${extname} : Comp",
-    },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "editor.foldingImportsByDefault": true,
+  "workbench.editor.customLabels.patterns": {
+    "**/app/**/*.{tsx,jsx,ts}": "${dirname}/${filename}.${extname}"
+  }
 }
