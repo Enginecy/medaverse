@@ -47,7 +47,7 @@ export const title = pgEnum("title", [
 export const insuranceProducts = pgTable(
   "insurance_products",
   {
-    id: uuid().primaryKey().notNull(),
+    id: uuid().primaryKey().notNull().defaultRandom(), // 
     companyId: uuid("company_id").references(() => insuranceCompanies.id, {
       onDelete: "cascade",
     }),
@@ -102,7 +102,7 @@ export const insuranceProducts = pgTable(
 export const sales = pgTable(
   "sales",
   {
-    id: uuid().primaryKey().notNull(),
+    id: uuid().primaryKey().notNull().defaultRandom(),
     userId: uuid("user_id")
       .references(() => users.id)
       .notNull(),
@@ -159,14 +159,14 @@ export const sales = pgTable(
 export const profile = pgTable(
   "profile",
   {
-    id: uuid().primaryKey().notNull(),
+    id: uuid().primaryKey().notNull().defaultRandom(),
     userId: uuid("user_id").references(() => users.id),
-    username: varchar(),
-    status: status(),
-    name: varchar(),
-    address: varchar(),
-    dob: timestamp({ mode: "string" }),
-    role: title(),
+    username: varchar().notNull(),
+    status: status().notNull(),
+    name: varchar().notNull(),
+    address: varchar().notNull(),
+    dob: timestamp({ mode: "string" }).notNull(),
+    role: title().notNull(),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "string" }),
@@ -212,12 +212,12 @@ export const profile = pgTable(
 export const insuranceCompanies = pgTable(
   "insurance_companies",
   {
-    id: uuid().primaryKey().notNull(),
+    id: uuid().primaryKey().notNull().defaultRandom(),
     name: varchar({ length: 255 }).notNull(),
     code: varchar({ length: 10 }).notNull(),
     email: varchar({ length: 255 }),
-    phone: varchar({ length: 20 }),
-    website: varchar({ length: 255 }),
+    phone: varchar({ length: 20 }).notNull(),
+    website: varchar({ length: 255 }).notNull(),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "string" }),
@@ -253,7 +253,7 @@ export const insuranceCompanies = pgTable(
 export const saleItems = pgTable(
   "sale_items",
   {
-    id: uuid().primaryKey().notNull(),
+    id: uuid().primaryKey().notNull().defaultRandom(),
     saleId: uuid("sale_id")
       .references(() => sales.id)
       .notNull(),
@@ -268,12 +268,12 @@ export const saleItems = pgTable(
       precision: 10,
       scale: 2,
     }).notNull(),
-    commissionRate: numeric("commission_rate", { precision: 5, scale: 2 }),
-    commissionAmount: numeric("commission_amount", { precision: 10, scale: 2 }),
+    commissionRate: numeric("commission_rate", { precision: 5, scale: 2 }).notNull(),
+    commissionAmount: numeric("commission_amount", { precision: 10, scale: 2 }).notNull(),
     policyNumber: varchar("policy_number", { length: 100 }).notNull(),
     policyStartDate: date("policy_start_date").notNull(),
-    policyEndDate: date("policy_end_date"),
-    coverageAmount: numeric("coverage_amount", { precision: 15, scale: 2 }),
+    policyEndDate: date("policy_end_date").notNull(),
+    coverageAmount: numeric("coverage_amount", { precision: 15, scale: 2 }).notNull(),
     notes: text(),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
@@ -321,12 +321,12 @@ export const saleItems = pgTable(
 export const userPermissions = pgTable(
   "user_permissions",
   {
-    id: uuid().primaryKey().notNull(),
+    id: uuid().primaryKey().notNull().defaultRandom(),
     userId: uuid("user_id")
       .references(() => users.id)
       .notNull(),
     permissionName: varchar("permission_name", { length: 100 }).notNull(),
-    permissionDescription: text("permission_description"),
+    permissionDescription: text("permission_description").notNull(),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "string" }),
@@ -368,10 +368,10 @@ export const userHierarchy = pgTable(
     id: uuid().primaryKey().notNull(),
     userId: uuid("user_id")
       .references(() => users.id)
-      .notNull(),
+      .notNull().defaultRandom(),
     leaderId: uuid("leader_id").references(() => users.id),
-    region: varchar({ length: 100 }),
-    division: varchar({ length: 100 }),
+    region: varchar({ length: 100 }).notNull(),
+    division: varchar({ length: 100 }).notNull(),
     status: status().default("active"),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
