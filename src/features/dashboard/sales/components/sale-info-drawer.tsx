@@ -66,7 +66,7 @@ function AgentTile({
     <div className="flex flex-row gap-3 border-b-1 py-2">
       <Image
         src={avatarUlr}
-        alt={"public/profile.jpg"}
+        alt={"Agent Avatar"}
         className="rounded-full"
         width={50}
         height={50}
