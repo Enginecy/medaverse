@@ -4,8 +4,10 @@ import { createDrizzleSupabaseClient } from "@/db/db";
 import {
   insuranceCompanies,
   insuranceProducts,
+  profile,
   saleItems,
   sales,
+  users,
 } from "@/db/schema";
 import { count, desc, eq, sql } from "drizzle-orm";
 
@@ -16,15 +18,21 @@ export async function getSales() {
     return tx
       .select({
         id: sales.id,
+        user: {
+          name: profile.name,
+          role: profile.role,
+          avatar: profile.avatarUrl,
+        },
         totalAmount: sales.totalSaleValue,
         saleDate: sales.saleDate,
         notes: sales.notes,
         customerName: sales.customerName,
         products: sql<SaleItem[]>`json_agg(
           json_build_object(
-            'product_name', ${insuranceProducts.name},
-            'premium_amount', ${saleItems.premiumAmount},
-            'policy_number', ${saleItems.policyNumber}
+            'productId', ${insuranceProducts.id},
+            'productName', ${insuranceProducts.name},
+            'premiumAmount', ${saleItems.premiumAmount},
+            'policyNumber', ${saleItems.policyNumber}
           )
         )`.as("products"),
         productName: insuranceProducts.name,
@@ -43,13 +51,16 @@ export async function getSales() {
         insuranceCompanies,
         eq(saleItems.companyId, insuranceCompanies.id),
       )
-      .groupBy(sales.id, insuranceProducts.name, insuranceCompanies.name)
+      .innerJoin(users, eq(sales.userId, users.id))
+      .innerJoin(profile, eq(users.id, profile.userId))
+      .groupBy(sales.id, insuranceProducts.name, insuranceCompanies.name ,profile.name, profile.role, profile.avatarUrl)
       .orderBy(desc(sales.createdAt));
   });
 
   return salesData;
 }
 export type SaleItem = {
+  productId: string;
   productName: string;
   premiumAmount: number;
   policyNumber: string;
