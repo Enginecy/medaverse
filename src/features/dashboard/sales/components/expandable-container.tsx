@@ -20,14 +20,20 @@ export function ProductExpandContainer({
   const [isOpen, setContainerExpand] = useState<boolean>(false);
   return (
     <AccordionItem
-    
       value={"panel1-header" + details.policyNumber.toString()}
-      className="border-b last:border-b-0"
+      className="rounded-2xl border-1 p-3 last:border-b-1 "
     >
-      <AccordionTrigger>{summery}</AccordionTrigger>
+      <AccordionTrigger
+        className="font-bold focus:[text-decoration-none] p-2 hover:bg-gray-200
+          hover:text-inherit hover:[text-decoration:none]
+          focus:[text-decoration:none] focus-visible:border-none
+          focus-visible:ring-0 "
+      >
+        {summery}
+      </AccordionTrigger>
       <AccordionContent
-        className="flex flex-col"
-        aria-controls={"panel1-content" + details.productId.toString()}
+        className="flex flex-col gap-4 p-2"
+        aria-controls={"panel1-content " + details.productId.toString()}
         id={"panel1-header" + details.productId.toString()}
       >
         <DataTile title="Product" content={details.productName}></DataTile>

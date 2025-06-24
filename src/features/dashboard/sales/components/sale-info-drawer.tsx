@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import type { Sale } from "@/features/dashboard/sales/server/db/sales";
-import Drawer from "@mui/material/Drawer";
 import Image from "next/image";
 import { ProductExpandContainer } from "@/features/dashboard/sales/components/expandable-container";
 import { DataTile } from "@/features/dashboard/sales/components/data-tile";
@@ -41,7 +39,7 @@ export function SaleInfoDrawer({
           content={selectedRow.totalAmount!.toString()}
         />
         {/* TODO: replace with actual total premiums code */}
-        <Accordion type="multiple" className="w-full">
+        <Accordion type="multiple" className="w-full flex flex-col gap-3  ">
           {selectedRow.products.map((product) => (
             <ProductExpandContainer
               key={product.policyNumber}
