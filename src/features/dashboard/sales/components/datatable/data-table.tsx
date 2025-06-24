@@ -38,6 +38,8 @@ import { getSales } from "@/features/dashboard/sales/server/db/sales";
 import { useState } from "react";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 
+import { SaleInfoDrawer } from "@/features/dashboard/sales/components/sale-info-drawer";
+
 export function SalesTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -74,6 +76,9 @@ export function SalesTable() {
       pagination,
     },
   });
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<any>(null); 
 
   if (isPending || (isFetching && isError))
     return (
@@ -122,7 +127,14 @@ export function SalesTable() {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  className="hover:bg-muted cursor-pointer"
+                  onClick={() => {
+                    setSelectedRow(row.original);
+                    setDrawerOpen(true);
+                  }}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -148,6 +160,11 @@ export function SalesTable() {
       </div>
       <div className="grow" />
       <Footer />
+      <SaleInfoDrawer
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+        selectedRow={selectedRow}
+      />
     </div>
   );
 

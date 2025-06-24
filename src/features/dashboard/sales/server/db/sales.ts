@@ -49,7 +49,7 @@ export async function getSales() {
 
   return salesData;
 }
-type SaleItem = {
+export type SaleItem = {
   productName: string;
   premiumAmount: number;
   policyNumber: string;
