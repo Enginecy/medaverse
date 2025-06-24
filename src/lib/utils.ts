@@ -29,3 +29,9 @@ export async function tryCatch<T, E = Error>(
     return { data: null, error: error as E };
   }
 }
+
+export function generateFriendlyId(prefix: string, id: string) {
+  const splitId = id.split("-");
+  const firstPart = splitId[0];
+  return `${prefix}-${firstPart}`;
+}

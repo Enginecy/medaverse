@@ -9,7 +9,6 @@ import {
   getSortedRowModel,
   type SortingState,
   useReactTable,
-  type VisibilityState,
 } from "@tanstack/react-table";
 import { ChevronDown } from "lucide-react";
 import * as React from "react";
@@ -30,36 +29,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { columns } from "@/features/dashboard/user-management/components/columns";
+import { columns } from "@/features/dashboard/sales/components/datatable/columns";
 import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
 
 import { ErrorComponent } from "@/components/ui/error-component";
 import { UserTableSkeleton } from "@/components/ui/user-table-skeleton";
+import { getSales } from "@/features/dashboard/sales/server/db/sales";
+import { useState } from "react";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 
-export function UserManagementTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+import { SaleInfoDrawer } from "@/features/dashboard/sales/components/sale-info-drawer";
+import { useShowDrawer } from "@/lib/react-utils";
+
+export function SalesTable() {
+  const showDrawer = useShowDrawer();
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20,
+  });
 
   const {
-    data: users,
+    data: sales,
     isPending,
     isFetching,
     isError,
     refetch,
     error,
   } = useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
+    queryKey: ["sales"],
+    queryFn: getSales,
   });
 
   const table = useReactTable({
-    data: users!,
+    data: sales!,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -67,15 +71,16 @@ export function UserManagementTable() {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
-      columnVisibility,
-      rowSelection,
+      pagination,
     },
   });
+
+  // const [drawerOpen, setDrawerOpen] = useState(false);
+  // const [selectedRow, setSelectedRow] = useState<any>(null);
 
   if (isPending || (isFetching && isError))
     return (
@@ -90,53 +95,20 @@ export function UserManagementTable() {
       </div>
     );
 
-  const selectedRowCount = table.getFilteredSelectedRowModel().rows.length;
-  const rowCount = table.getFilteredRowModel().rows.length;
+  const rowCount = sales?.[0]?._count;
 
   const canPreviousPage = table.getCanPreviousPage();
   const canNextPage = table.getCanNextPage();
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <div className="rounded-md border">
+    <div className="flex h-full w-full flex-col">
+      <Header />
+      <div
+        className="max-h-[calc(100vh-350px)] overflow-y-scroll rounded-md
+          border"
+      >
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -159,7 +131,15 @@ export function UserManagementTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-muted cursor-pointer"
+                  onClick={() => {
+                    showDrawer((resolve) => 
+                      <SaleInfoDrawer
+                        closeDrawer={resolve}
+                        selectedRow={row.original}
+                      />
+                    );
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -184,9 +164,73 @@ export function UserManagementTable() {
           </TableBody>
         </Table>
       </div>
+      <div className="grow" />
+      <Footer />
+    </div>
+  );
+
+  function Header() {
+    const initialDateFrom = new Date(
+      new Date().setDate(new Date().getDate() - 30),
+    );
+    const initialDateTo = new Date();
+    return (
+      <div className="flex items-center gap-4 py-4">
+        <Input
+          placeholder="Filter sales..."
+          value={
+            (table.getColumn("customerName")?.getFilterValue() as string) ?? ""
+          }
+          onChange={(event) =>
+            table.getColumn("customerName")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <div className="grow" />
+        <DateRangePicker
+          onUpdate={(values) => console.log(values)}
+          initialDateFrom={initialDateFrom}
+          initialDateTo={initialDateTo}
+          align="start"
+          locale="en-GB"
+          showCompare={false}
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.columnDef.header as string}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  }
+
+  function Footer() {
+    return (
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
-          {selectedRowCount} of {rowCount} row(s) selected.
+          {"Total Sales: "}
+          <span className="text-foreground font-bold">{rowCount}</span>
         </div>
         <div className="space-x-2">
           <Button
@@ -207,6 +251,6 @@ export function UserManagementTable() {
           </Button>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
