@@ -1,0 +1,57 @@
+import { Button } from "@/components/ui/button";
+import type { Resource } from "@/features/dashboard/admin-settings/data/admin-settings-data";
+import type { ColumnDef } from "@tanstack/react-table";
+import { Edit } from "lucide-react";
+
+export const resourcesColumns: ColumnDef<Resource>[] = [
+  {
+    accessorKey: "name",
+    header: "Resource",
+    cell: ({ row }) => (
+      <code className="bg-muted rounded px-2 py-1 text-sm">
+        {row.original.name}
+      </code>
+    ),
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => (
+      <span className="text-sm">{row.original.description}</span>
+    ),
+  },
+  {
+    accessorKey: "permissionCount",
+    header: "Permissions",
+    cell: ({ row }) => {
+      const permissionCount = row.original.permissionCount;
+      return permissionCount ? (
+        <code
+          className="bg-muted text-muted-foreground rounded px-2 py-1 text-xs"
+        >
+          {permissionCount}
+        </code>
+      ) : (
+        <span className="text-muted-foreground">—</span>
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created",
+    cell: ({ row }) => (
+      <span className="text-muted-foreground text-sm">
+        {new Date(row.original.createdAt).toLocaleDateString()}
+      </span>
+    ),
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: () => (
+      <Button variant="ghost" size="sm">
+        <Edit className="h-4 w-4" />
+      </Button>
+    ),
+  },
+];

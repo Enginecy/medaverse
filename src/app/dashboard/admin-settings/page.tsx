@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ResourcesTable } from "@/features/dashboard/admin-settings/components/resources-table";
-import { PermissionsTable } from "@/features/dashboard/admin-settings/components/permissions-table";
-import { RolesTable } from "@/features/dashboard/admin-settings/components/roles-table";
-import { UserRolesTable } from "@/features/dashboard/admin-settings/components/user-roles-table";
-import { UserPermissionsTable } from "@/features/dashboard/admin-settings/components/user-permissions-table";
+import { ResourcesTable } from "@/features/dashboard/admin-settings/components/tables/resources-table";
+import { PermissionsTable } from "@/features/dashboard/admin-settings/components/tables/permissions-table";
+import { RolesTable } from "@/features/dashboard/admin-settings/components/tables/roles-table";
+import { UserRolesTable } from "@/features/dashboard/admin-settings/components/tables/user-roles-table";
+import { UserPermissionsTable } from "@/features/dashboard/admin-settings/components/tables/user-permissions-table";
 import { Shield, Users, Lock, Settings } from "lucide-react";
 
 export default function AdminSettingsPage() {
