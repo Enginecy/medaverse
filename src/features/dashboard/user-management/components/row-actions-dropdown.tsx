@@ -24,13 +24,6 @@ export function RowActionsDropdown({ user }: { user: User }) {
   const showDrawer = useShowDrawer();
   const queryClient = useQueryClient(); // Initialize useQueryClient
 
-  const { mutate: deleteUser, isPending: isDeleting } = useMutation({
-    mutationFn: deleteAgent,
-    onSuccess: () => {
-      // Invalidate relevant queries to refetch data
-    },
-    onError: (error: Error) => {},
-  });
 
   return (
     <DropdownMenu>
