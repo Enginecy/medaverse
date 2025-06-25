@@ -13,6 +13,7 @@ import { useShowDrawer } from "@/lib/react-utils";
 import { Copy, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 
 export function RowActionsDropdown({ user }: { user: User }) {
+  const 
   const showDrawer = useShowDrawer();
   return (
     <DropdownMenu>
@@ -38,11 +39,11 @@ export function RowActionsDropdown({ user }: { user: User }) {
           Copy Data
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem >
           <Trash2 className="text-destructive" />
-
           <span className="text-destructive">Delete</span>
         </DropdownMenuItem>
+
       </DropdownMenuContent>
     </DropdownMenu>
   );
