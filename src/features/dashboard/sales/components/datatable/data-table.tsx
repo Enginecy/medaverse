@@ -133,12 +133,12 @@ export function SalesTable() {
                   key={row.id}
                   className="hover:bg-muted cursor-pointer"
                   onClick={() => {
-                    showDrawer((resolve) => 
+                    showDrawer((resolve) => (
                       <SaleInfoDrawer
                         closeDrawer={resolve}
                         selectedRow={row.original}
                       />
-                    );
+                    ));
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (

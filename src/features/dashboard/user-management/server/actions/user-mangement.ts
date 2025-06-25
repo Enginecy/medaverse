@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
 
-import { roles,} from "@/lib/data";
+import { roles } from "@/lib/data";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
@@ -71,8 +71,8 @@ export async function createAgent(data: AddUserFormData) {
           name: data.fullName,
           username: data.username,
           address: data.address ?? null,
-          dob: data.dateOfBirth.toISOString(),
-          role:  data.contractId  ,
+          dob: data.dateOfBirth,
+          role: data.contractId,
           status: "active",
           avatarUrl: publicUrl,
           userId: user.id,
@@ -161,7 +161,7 @@ export async function updateAgent(data: AddUserFormData, id: string) {
             name: data.fullName,
             username: data.username,
             address: data.address ?? null,
-            dob: data.dateOfBirth.toISOString(),
+            dob: data.dateOfBirth,
             role: "Associate",
             status: "active",
             avatarUrl: publicUrl,
