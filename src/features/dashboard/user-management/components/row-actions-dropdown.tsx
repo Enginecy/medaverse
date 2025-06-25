@@ -1,5 +1,6 @@
 "use client";
 
+import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenuContent,
@@ -9,11 +10,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AddUserDrawer } from "@/features/dashboard/user-management/components/form/add-user-drawer";
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
-import { useShowDrawer } from "@/lib/react-utils";
+import { useShowDialog, useShowDrawer } from "@/lib/react-utils";
 import { Copy, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 
 export function RowActionsDropdown({ user }: { user: User }) {
-  const 
+  const showDialog = useShowDialog();
   const showDrawer = useShowDrawer();
   return (
     <DropdownMenu>
@@ -39,7 +40,9 @@ export function RowActionsDropdown({ user }: { user: User }) {
           Copy Data
         </DropdownMenuItem>
 
-        <DropdownMenuItem >
+        <DropdownMenuItem onClick={()=>{
+          showDialog((resolve) => ( <DeleteDialog title = "Delete User" content="Are you sure you want to delete this User?"/>));
+        }}>
           <Trash2 className="text-destructive" />
           <span className="text-destructive">Delete</span>
         </DropdownMenuItem>

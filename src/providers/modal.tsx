@@ -2,20 +2,39 @@
 
 import { Sheet } from "@/components/ui/sheet";
 import { createContext, useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
 
 export const ModalContext = createContext<{
   openDrawer: (drawer: React.ReactNode, onClose?: () => void) => void;
   closeDrawer: () => void;
+  openDialog: (dialog: React.ReactNode, onClose?: () => void) => void;
+  closeDialog: () => void;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-}>({ openDrawer: () => {}, closeDrawer: () => {} });
+}>({
+  openDrawer: () => {},
+  closeDrawer: () => {},
+  openDialog: () => {},
+  closeDialog: () => {},
+});
 
 export function ModalProvider({ children }: { children: React.ReactNode }) {
   const [drawer, setDrawer] = useState<React.ReactNode | null>(null);
-  const [open, setOpen] = useState(false);
+  const [dialog, setDialog] = useState<React.ReactNode | null>(null);
+
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+
   const [onDrawerClose, setOnDrawerClose] = useState<(() => void) | null>(null);
 
-  const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen);
+  const handleOpenDialogChange = (isOpen: boolean) => {
+    setOpenDialog(isOpen);
+    if (!isOpen) {
+      setDialog(null);
+    }
+  };
+
+  const handleOpenDrawerChange = (isOpen: boolean) => {
+    setOpenDrawer(isOpen);
     if (!isOpen && onDrawerClose) {
       onDrawerClose();
       setOnDrawerClose(null);
@@ -28,16 +47,25 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
       value={{
         openDrawer: (drawer, onClose) => {
           setDrawer(drawer);
-          setOpen(true);
+          setOpenDrawer(true);
           setOnDrawerClose(() => onClose ?? null);
         },
-        closeDrawer: () => setOpen(false),
+        closeDrawer: () => setOpenDrawer(false),
+        openDialog: (dialog, onClose) => {
+          setDialog(dialog);
+          setOpenDialog(true);
+          setOnDrawerClose(() => onClose ?? null);
+        },
+        closeDialog: () => setOpenDialog(false),
       }}
     >
       {children}
-      <Sheet open={open} onOpenChange={handleOpenChange}>
+      <Sheet open={openDrawer} onOpenChange={handleOpenDrawerChange}>
         {drawer}
       </Sheet>
+      <Dialog open={openDialog} onOpenChange={handleOpenDialogChange} >
+        {dialog}
+      </Dialog>
     </ModalContext.Provider>
   );
 }
