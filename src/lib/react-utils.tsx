@@ -1,5 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useDrawer } from "@/hooks/modal";
+import { useModals } from "@/hooks/modal";
 import { AlertCircle, CheckCircle, Info, X } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
@@ -33,7 +33,7 @@ import { toast } from "sonner";
  * }
  */
 export function useShowDrawer() {
-  const { openDrawer, closeDrawer } = useDrawer();
+  const { openDrawer, closeDrawer } = useModals();
 
   return <TResult,>(
     fn: (resolve: (value: TResult | undefined) => void) => React.ReactNode,
@@ -44,6 +44,20 @@ export function useShowDrawer() {
         closeDrawer();
       };
       openDrawer(fn(wrappedResolve), () => resolve(undefined));
+    });
+  };
+}
+export function useShowDialog() {
+  const { openDialog, closeDialog } = useModals();
+  return <TResult,>(
+    fn: (resolve: (value: TResult | undefined) => void) => React.ReactNode,
+  ): Promise<TResult | undefined> => {
+    return new Promise((resolve) => {
+      const wrappedResolve = (value: TResult | undefined) => {
+        resolve(value);
+        closeDialog();
+      };
+      openDialog(fn(wrappedResolve), () => resolve(undefined));
     });
   };
 }
