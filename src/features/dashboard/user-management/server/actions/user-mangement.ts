@@ -223,6 +223,7 @@ export async function deleteAgent(id: string) {
   if (currentUserError) {
     throw { message: "Failed to get current user", error: currentUserError };
   }
+  
   if (currentUser?.id === existingProfile.userId) {
     throw { message: "You cannot delete your account" };
   }
