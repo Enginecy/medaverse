@@ -199,3 +199,51 @@ export async function updateAgent(data: AddUserFormData, id: string) {
     throw error;
   }
 }
+
+export async function deleteAgent(id: string) {
+  const { auth } = createAdminClient();
+  const supabase = await createClient();
+  const db = await createDrizzleSupabaseClient();
+
+  // Get the user profile
+  const [existingProfile] = await db.admin
+    .select()
+    .from(profile)
+    .where(eq(profile.id, id));
+
+  if (!existingProfile) {
+    throw { message: "User not found" };
+  }
+
+  const {
+    data: { user: currentUser },
+    error: currentUserError,
+  } = await supabase.auth.getUser();
+
+  if (currentUserError) {
+    throw { message: "Failed to get current user", error: currentUserError };
+  }
+  
+  if (currentUser?.id === existingProfile.userId) {
+    throw { message: "You cannot delete your account" };
+  }
+  
+  const banUntil = new Date();
+  banUntil.setFullYear(banUntil.getFullYear() + 100);
+
+  await auth.admin.updateUserById(existingProfile.userId!, {
+    ban_duration: banUntil.toISOString(),
+  });
+
+  await db.rls((tx) => {
+    return tx
+      .update(profile)
+      .set({
+        status: "disabled",
+        deletedAt: new Date(),
+      })
+      .where(eq(profile.id, id));
+  });
+
+  return { success: true };
+}
