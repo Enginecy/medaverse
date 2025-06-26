@@ -64,6 +64,8 @@ export function RolesFormSheet<T>({
     status: "active" as const,
   };
 
+  const isEditing = !!data;
+
   const form = useForm<RolesFormSchemaData>({
     resolver: zodResolver(rolesFormSchema),
     defaultValues: defaultValues,
