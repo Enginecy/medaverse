@@ -1,10 +1,10 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Edit, X } from "lucide-react";
 import { getLevelColor } from "@/features/dashboard/admin-settings/components/utils";
 import type { UserRole } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 
 export const userRolesColumns: ColumnDef<UserRole>[] = [
   {
@@ -12,23 +12,7 @@ export const userRolesColumns: ColumnDef<UserRole>[] = [
     header: "User",
     cell: ({ row }) => {
       const user = row.original.user;
-      return (
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user.avatar} />
-            <AvatarFallback>
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="font-medium">{user.name}</div>
-            <div className="text-muted-foreground text-sm">{user.email}</div>
-          </div>
-        </div>
-      );
+      return <UserChip user={user} />;
     },
   },
   {
