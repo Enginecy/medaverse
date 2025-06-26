@@ -39,7 +39,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, CalendarIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type DefaultValues } from "react-hook-form";
 import { format } from "date-fns";
@@ -51,6 +51,9 @@ import { getUsers } from "@/features/dashboard/user-management/server/db/user-ma
 import { getPermissions } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 import { getActionColor } from "@/features/dashboard/admin-settings/components/utils";
+import { showSonnerToast } from "@/lib/react-utils";
+import { assignPermission, updateAssignedPermission } from "@/features/dashboard/admin-settings/server/actions/admin-settings";
+import { PulseMultiple } from "react-svg-spinners";
 
 export function UserPermissionFormDialog<T>({
   resolve,
@@ -74,6 +77,45 @@ export function UserPermissionFormDialog<T>({
   };
 
   const isEditing = !!data;
+  
+    const { mutate: mutatePermission, isPending: isAssigning } = useMutation({
+      mutationFn: assignPermission,
+      onError: (error) => {
+        showSonnerToast({
+          message: "Error assigning permission",
+          description: error.message,
+          type: "error",
+        });
+      },
+      onSuccess: () => {
+        showSonnerToast({
+          message: "Permission assigned successfully",
+          type: "success",
+        });
+        form.reset();
+        resolve(null as T);
+      },
+    });
+  
+    const { mutate: mutateAssignedPermission, isPending: isUpdating } = useMutation({
+      mutationFn: updateAssignedPermission,
+      onError: (error) => {
+        showSonnerToast({
+          message: "Error assigning permission",
+          description: error.message,
+          type: "error",
+        });
+      },
+      onSuccess: () => {
+        showSonnerToast({
+          message: "Permission assigned successfully",
+          type: "success",
+        });
+        form.reset();
+        resolve(null as T);
+      },
+    });
+  
 
   const form = useForm<UserPermissionFormSchemaData>({
     resolver: zodResolver(userPermissionFormSchema),
@@ -81,8 +123,11 @@ export function UserPermissionFormDialog<T>({
   });
 
   const onSubmit = (data: UserPermissionFormSchemaData) => {
-    console.log(data);
-    resolve(data as T);
+    if (isEditing) {
+      mutateAssignedPermission(data);
+    } else {
+      mutatePermission(data);
+    }
   };
 
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -319,8 +364,18 @@ export function UserPermissionFormDialog<T>({
             >
               Cancel
             </Button>
-            <Button type="submit">
-              {isEditing ? "Update" : "Assign"} Permission
+            <Button type="submit" className="w-22">
+              {isEditing ? (
+                isUpdating ? (
+                  <PulseMultiple color="white" />
+                ) : (
+                  "Update"
+                )
+              ) : isAssigning ? (
+                <PulseMultiple color="white" />
+              ) : (
+                "Assign"
+              )}
             </Button>
           </div>
         </form>

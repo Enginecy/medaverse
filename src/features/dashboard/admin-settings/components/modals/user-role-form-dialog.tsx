@@ -38,7 +38,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, CalendarIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type DefaultValues } from "react-hook-form";
 import { format } from "date-fns";
@@ -49,6 +49,12 @@ import {
 import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
+import {
+  assignRole,
+  updateAssignedRole,
+} from "@/features/dashboard/admin-settings/server/actions/admin-settings";
+import { showSonnerToast } from "@/lib/react-utils";
+import { PulseMultiple } from "react-svg-spinners";
 
 export function UserRoleFormDialog<T>({
   resolve,
@@ -72,14 +78,56 @@ export function UserRoleFormDialog<T>({
 
   const isEditing = !!data;
 
+  const { mutate: mutateRole, isPending: isAssigning } = useMutation({
+    mutationFn: assignRole,
+    onError: (error) => {
+      showSonnerToast({
+        message: "Error assigning role",
+        description: error.message,
+        type: "error",
+      });
+    },
+    onSuccess: () => {
+      showSonnerToast({
+        message: "Role assigned successfully",
+        type: "success",
+      });
+      form.reset();
+      resolve(null as T);
+    },
+  });
+
+  const { mutate: mutateAssignedRole, isPending: isUpdating } = useMutation({
+    mutationFn: updateAssignedRole,
+    onError: (error) => {
+      showSonnerToast({
+        message: "Error assigning role",
+        description: error.message,
+        type: "error",
+      });
+    },
+    onSuccess: () => {
+      showSonnerToast({
+        message: "Role assigned successfully",
+        type: "success",
+      });
+      form.reset();
+      resolve(null as T);
+    },
+  });
+
   const form = useForm<UserRoleFormSchemaData>({
     resolver: zodResolver(userRoleFormSchema),
     defaultValues: defaultValues,
   });
 
   const onSubmit = (data: UserRoleFormSchemaData) => {
-    console.log(data);
-    resolve(data as T);
+    if (isEditing) {
+      mutateAssignedRole(data);
+    } else {
+      mutateRole(data);
+    }
+    
   };
 
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -304,8 +352,18 @@ export function UserRoleFormDialog<T>({
             >
               Cancel
             </Button>
-            <Button type="submit">
-              {isEditing ? "Update" : "Assign"} Role
+            <Button type="submit" className="w-22">
+              {isEditing ? (
+                isUpdating ? (
+                  <PulseMultiple color="white" />
+                ) : (
+                  "Update"
+                )
+              ) : isAssigning ? (
+                <PulseMultiple color="white" />
+              ) : (
+                "Assign"
+              )}
             </Button>
           </div>
         </form>
