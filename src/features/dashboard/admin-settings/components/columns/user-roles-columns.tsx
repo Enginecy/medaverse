@@ -1,10 +1,11 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit, X } from "lucide-react";
+import { X } from "lucide-react";
 import { getLevelColor } from "@/features/dashboard/admin-settings/components/utils";
 import type { UserRole } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
+import { UserRoleEditButton } from "@/features/dashboard/admin-settings/components/ui/user-role-edit-button";
 
 export const userRolesColumns: ColumnDef<UserRole>[] = [
   {
@@ -94,11 +95,24 @@ export const userRolesColumns: ColumnDef<UserRole>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: () => (
+    cell: ({ row }) => (
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="sm">
-          <Edit className="h-4 w-4" />
-        </Button>
+        <UserRoleEditButton
+          userRole={{
+            id: row.original.id,
+            user: {
+              id: row.original.user.id,
+              name: row.original.user.name,
+              email: row.original.user.email!,
+              avatar: row.original.user.avatar,
+            },
+            role: {
+              id: row.original.role.id,
+              name: row.original.role.name,
+              code: row.original.role.code,
+            },
+          }}
+        />
         <Button
           variant="ghost"
           size="sm"

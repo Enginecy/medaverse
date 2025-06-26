@@ -128,11 +128,13 @@ export async function getUserRoles() {
       .select({
         id: userRoles.id,
         user: {
+          id: users.id,
           name: profile.name,
           email: users.email,
           avatar: profile.avatarUrl,
         },
         role: {
+          id: roles.id,
           name: roles.name,
           code: roles.code,
           level: roles.level,
