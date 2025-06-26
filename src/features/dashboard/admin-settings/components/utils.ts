@@ -12,10 +12,15 @@ export const getActionColor = (action: string) => {
       return "bg-gray-100 text-gray-800";
   }
 };
-export const getLevelColor = (level: number) => {
-  if (level >= 9) return "bg-red-100 text-red-800";
-  if (level >= 7) return "bg-orange-100 text-orange-800";
-  if (level >= 5) return "bg-yellow-100 text-yellow-800";
-  if (level >= 3) return "bg-blue-100 text-blue-800";
-  return "bg-gray-100 text-gray-800";
+export const getLevelColor = (level: string) => {
+  switch (level) {
+    case "executive":
+      return "bg-red-100 text-red-800";
+    case "management":
+      return "bg-orange-100 text-orange-800";
+    case "staff":
+      return "bg-blue-100 text-blue-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
 };
