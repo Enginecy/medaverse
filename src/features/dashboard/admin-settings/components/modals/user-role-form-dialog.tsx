@@ -77,6 +77,7 @@ export function UserRoleFormDialog<T>({
   };
 
   const isEditing = !!data;
+
   const { mutate: mutateRole, isPending: isAssigning } = useMutation({
     mutationFn: assignRole,
     onError: (error) => {
@@ -91,6 +92,7 @@ export function UserRoleFormDialog<T>({
         message: "Role assigned successfully",
         type: "success",
       });
+      form.reset();
       resolve(null as T);
     },
   });
@@ -124,8 +126,7 @@ export function UserRoleFormDialog<T>({
     } else {
       mutateRole(data);
     }
-    console.log(data);
-    resolve(data as T);
+    
   };
 
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -350,7 +351,7 @@ export function UserRoleFormDialog<T>({
             >
               Cancel
             </Button>
-            <Button type="submit">
+            <Button type="submit" className="w-22">
               {isEditing ? (
                 isUpdating ? (
                   <PulseMultiple color="white" />
