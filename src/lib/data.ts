@@ -61,7 +61,7 @@ export type Resource = {
   description: string | null;
 };
 
-export const resources: Resource[] = [
+export const resources = [
   { name: "users", description: "User management and profiles" },
   { name: "sales", description: "Sales data and transactions" },
   { name: "reports", description: "Analytics and reporting" },
@@ -72,4 +72,6 @@ export const resources: Resource[] = [
   { name: "user_permissions", description: "User permissions" },
   { name: "user_roles", description: "User roles" },
   { name: "hierarchy", description: "User hierarchy" },
-];
+] as const;
+
+export type ResourceName = (typeof resources)[number]["name"];

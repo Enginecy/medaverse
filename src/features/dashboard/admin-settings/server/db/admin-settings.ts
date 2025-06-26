@@ -11,7 +11,7 @@ import {
   users,
 } from "@/db/schema";
 import { resources } from "@/lib/data";
-import { count, eq, inArray, sql } from "drizzle-orm";
+import { count, countDistinct, eq, inArray, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
 export async function getResources() {
@@ -71,16 +71,52 @@ export async function getRoles() {
         code: roles.code,
         level: roles.level,
         status: roles.status,
-        permissionCount: count(rolePermissions.id),
-        userCount: count(userRoles.id),
+        permissions: sql<
+          Array<{
+            id: string;
+            name: string;
+            resource: string;
+            action: string;
+          }>
+        >`json_agg(
+            DISTINCT jsonb_build_object(
+              'id', ${rolePermissions.permissionId},
+              'name', ${permissions.name},
+              'resource', ${permissions.resource},
+              'action', ${permissions.action}
+            )
+          ) FILTER (WHERE ${rolePermissions.permissionId} IS NOT NULL)`.as(
+          "permissions",
+        ),
+        users: sql<
+          Array<{
+            id: string;
+            name: string;
+            email: string;
+            avatar?: string;
+          }>
+        >`json_agg(
+            DISTINCT jsonb_build_object(
+              'id', ${userRoles.userId},
+              'name', ${profile.name},
+              'email', ${users.email},
+              'avatar', ${profile.avatarUrl}
+            )
+          ) FILTER (WHERE ${userRoles.userId} IS NOT NULL)`.as("users"),
+        permissionCount: countDistinct(rolePermissions.id),
+        userCount: countDistinct(userRoles.id),
         description: roles.description,
         createdAt: roles.createdAt,
       })
       .from(roles)
       .leftJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
       .leftJoin(userRoles, eq(roles.id, userRoles.roleId))
+      .leftJoin(profile, eq(userRoles.userId, profile.userId))
+      .leftJoin(users, eq(userRoles.userId, users.id))
+      .leftJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
       .groupBy(roles.id);
   });
+  console.dir(data, { depth: null });
   return data;
 }
 export type Role = Awaited<ReturnType<typeof getRoles>>[number];
