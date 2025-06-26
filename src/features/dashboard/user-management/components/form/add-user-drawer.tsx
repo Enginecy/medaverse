@@ -50,7 +50,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { NpnNumberForm } from "@/features/dashboard/user-management/components/form/npn-no-field";
-import { ContractIdField } from "@/features/dashboard/user-management/components/form/contract-id-field";
 import { RegionalField } from "@/features/dashboard/user-management/components/form/regional-field";
 import { AddressField } from "@/features/dashboard/user-management/components/form/address-field";
 import { DobField } from "@/features/dashboard/user-management/components/form/dob-field";
@@ -75,7 +74,6 @@ export function AddUserDrawer({
         email: user!.email!,
         phoneNumber: "",
         address: user!.address!,
-        contractId: undefined,
         regional: "",
         upline: "",
         npnNumber: "",
@@ -89,7 +87,6 @@ export function AddUserDrawer({
         email: "",
         phoneNumber: "",
         address: "",
-        contractId: undefined,
         regional: "",
         upline: "",
         npnNumber: "",
@@ -214,7 +211,6 @@ export function AddUserDrawer({
 
           {/* Contract ID and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <ContractIdField form={form} />
             <RegionalField form={form} />
           </div>
 
