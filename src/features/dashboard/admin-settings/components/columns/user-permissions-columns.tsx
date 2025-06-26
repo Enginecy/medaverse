@@ -1,9 +1,11 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit, X } from "lucide-react";
+import { X } from "lucide-react";
 import { getActionColor } from "@/features/dashboard/admin-settings/components/utils";
 import type { UserPermission } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+import { UserPermissionEditButton } from "@/features/dashboard/admin-settings/components/ui/user-permission-edit-button";
+import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 
 export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
   {
@@ -11,12 +13,7 @@ export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
     header: "User",
     cell: ({ row }) => {
       const user = row.original.user;
-      return (
-        <div>
-          <div className="font-medium">{user.name}</div>
-          <div className="text-muted-foreground text-sm">{user.email}</div>
-        </div>
-      );
+      return <UserChip user={user} />;
     },
   },
   {
@@ -116,9 +113,26 @@ export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
         <div className="flex items-center gap-1">
           {userPermission.source === "direct" && (
             <>
-              <Button variant="ghost" size="sm">
-                <Edit className="h-4 w-4" />
-              </Button>
+              <UserPermissionEditButton
+                userPermission={{
+                  id: userPermission.id,
+                  user: {
+                    id: userPermission.user.id,
+                    name: userPermission.user.name,
+                    email: userPermission.user.email!,
+                    avatar: userPermission.user.avatar,
+                  },
+                  permission: {
+                    id: userPermission.permission.id,
+                    name: userPermission.permission.name,
+                    resource: userPermission.permission.resource,
+                    action: userPermission.permission.action,
+                  },
+                  expiresAt: userPermission.expiresAt
+                    ? new Date(userPermission.expiresAt)
+                    : undefined,
+                }}
+              />
               <Button
                 variant="ghost"
                 size="sm"

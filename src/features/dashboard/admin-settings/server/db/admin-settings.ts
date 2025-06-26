@@ -165,10 +165,13 @@ export async function getUserPermissions() {
       .select({
         id: userPermissionsEnhanced.id,
         user: {
+          id: users.id,
           name: profile.name,
           email: users.email,
+          avatar: profile.avatarUrl,
         },
         permission: {
+          id: permissions.id,
           name: permissions.name,
           resource: permissions.resource,
           action: permissions.action,
