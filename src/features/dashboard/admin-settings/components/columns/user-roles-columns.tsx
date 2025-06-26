@@ -3,8 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Edit, X } from "lucide-react";
-import type { UserRole } from "@/features/dashboard/admin-settings/data/admin-settings-data";
 import { getLevelColor } from "@/features/dashboard/admin-settings/components/utils";
+import type { UserRole } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 
 export const userRolesColumns: ColumnDef<UserRole>[] = [
   {

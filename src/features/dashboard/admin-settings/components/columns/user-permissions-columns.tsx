@@ -2,8 +2,8 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit, X } from "lucide-react";
-import type { UserPermission } from "@/features/dashboard/admin-settings/data/admin-settings-data";
 import { getActionColor } from "@/features/dashboard/admin-settings/components/utils";
+import type { UserPermission } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 
 export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
   {
@@ -50,18 +50,10 @@ export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
   {
     accessorKey: "source",
     header: "Source",
-    cell: ({ getValue }) => {
-      const source = getValue() as "role" | "direct";
+    cell: ({ row }) => {
       return (
-        <Badge
-          variant={source === "direct" ? "default" : "secondary"}
-          className={
-            source === "direct"
-              ? "bg-purple-100 text-purple-800"
-              : "bg-blue-100 text-blue-800"
-          }
-        >
-          {source}
+        <Badge variant="default" className="bg-purple-100 text-purple-800">
+          {row.original.source}
         </Badge>
       );
     },
@@ -85,11 +77,11 @@ export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
   {
     accessorKey: "expiresAt",
     header: "Expires",
-    cell: ({ getValue }) => {
-      const expiresAt = getValue() as string | undefined;
+    cell: ({ row }) => {
+      const expiresAt = row.original.expiresAt;
       return expiresAt ? (
         <span className="text-muted-foreground text-sm">
-          {new Date(expiresAt).toLocaleDateString()}
+          {expiresAt.toLocaleDateString()}
         </span>
       ) : (
         <span className="text-muted-foreground text-sm">Never</span>
@@ -99,17 +91,15 @@ export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ getValue }) => {
-      const status = getValue() as "active" | "expired" | "revoked";
+    cell: ({ row }) => {
+      const status = row.original.status;
       return (
         <Badge
           variant={status === "active" ? "default" : "secondary"}
           className={
             status === "active"
               ? "bg-green-100 text-green-800"
-              : status === "expired"
-                ? "bg-yellow-100 text-yellow-800"
-                : "bg-red-100 text-red-800"
+              : "bg-red-100 text-red-800"
           }
         >
           {status}
