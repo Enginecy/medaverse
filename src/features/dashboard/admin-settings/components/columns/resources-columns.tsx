@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
 import type { Resource } from "@/lib/data";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Edit } from "lucide-react";
 
 export const resourcesColumns: ColumnDef<
   Resource & { permissionCount: number }
@@ -37,14 +35,5 @@ export const resourcesColumns: ColumnDef<
         <span className="text-muted-foreground">—</span>
       );
     },
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: () => (
-      <Button variant="ghost" size="sm">
-        <Edit className="h-4 w-4" />
-      </Button>
-    ),
   },
 ];

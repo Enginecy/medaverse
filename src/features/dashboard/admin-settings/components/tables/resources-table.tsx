@@ -18,11 +18,7 @@ export function ResourcesTable() {
       isLoading={isPending}
       searchKey="resources"
       title="System Resources"
-      description="Manage application resources and their permissions"
-      addButton={{
-        label: "Add Resource",
-        onClick: () => console.log("Add resource"),
-      }}
+      description="View application resources and their permissions"
     />
   );
 }
