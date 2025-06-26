@@ -31,7 +31,7 @@ interface DataTableProps<TData, TValue> {
   description?: string;
   addButton?: {
     label: string;
-    onClick: () => void;
+    onClick: () => void | Promise<void>;
   };
   isLoading?: boolean;
 }
