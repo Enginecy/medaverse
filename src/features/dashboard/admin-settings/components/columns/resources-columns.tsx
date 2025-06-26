@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
-import type { Resource } from "@/features/dashboard/admin-settings/data/admin-settings-data";
+import type { Resource } from "@/lib/data";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit } from "lucide-react";
 
-export const resourcesColumns: ColumnDef<Resource>[] = [
+export const resourcesColumns: ColumnDef<
+  Resource & { permissionCount: number }
+>[] = [
   {
     accessorKey: "name",
     header: "Resource",
@@ -35,15 +37,6 @@ export const resourcesColumns: ColumnDef<Resource>[] = [
         <span className="text-muted-foreground">—</span>
       );
     },
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Created",
-    cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm">
-        {new Date(row.original.createdAt).toLocaleDateString()}
-      </span>
-    ),
   },
   {
     id: "actions",
