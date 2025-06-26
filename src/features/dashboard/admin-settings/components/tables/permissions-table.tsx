@@ -1,34 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { DataTable } from "@/components/data-table";
-import {
-  mockPermissions,
-  type Permission,
-} from "@/features/dashboard/admin-settings/data/admin-settings-data";
+
 import { permissionsColumns } from "../columns/permissions-columns";
+import { getPermissions } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+import { useQuery } from "@tanstack/react-query";
 
 export function PermissionsTable() {
-  const [permissions, setPermissions] = useState<Permission[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate API call
-    const loadPermissions = async () => {
-      setLoading(true);
-      // Replace with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      setPermissions(mockPermissions);
-      setLoading(false);
-    };
-
-    loadPermissions();
-  }, []);
+  const { data: permissions, isPending } = useQuery({
+    queryKey: ["permissions"],
+    queryFn: getPermissions,
+  });
 
   return (
     <DataTable
       columns={permissionsColumns}
-      data={permissions}
+      data={permissions!}
+      isLoading={isPending}
       searchKey="permissions"
       title="System Permissions"
       description="All available permissions in the system"
@@ -36,7 +24,6 @@ export function PermissionsTable() {
         label: "Add Permission",
         onClick: () => console.log("Add permission"),
       }}
-      isLoading={loading}
     />
   );
 }

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getActionColor } from "@/features/dashboard/admin-settings/components/utils";
-import type { Permission } from "@/features/dashboard/admin-settings/data/admin-settings-data";
+import type { Permission } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit } from "lucide-react";
 
