@@ -45,11 +45,18 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, X } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPermissions } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { getActionColor } from "@/features/dashboard/admin-settings/components/utils";
 import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
+import { showSonnerToast } from "@/lib/react-utils";
+import { PulseMultiple } from "react-svg-spinners";
+import {
+  addRole,
+  editRole,
+} from "@/features/dashboard/admin-settings/server/actions/admin-settings";
+import { is } from "drizzle-orm";
 
 export function RolesFormSheet<T>({
   resolve,
@@ -70,11 +77,58 @@ export function RolesFormSheet<T>({
     resolver: zodResolver(rolesFormSchema),
     defaultValues: defaultValues,
   });
+const { mutate:edit , isPending: isUpdating } = useMutation({
+    mutationFn:  editRole ,
+
+    onSuccess: () => {
+      showSonnerToast({
+        message: 
+           "Role updated successfully."
+          ,
+        description: "You can now assign this role to users.",
+        type: "success",
+      });
+      resolve({ ...form.getValues(), id: data?.id } as T);
+      form.reset();
+    },
+    onError: (error) => {
+      showSonnerToast({
+        message: 
+          "An error occurred while updating the role.",
+          
+        type: "error",
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
+    },
+  });
+
+  const { mutate: add, isPending : isAdding } = useMutation({
+    mutationFn:  addRole,
+
+    onSuccess: () => {
+      showSonnerToast({
+        message: 
+          
+           "Role added successfully.",
+        description: "You can now assign this role to users.",
+        type: "success",
+      });
+      resolve({ ...form.getValues(), id: data?.id } as T);
+      form.reset();
+    },
+    onError: (error) => {
+      showSonnerToast({
+        message: 
+          "An error occurred while saving the role.",
+        type: "error",
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
+    },
+  });
 
   const onSubmit = (data: RolesFormSchemaData) => {
-    console.log(data);
+    isEditing? edit(data) : add(data);
   };
-
   const { data: permissions } = useQuery({
     queryKey: ["permissions"],
     queryFn: () => getPermissions(),
@@ -521,7 +575,19 @@ export function RolesFormSheet<T>({
               </FormItem>
             )}
           />
-          <Button type="submit">Save</Button>
+          <Button type="submit">
+            {isEditing ? (
+              isUpdating ? (
+                <PulseMultiple color="white" />
+              ) : (
+                "Update"
+              )
+            ) : isAdding ? (
+              <PulseMultiple color="white" />
+            ) : (
+              "Save"
+            )}
+          </Button>
         </form>
       </Form>
     </SheetContent>
