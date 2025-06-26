@@ -111,6 +111,7 @@ export function UserRoleFormDialog<T>({
         message: "Role assigned successfully",
         type: "success",
       });
+      form.reset();
       resolve(null as T);
     },
   });
