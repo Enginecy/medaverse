@@ -1,9 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { getActionColor } from "@/features/dashboard/admin-settings/components/utils";
 import type { Permission } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Edit } from "lucide-react";
 
 export const permissionsColumns: ColumnDef<Permission>[] = [
   {
@@ -48,15 +46,6 @@ export const permissionsColumns: ColumnDef<Permission>[] = [
       <span className="text-muted-foreground text-sm">
         {new Date(getValue() as string).toLocaleDateString()}
       </span>
-    ),
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: () => (
-      <Button variant="ghost" size="sm">
-        <Edit className="h-4 w-4" />
-      </Button>
     ),
   },
 ];

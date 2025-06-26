@@ -20,10 +20,6 @@ export function PermissionsTable() {
       searchKey="permissions"
       title="System Permissions"
       description="All available permissions in the system"
-      addButton={{
-        label: "Add Permission",
-        onClick: () => console.log("Add permission"),
-      }}
     />
   );
 }
