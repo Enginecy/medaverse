@@ -2,8 +2,8 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit, Users } from "lucide-react";
-import type { Role } from "@/features/dashboard/admin-settings/data/admin-settings-data";
 import { getLevelColor } from "@/features/dashboard/admin-settings/components/utils";
+import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 
 export const rolesColumns: ColumnDef<Role>[] = [
   {
@@ -24,17 +24,17 @@ export const rolesColumns: ColumnDef<Role>[] = [
   {
     accessorKey: "code",
     header: "Code",
-    cell: ({ getValue }) => (
+    cell: ({ row }) => (
       <code className="bg-muted rounded px-2 py-1 text-sm">
-        {getValue() as string}
+        {row.original.code}
       </code>
     ),
   },
   {
     accessorKey: "level",
     header: "Level",
-    cell: ({ getValue }) => {
-      const level = getValue() as number;
+    cell: ({ row }) => {
+      const level = row.original.level;
       return (
         <Badge variant="secondary" className={getLevelColor(level)}>
           Level {level}
@@ -45,25 +45,27 @@ export const rolesColumns: ColumnDef<Role>[] = [
   {
     accessorKey: "userCount",
     header: "Users",
-    cell: ({ getValue }) => (
+    cell: ({ row }) => (
       <div className="flex items-center gap-1">
         <Users className="text-muted-foreground h-4 w-4" />
-        <span className="text-sm">{getValue() as number}</span>
+        <span className="text-sm">{row.original.userCount}</span>
       </div>
     ),
   },
   {
     accessorKey: "permissionCount",
     header: "Permissions",
-    cell: ({ getValue }) => (
-      <Badge variant="outline">{getValue() as number} permissions</Badge>
+    cell: ({ row }) => (
+      <Badge variant="outline">
+        {row.original.permissionCount} permissions
+      </Badge>
     ),
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ getValue }) => {
-      const status = getValue() as "active" | "disabled";
+    cell: ({ row }) => {
+      const status = row.original.status;
       return (
         <Badge
           variant={status === "active" ? "default" : "secondary"}
@@ -81,9 +83,9 @@ export const rolesColumns: ColumnDef<Role>[] = [
   {
     accessorKey: "createdAt",
     header: "Created",
-    cell: ({ getValue }) => (
+    cell: ({ row }) => (
       <span className="text-muted-foreground text-sm">
-        {new Date(getValue() as string).toLocaleDateString()}
+        {row.original.createdAt?.toLocaleDateString()}
       </span>
     ),
   },
