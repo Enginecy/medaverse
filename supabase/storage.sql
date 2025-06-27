@@ -4,7 +4,7 @@ CREATE TYPE public.document_category AS ENUM ('news', 'contracts', 'recruiting')
 -- File type enum  
 CREATE TYPE public.file_type AS ENUM ('pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'png', 'jpg', 'jpeg');
 
--- Main documents table
+-- Main documents table (without generated column)
 CREATE TABLE public.documents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     file_name VARCHAR(255) NOT NULL,
@@ -30,16 +30,29 @@ CREATE TABLE public.documents (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE,
     
-    -- Search optimization
-    search_vector tsvector GENERATED ALWAYS AS (
-        to_tsvector('english', 
-            coalesce(title, '') || ' ' || 
-            coalesce(original_file_name, '') || ' ' || 
-            coalesce(description, '') || ' ' ||
-            array_to_string(tags, ' ')
-        )
-    ) STORED
+    -- Search optimization (regular column, not generated)
+    search_vector tsvector
 );
+
+-- Create trigger function to update search vector
+CREATE OR REPLACE FUNCTION public.update_documents_search_vector()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.search_vector := to_tsvector('english', 
+        coalesce(NEW.title, '') || ' ' || 
+        coalesce(NEW.original_file_name, '') || ' ' || 
+        coalesce(NEW.description, '') || ' ' ||
+        array_to_string(NEW.tags, ' ')
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger to automatically update search vector
+CREATE TRIGGER trigger_update_documents_search_vector
+    BEFORE INSERT OR UPDATE ON public.documents
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_documents_search_vector();
 
 -- Create indexes for performance
 CREATE INDEX idx_documents_category ON public.documents(category);
@@ -100,9 +113,9 @@ RETURNS TABLE (
     id UUID,
     file_name VARCHAR,
     original_file_name VARCHAR,
-    file_type file_type,
+    file_type public.file_type,
     file_size BIGINT,
-    category document_category,
+    category public.document_category,
     title VARCHAR,
     uploaded_by UUID,
     uploader_name VARCHAR,
@@ -125,22 +138,22 @@ BEGIN
         p.name as uploader_name,
         d.created_at,
         d.updated_at,
-        can_manage_document(d.id, 'documents:update') as can_update,
-        can_manage_document(d.id, 'documents:delete') as can_delete
-    FROM documents d
-    LEFT JOIN profile p ON d.uploaded_by = p.user_id
+        public.can_manage_document(d.id, 'documents:update') as can_update,
+        public.can_manage_document(d.id, 'documents:delete') as can_delete
+    FROM public.documents d
+    LEFT JOIN public.profile p ON d.uploaded_by = p.user_id
     WHERE d.deleted_at IS NULL
     AND (p_category IS NULL OR d.category = p_category)
     AND (p_search IS NULL OR d.search_vector @@ plainto_tsquery('english', p_search))
     AND (
         -- User has read permission
-        user_has_permission(auth.uid(), 'documents:read')
+        public.user_has_permission(auth.uid(), 'documents:read')
         OR
         -- Or is the document owner
         d.uploaded_by = auth.uid()
         OR
         -- Or is SuperAdmin
-        issuperadmin()
+        public.issuperadmin()
     )
     ORDER BY d.created_at DESC
     LIMIT p_limit OFFSET p_offset;
@@ -163,13 +176,13 @@ USING (
     deleted_at IS NULL
     AND (
         -- User has documents:read permission
-        user_has_permission(auth.uid(), 'documents:read')
+        public.user_has_permission(auth.uid(), 'documents:read')
         OR
         -- User is the document owner
         uploaded_by = auth.uid()
         OR
         -- SuperAdmin can see all
-        issuperadmin()
+        public.issuperadmin()
     )
 );
 
@@ -181,10 +194,10 @@ WITH CHECK (
     uploaded_by = auth.uid()
     AND (
         -- User has documents:create permission
-        user_has_permission(auth.uid(), 'documents:create')
+        public.user_has_permission(auth.uid(), 'documents:create')
         OR
         -- SuperAdmin can create
-        issuperadmin()
+        public.issuperadmin()
     )
 );
 
@@ -196,35 +209,31 @@ USING (
     deleted_at IS NULL
     AND (
         -- SuperAdmin can update all
-        issuperadmin()
+        public.issuperadmin()
         OR
         -- Document owner can update their own documents
-        (uploaded_by = auth.uid() AND user_has_permission(auth.uid(), 'documents:update'))
+        (uploaded_by = auth.uid() AND public.user_has_permission(auth.uid(), 'documents:update'))
         OR
         -- Users with documents:manage permission can update any document
-        user_has_permission(auth.uid(), 'documents:manage')
+        public.user_has_permission(auth.uid(), 'documents:manage')
     )
-)
-WITH CHECK (
-    -- Ensure updated_by is set to current user
-    updated_by = auth.uid()
 );
 
 -- Documents DELETE policy - based on permissions and ownership
 CREATE POLICY "Users can delete documents with permission"
-ON documents FOR DELETE
+ON public.documents FOR DELETE
 TO authenticated
 USING (
     deleted_at IS NULL
     AND (
         -- SuperAdmin can delete all
-        issuperadmin()
+        public.issuperadmin()
         OR
         -- Document owner can delete their own documents if they have delete permission
-        (uploaded_by = auth.uid() AND user_has_permission(auth.uid(), 'documents:delete'))
+        (uploaded_by = auth.uid() AND public.user_has_permission(auth.uid(), 'documents:delete'))
         OR
         -- Users with documents:manage permission can delete any document
-        user_has_permission(auth.uid(), 'documents:manage')
+        public.user_has_permission(auth.uid(), 'documents:manage')
     )
 );
 
@@ -244,8 +253,8 @@ TO authenticated
 WITH CHECK (
     bucket_id = 'documents'
     AND (
-        user_has_permission(auth.uid(), 'documents:create')
-        OR issuperadmin()
+        public.user_has_permission(auth.uid(), 'documents:create')
+        OR public.issuperadmin()
     )
 );
 
@@ -255,9 +264,9 @@ TO authenticated
 USING (
     bucket_id = 'documents'
     AND (
-        user_has_permission(auth.uid(), 'documents:read')
+        public.user_has_permission(auth.uid(), 'documents:read')
         OR owner = auth.uid()
-        OR issuperadmin()
+        OR public.issuperadmin()
     )
 );
 
@@ -267,9 +276,9 @@ TO authenticated
 USING (
     bucket_id = 'documents'
     AND (
-        (owner = auth.uid() AND user_has_permission(auth.uid(), 'documents:update'))
-        OR user_has_permission(auth.uid(), 'documents:manage')
-        OR issuperadmin()
+        (owner = auth.uid() AND public.user_has_permission(auth.uid(), 'documents:update'))
+        OR public.user_has_permission(auth.uid(), 'documents:manage')
+        OR public.issuperadmin()
     )
 );
 
@@ -279,8 +288,8 @@ TO authenticated
 USING (
     bucket_id = 'documents'
     AND (
-        (owner = auth.uid() AND user_has_permission(auth.uid(), 'documents:delete'))
-        OR user_has_permission(auth.uid(), 'documents:manage')
-        OR issuperadmin()
+        (owner = auth.uid() AND public.user_has_permission(auth.uid(), 'documents:delete'))
+        OR public.user_has_permission(auth.uid(), 'documents:manage')
+        OR public.issuperadmin()
     )
 );
