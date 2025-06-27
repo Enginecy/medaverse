@@ -123,6 +123,7 @@ export type Role = Awaited<ReturnType<typeof getRoles>>[number];
 
 export async function getUserRoles() {
   const db = await createDrizzleSupabaseClient();
+  const assignedByProfile = alias(profile, "assignedByProfile");
   const data = await db.rls((tx) => {
     return tx
       .select({
@@ -140,13 +141,18 @@ export async function getUserRoles() {
           level: roles.level,
         },
         assignedBy: {
-          name: profile.name,
+          name: assignedByProfile.name,
+          avatar: assignedByProfile.avatarUrl,
         },
         status: userRoles.status,
         assignedAt: userRoles.assignedAt,
         expiresAt: userRoles.expiresAt,
       })
       .from(userRoles)
+      .innerJoin(
+        assignedByProfile,
+        eq(userRoles.assignedBy, assignedByProfile.userId),
+      )
       .innerJoin(profile, eq(userRoles.userId, profile.userId))
       .innerJoin(users, eq(userRoles.userId, users.id))
       .innerJoin(roles, eq(userRoles.roleId, roles.id))
@@ -176,8 +182,9 @@ export async function getUserPermissions() {
           resource: permissions.resource,
           action: permissions.action,
         },
-        assignedBy: {
+        grantedBy: {
           name: assignedByProfile.name,
+          avatar: assignedByProfile.avatarUrl,
         },
         source: sql<string>`('direct')`,
         assignedAt: userPermissionsEnhanced.grantedAt,
