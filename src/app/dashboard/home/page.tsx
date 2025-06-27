@@ -42,7 +42,7 @@ export default function Home() {
             <CardTitle>Upcoming Birthdays</CardTitle>
           </CardHeader>
           <CardContent className="px-6">
-            <BirthdayTable columns={birthdayColumns} data={birthdays} />
+            <BirthdayTable  />
           </CardContent>
         </Card>
       </div>
