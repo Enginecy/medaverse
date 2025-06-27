@@ -3,7 +3,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 type UserChipProps = {
   user: {
     name: string;
-    email: string | null;
+    email?: string | null;
     avatar?: string;
   };
 };
