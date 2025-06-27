@@ -1,6 +1,3 @@
-import type { title } from "@/db/schema";
-import { pgEnum } from "drizzle-orm/pg-core";
-
 export type State = {
   name: string;
   code: string;
@@ -58,21 +55,23 @@ export const states: State[] = [
   { name: "Wisconsin", code: "WI" },
   { name: "Wyoming", code: "WY" },
 ];
-type Role = {
-  value: (typeof title.enumValues[number]) ;
-  label: string;
-  
+
+export type Resource = {
+  name: string;
+  description: string | null;
 };
 
-export const roles: Role[] = [
-  { value: "SuperAdmin", label: "Super Admin" },
-  { value: "NationalDirector", label: "National Director" },
-  { value: "RegionalDirector", label: "Regional Director" },
-  { value: "DivisionalDirector", label: "Divisional Director" },
-  { value: "AssociateDirector", label: "Associate Director" },
-  { value: "PlatinumAssociate", label: "Platinum Associate" },
-  { value: "SeniorAssociate", label: "Senior Associate" },
-  { value: "Associate", label: "Associate" },
-  { value: "Leads", label: "Leads" },
-];
+export const resources = [
+  { name: "users", description: "User management and profiles" },
+  { name: "sales", description: "Sales data and transactions" },
+  { name: "reports", description: "Analytics and reporting" },
+  { name: "companies", description: "Insurance companies" },
+  { name: "products", description: "Insurance products" },
+  { name: "roles", description: "User roles and assignments" },
+  { name: "permissions", description: "Permission management" },
+  { name: "user_permissions", description: "User permissions" },
+  { name: "user_roles", description: "User roles" },
+  { name: "hierarchy", description: "User hierarchy" },
+] as const;
 
+export type ResourceName = (typeof resources)[number]["name"];

@@ -1,4 +1,3 @@
-import { title } from "@/db/schema";
 import z from "zod";
 
 // Form validation schema
@@ -15,9 +14,6 @@ export const addUserSchema = z.object({
     .refine((date) => date <= new Date(), {
       message: "Date of birth cannot be in the future",
     }),
-  contractId: z.enum(title.enumValues, {
-    required_error: "Please select a contract ID",
-  }),
   regional: z.string().min(1, "Please select a regional"),
   upline: z.string().min(1, "Please select an upline"),
   npnNumber: z.string().min(1, "Please select an NPN number"),
