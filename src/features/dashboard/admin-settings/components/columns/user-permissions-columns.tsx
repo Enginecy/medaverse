@@ -1,11 +1,10 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
 import { getActionColor } from "@/features/dashboard/admin-settings/components/utils";
 import type { UserPermission } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { UserPermissionEditButton } from "@/features/dashboard/admin-settings/components/ui/user-permission-edit-button";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
+import { UserPermissionDeleteButton } from "@/features/dashboard/admin-settings/components/ui/user-permission-delete-button";
 
 export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
   {
@@ -107,6 +106,7 @@ export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const userPermission = row.original;
+      if (userPermission.status === "disabled") return null;
       return (
         <div className="flex items-center gap-1">
           {userPermission.source === "direct" && (
@@ -131,13 +131,7 @@ export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
                     : undefined,
                 }}
               />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-red-600 hover:text-red-700"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <UserPermissionDeleteButton id={userPermission.id} />
             </>
           )}
           {userPermission.source === "role" && (

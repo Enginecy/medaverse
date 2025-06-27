@@ -1,10 +1,10 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Users, X } from "lucide-react";
+import { Users } from "lucide-react";
 import { getLevelColor } from "@/features/dashboard/admin-settings/components/utils";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { RolesEditButton } from "@/features/dashboard/admin-settings/components/ui/roles-edit-button";
-import { Button } from "@/components/ui/button";
+import { RoleDeleteButton } from "@/features/dashboard/admin-settings/components/ui/role-delete-button";
 
 export const rolesColumns: ColumnDef<Role>[] = [
   {
@@ -93,28 +93,25 @@ export const rolesColumns: ColumnDef<Role>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-1">
-        <RolesEditButton
-          role={{
-            id: row.original.id,
-            code: row.original.code,
-            name: row.original.name,
-            level: row.original.level as "management" | "staff" | "executive",
-            status: row.original.status as "active" | "disabled",
-            permissions: row.original.permissions,
-            users: row.original.users,
-            description: row.original.description ?? undefined,
-          }}
-        />
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-red-600 hover:text-red-700"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-    ),
+    cell: ({ row }) => {
+      if (row.original.status === "disabled") return null;
+      return (
+        <div className="flex items-center gap-1">
+          <RolesEditButton
+            role={{
+              id: row.original.id,
+              code: row.original.code,
+              name: row.original.name,
+              level: row.original.level as "management" | "staff" | "executive",
+              status: row.original.status as "active" | "disabled",
+              permissions: row.original.permissions,
+              users: row.original.users,
+              description: row.original.description ?? undefined,
+            }}
+          />
+          <RoleDeleteButton id={row.original.id} />
+        </div>
+      );
+    },
   },
 ];

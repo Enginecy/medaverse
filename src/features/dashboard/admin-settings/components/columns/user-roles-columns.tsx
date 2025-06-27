@@ -1,11 +1,10 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
 import { getLevelColor } from "@/features/dashboard/admin-settings/components/utils";
 import type { UserRole } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 import { UserRoleEditButton } from "@/features/dashboard/admin-settings/components/ui/user-role-edit-button";
+import { UserRoleDeleteButton } from "@/features/dashboard/admin-settings/components/ui/user-role-delete-button";
 
 export const userRolesColumns: ColumnDef<UserRole>[] = [
   {
@@ -93,32 +92,29 @@ export const userRolesColumns: ColumnDef<UserRole>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-1">
-        <UserRoleEditButton
-          userRole={{
-            id: row.original.id,
-            user: {
-              id: row.original.user.id,
-              name: row.original.user.name,
-              email: row.original.user.email!,
-              avatar: row.original.user.avatar,
-            },
-            role: {
-              id: row.original.role.id,
-              name: row.original.role.name,
-              code: row.original.role.code,
-            },
-          }}
-        />
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-red-600 hover:text-red-700"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-    ),
+    cell: ({ row }) => {
+      if (row.original.status === "disabled") return null;
+      return (
+        <div className="flex items-center gap-1">
+          <UserRoleEditButton
+            userRole={{
+              id: row.original.id,
+              user: {
+                id: row.original.user.id,
+                name: row.original.user.name,
+                email: row.original.user.email!,
+                avatar: row.original.user.avatar,
+              },
+              role: {
+                id: row.original.role.id,
+                name: row.original.role.name,
+                code: row.original.role.code,
+              },
+            }}
+          />
+          <UserRoleDeleteButton id={row.original.id} />
+        </div>
+      );
+    },
   },
 ];
