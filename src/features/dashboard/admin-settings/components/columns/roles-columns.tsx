@@ -1,9 +1,10 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Users } from "lucide-react";
+import { Users, X } from "lucide-react";
 import { getLevelColor } from "@/features/dashboard/admin-settings/components/utils";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { RolesEditButton } from "@/features/dashboard/admin-settings/components/ui/roles-edit-button";
+import { Button } from "@/components/ui/button";
 
 export const rolesColumns: ColumnDef<Role>[] = [
   {
@@ -93,18 +94,27 @@ export const rolesColumns: ColumnDef<Role>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => (
-      <RolesEditButton
-        role={{
-          id: row.original.id,
-          code: row.original.code,
-          name: row.original.name,
-          level: row.original.level as "management" | "staff" | "executive",
-          description: row.original.description ?? undefined,
-          permissions: row.original.permissions,
-          users: row.original.users,
-          status: row.original.status as "active" | "disabled",
-        }}
-      />
+      <div className="flex items-center gap-1">
+        <RolesEditButton
+          role={{
+            id: row.original.id,
+            code: row.original.code,
+            name: row.original.name,
+            level: row.original.level as "management" | "staff" | "executive",
+            status: row.original.status as "active" | "disabled",
+            permissions: row.original.permissions,
+            users: row.original.users,
+            description: row.original.description ?? undefined,
+          }}
+        />
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-red-600 hover:text-red-700"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
     ),
   },
 ];

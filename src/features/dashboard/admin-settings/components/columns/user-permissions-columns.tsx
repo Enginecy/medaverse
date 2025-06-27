@@ -58,9 +58,7 @@ export const userPermissionsColumns: ColumnDef<UserPermission>[] = [
   {
     accessorKey: "assignedBy",
     header: "Assigned By",
-    cell: ({ row }) => (
-      <span className="text-sm">{row.original.assignedBy.name}</span>
-    ),
+    cell: ({ row }) => <UserChip user={row.original.grantedBy} />,
   },
   {
     accessorKey: "assignedAt",

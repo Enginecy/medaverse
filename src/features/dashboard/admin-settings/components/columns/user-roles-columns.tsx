@@ -44,9 +44,7 @@ export const userRolesColumns: ColumnDef<UserRole>[] = [
   {
     accessorKey: "assignedBy",
     header: "Assigned By",
-    cell: ({ row }) => (
-      <span className="text-sm">{row.original.assignedBy.name}</span>
-    ),
+    cell: ({ row }) => <UserChip user={row.original.assignedBy} />,
   },
   {
     accessorKey: "assignedAt",

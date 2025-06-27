@@ -78,7 +78,7 @@ export function UserRoleFormDialog<T>({
 
   const isEditing = !!data;
 
-  const { mutate: mutateRole, isPending: isAssigning } = useMutation({
+  const { mutate: assignRoleMutation, isPending: isAssigning } = useMutation({
     mutationFn: assignRole,
     onError: (error) => {
       showSonnerToast({
@@ -97,37 +97,40 @@ export function UserRoleFormDialog<T>({
     },
   });
 
-  const { mutate: mutateAssignedRole, isPending: isUpdating } = useMutation({
-    mutationFn: updateAssignedRole,
-    onError: (error) => {
-      showSonnerToast({
-        message: "Error assigning role",
-        description: error.message,
-        type: "error",
-      });
-    },
-    onSuccess: () => {
-      showSonnerToast({
-        message: "Role assigned successfully",
-        type: "success",
-      });
-      form.reset();
-      resolve(null as T);
-    },
-  });
+  const { mutate: updateAssignedRoleMutation, isPending: isUpdating } =
+    useMutation({
+      mutationFn: updateAssignedRole,
+      onError: (error) => {
+        showSonnerToast({
+          message: "Error assigning role",
+          description: error.message,
+          type: "error",
+        });
+      },
+      onSuccess: () => {
+        showSonnerToast({
+          message: "Role assigned successfully",
+          type: "success",
+        });
+        form.reset();
+        resolve(null as T);
+      },
+    });
 
   const form = useForm<UserRoleFormSchemaData>({
     resolver: zodResolver(userRoleFormSchema),
     defaultValues: defaultValues,
   });
 
-  const onSubmit = (data: UserRoleFormSchemaData) => {
+  const onSubmit = (formData: UserRoleFormSchemaData) => {
     if (isEditing) {
-      mutateAssignedRole(data);
+      updateAssignedRoleMutation({
+        ...formData,
+        id: data.id!,
+      });
     } else {
-      mutateRole(data);
+      assignRoleMutation(formData);
     }
-    
   };
 
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -135,7 +138,7 @@ export function UserRoleFormDialog<T>({
     queryFn: () =>
       getUsers().then((users) =>
         users.map((user) => ({
-          id: user.id,
+          id: user.userId,
           name: user.name,
           email: user.email!,
           avatar: user.avatarUrl,

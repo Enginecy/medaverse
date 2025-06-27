@@ -56,7 +56,6 @@ import {
   addRole,
   editRole,
 } from "@/features/dashboard/admin-settings/server/actions/admin-settings";
-import { is } from "drizzle-orm";
 
 export function RolesFormSheet<T>({
   resolve,
@@ -77,14 +76,12 @@ export function RolesFormSheet<T>({
     resolver: zodResolver(rolesFormSchema),
     defaultValues: defaultValues,
   });
-const { mutate:edit , isPending: isUpdating } = useMutation({
-    mutationFn:  editRole ,
+  const { mutate: edit, isPending: isUpdating } = useMutation({
+    mutationFn: editRole,
 
     onSuccess: () => {
       showSonnerToast({
-        message: 
-           "Role updated successfully."
-          ,
+        message: "Role updated successfully.",
         description: "You can now assign this role to users.",
         type: "success",
       });
@@ -93,23 +90,20 @@ const { mutate:edit , isPending: isUpdating } = useMutation({
     },
     onError: (error) => {
       showSonnerToast({
-        message: 
-          "An error occurred while updating the role.",
-          
+        message: "An error occurred while updating the role.",
+
         type: "error",
         description: error instanceof Error ? error.message : "Unknown error",
       });
     },
   });
 
-  const { mutate: add, isPending : isAdding } = useMutation({
-    mutationFn:  addRole,
+  const { mutate: add, isPending: isAdding } = useMutation({
+    mutationFn: addRole,
 
     onSuccess: () => {
       showSonnerToast({
-        message: 
-          
-           "Role added successfully.",
+        message: "Role added successfully.",
         description: "You can now assign this role to users.",
         type: "success",
       });
@@ -118,16 +112,19 @@ const { mutate:edit , isPending: isUpdating } = useMutation({
     },
     onError: (error) => {
       showSonnerToast({
-        message: 
-          "An error occurred while saving the role.",
+        message: "An error occurred while saving the role.",
         type: "error",
         description: error instanceof Error ? error.message : "Unknown error",
       });
     },
   });
 
-  const onSubmit = (data: RolesFormSchemaData) => {
-    isEditing? edit(data) : add(data);
+  const onSubmit = (formData: RolesFormSchemaData) => {
+    if (isEditing) {
+      edit({ ...formData, id: data.id! });
+    } else {
+      add(formData);
+    }
   };
   const { data: permissions } = useQuery({
     queryKey: ["permissions"],
@@ -139,7 +136,7 @@ const { mutate:edit , isPending: isUpdating } = useMutation({
     queryFn: () =>
       getUsers().then((users) =>
         users.map((user) => ({
-          id: user.id,
+          id: user.userId,
           name: user.name,
           email: user.email!,
           avatar: user.avatarUrl,
@@ -575,18 +572,16 @@ const { mutate:edit , isPending: isUpdating } = useMutation({
               </FormItem>
             )}
           />
-          <Button type="submit">
-            {isEditing ? (
-              isUpdating ? (
+          <Button type="submit" disabled={isUpdating || isAdding}>
+            <>
+              {isUpdating || isAdding ? (
                 <PulseMultiple color="white" />
-              ) : (
+              ) : isEditing ? (
                 "Update"
-              )
-            ) : isAdding ? (
-              <PulseMultiple color="white" />
-            ) : (
-              "Save"
-            )}
+              ) : (
+                "Save"
+              )}
+            </>
           </Button>
         </form>
       </Form>

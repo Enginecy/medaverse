@@ -52,7 +52,10 @@ import { getPermissions } from "@/features/dashboard/admin-settings/server/db/ad
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 import { getActionColor } from "@/features/dashboard/admin-settings/components/utils";
 import { showSonnerToast } from "@/lib/react-utils";
-import { assignPermission, updateAssignedPermission } from "@/features/dashboard/admin-settings/server/actions/admin-settings";
+import {
+  assignPermission,
+  updateAssignedPermission,
+} from "@/features/dashboard/admin-settings/server/actions/admin-settings";
 import { PulseMultiple } from "react-svg-spinners";
 
 export function UserPermissionFormDialog<T>({
@@ -77,27 +80,28 @@ export function UserPermissionFormDialog<T>({
   };
 
   const isEditing = !!data;
-  
-    const { mutate: mutatePermission, isPending: isAssigning } = useMutation({
-      mutationFn: assignPermission,
-      onError: (error) => {
-        showSonnerToast({
-          message: "Error assigning permission",
-          description: error.message,
-          type: "error",
-        });
-      },
-      onSuccess: () => {
-        showSonnerToast({
-          message: "Permission assigned successfully",
-          type: "success",
-        });
-        form.reset();
-        resolve(null as T);
-      },
-    });
-  
-    const { mutate: mutateAssignedPermission, isPending: isUpdating } = useMutation({
+
+  const { mutate: mutatePermission, isPending: isAssigning } = useMutation({
+    mutationFn: assignPermission,
+    onError: (error) => {
+      showSonnerToast({
+        message: "Error assigning permission",
+        description: error.message,
+        type: "error",
+      });
+    },
+    onSuccess: () => {
+      showSonnerToast({
+        message: "Permission assigned successfully",
+        type: "success",
+      });
+      form.reset();
+      resolve(null as T);
+    },
+  });
+
+  const { mutate: mutateAssignedPermission, isPending: isUpdating } =
+    useMutation({
       mutationFn: updateAssignedPermission,
       onError: (error) => {
         showSonnerToast({
@@ -115,18 +119,20 @@ export function UserPermissionFormDialog<T>({
         resolve(null as T);
       },
     });
-  
 
   const form = useForm<UserPermissionFormSchemaData>({
     resolver: zodResolver(userPermissionFormSchema),
     defaultValues: defaultValues,
   });
 
-  const onSubmit = (data: UserPermissionFormSchemaData) => {
+  const onSubmit = (formData: UserPermissionFormSchemaData) => {
     if (isEditing) {
-      mutateAssignedPermission(data);
+      mutateAssignedPermission({
+        ...formData,
+        id: data.id!,
+      });
     } else {
-      mutatePermission(data);
+      mutatePermission(formData);
     }
   };
 
@@ -135,7 +141,7 @@ export function UserPermissionFormDialog<T>({
     queryFn: () =>
       getUsers().then((users) =>
         users.map((user) => ({
-          id: user.id,
+          id: user.userId,
           name: user.name,
           email: user.email!,
           avatar: user.avatarUrl,
