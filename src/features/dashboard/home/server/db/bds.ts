@@ -1,7 +1,8 @@
 "use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
-import { profile } from "@/db/schema";
+import { profile, users } from "@/db/schema";
 import { createAdminClient } from "@/lib/supabase/server";
+import { eq } from "drizzle-orm";
 
 export async function getUpComingDBs() {
   try {
@@ -14,9 +15,12 @@ export async function getUpComingDBs() {
         name: profile.name,
         imageUrl: profile.avatarUrl,
         title: profile.role,
+        email: users.email,
       })
       .from(profile)
-      .orderBy(profile.dob);
+      .innerJoin(users, eq(users.id, profile.userId))
+      .orderBy(profile.dob)
+      ;
     console.log("Birthdays from DB:", birthdays);
     return birthdays.map((row) => {
       const dob = new Date(row.dob);
@@ -29,6 +33,7 @@ export async function getUpComingDBs() {
           name: row.name,
           imageUrl: row.imageUrl,
           title: row.title,
+          email: row.email,
         },
         date: dob,
         isToday,
