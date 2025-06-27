@@ -123,9 +123,18 @@ export async function editRole({
 export async function deleteRole({ id }: { id: string }) {
   const db = await createDrizzleSupabaseClient();
   const result = await db.rls(async (tx) => {
-    await tx.delete(roles).where(eq(roles.id, id));
-    await tx.delete(userRoles).where(eq(userRoles.roleId, id));
-    await tx.delete(rolePermissions).where(eq(rolePermissions.roleId, id));
+    await tx
+      .update(roles)
+      .set({
+        status: "disabled",
+      })
+      .where(eq(roles.id, id));
+    await tx
+      .update(userRoles)
+      .set({
+        status: "disabled",
+      })
+      .where(eq(userRoles.roleId, id));
   });
 
   return result;
@@ -210,7 +219,12 @@ export async function updateAssignedRole({
 export async function deleteUserRole({ id }: { id: string }) {
   const db = await createDrizzleSupabaseClient();
   const result = await db.rls(async (tx) => {
-    await tx.delete(userRoles).where(eq(userRoles.id, id));
+    await tx
+      .update(userRoles)
+      .set({
+        status: "disabled",
+      })
+      .where(eq(userRoles.id, id));
   });
 
   return result;
@@ -297,7 +311,10 @@ export async function deleteUserPermission({ id }: { id: string }) {
   const db = await createDrizzleSupabaseClient();
   const result = await db.rls(async (tx) => {
     await tx
-      .delete(userPermissionsEnhanced)
+      .update(userPermissionsEnhanced)
+      .set({
+        status: "disabled",
+      })
       .where(eq(userPermissionsEnhanced.id, id));
   });
 
