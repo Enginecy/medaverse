@@ -117,8 +117,7 @@ RETURNS TABLE (
     file_size BIGINT,
     category public.document_category,
     title VARCHAR,
-    uploaded_by UUID,
-    uploader_name VARCHAR,
+    uploaded_by JSONB,
     created_at TIMESTAMP WITH TIME ZONE,
     updated_at TIMESTAMP WITH TIME ZONE,
     can_update BOOLEAN,
@@ -134,14 +133,19 @@ BEGIN
         d.file_size,
         d.category,
         d.title,
-        d.uploaded_by,
-        p.name as uploader_name,
+        jsonb_build_object(
+            'id', d.uploaded_by,
+            'email', u.email,
+            'name', p.name,
+            'avatar', p.avatar_url
+        ) as uploaded_by,
         d.created_at,
         d.updated_at,
         public.can_manage_document(d.id, 'documents:update') as can_update,
         public.can_manage_document(d.id, 'documents:delete') as can_delete
     FROM public.documents d
     LEFT JOIN public.profile p ON d.uploaded_by = p.user_id
+    LEFT JOIN auth.users u ON d.uploaded_by = u.id
     WHERE d.deleted_at IS NULL
     AND (p_category IS NULL OR d.category = p_category)
     AND (p_search IS NULL OR d.search_vector @@ plainto_tsquery('english', p_search))
