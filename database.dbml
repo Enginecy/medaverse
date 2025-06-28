@@ -161,3 +161,4 @@ enum payment_status {
   cancelled [note: 'Premium payment has been cancelled']
   refunded [note: 'Premium payment has been refunded']
 }
+
