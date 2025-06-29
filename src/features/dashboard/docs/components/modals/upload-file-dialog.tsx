@@ -84,7 +84,6 @@ export function UploadFileDialog({
   };
 
   const generateThumbnail = async (file: File) => {
-    console.log(file.type);
     try {
       let type: ThumbnailData["type"] = "other";
       if (file.type === "application/vnd.ms-excel") {
