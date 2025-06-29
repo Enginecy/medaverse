@@ -14,7 +14,7 @@ export default function CarriersPage() {
       </div>
       <div
         className="w-full rounded-2xl border-2 bg-white p-6"
-        style={{ height: "calc(100% - 80px)" }}
+        style={{ minHeight: "calc(100% - 80px)" }}
       >
         <CarriersList />
       </div>

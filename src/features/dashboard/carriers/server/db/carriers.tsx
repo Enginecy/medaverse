@@ -1,3 +1,5 @@
+'use server';
+
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { insuranceCompanies } from "@/db/schema";
 

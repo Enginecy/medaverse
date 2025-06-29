@@ -5,8 +5,8 @@ export function CarrierContainer({ imageUrl , link}: { imageUrl: string, link: s
   return (
     <Button
       variant="outline"
-      className="h-50 w-50 rounded-2xl border-4 border-gray-300
-        hover:cursor-pointer"
+      className="h-50 w-70 rounded-2xl border-4 border-gray-100
+        hover:cursor-pointer bg-white"
         onClick={() => window.open(link, "_blank")}
     >
       <Image
