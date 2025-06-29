@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,14 +10,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SheetContent, SheetFooter, SheetTitle } from "@/components/ui/sheet";
+import { CarrierDropzoneImageFormField } from "@/features/dashboard/carriers/components/carrier-drop-zone";
 import {
   addCarrierSchema,
   type AddCarrierFormData,
 } from "@/features/dashboard/carriers/schema/carrier-schema";
-import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import Image from "next/image";
 export function AddCarrierDrawer({
   resolve,
 }: {
@@ -25,18 +29,57 @@ export function AddCarrierDrawer({
   const form = useForm<AddCarrierFormData>({
     resolver: zodResolver(addCarrierSchema),
     defaultValues: {
-      image: "",
+      carrierImage: "",
       companyName: "",
       phoneNumber: "",
       email: "",
       website: "",
     },
   });
+  const removeImage = () => {
+    form.setValue("carrierImage", new File([], ""));
+  };
+
+  const hasImage =
+    (form.watch("carrierImage") as File).size > 0 ||
+    (form.watch("carrierImage") as string).length > 0;
+
+  const imageSrc =
+    form.getValues("carrierImage") instanceof File
+      ? URL.createObjectURL(form.getValues("carrierImage") as File)
+      : (form.getValues("carrierImage") as string);
+  const onSubmit = (data: AddCarrierFormData) => {
+    resolve(data);
+  };
   return (
     <SheetContent className="w-1/3 p-6">
       <SheetTitle className="text-2xl font-semibold">Add Carrier</SheetTitle>
       <Form {...form}>
-        <DropzoneImageFormField form={form}></DropzoneImageFormField>
+        {hasImage ? (
+          <div className="relative">
+            <Image
+              src={imageSrc!}
+              alt="Profile preview"
+              className="mx-auto h-48 w-69 rounded-lg object-cover"
+              width={192}
+              height={162}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+              onClick={removeImage}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
+        ) : (
+          <CarrierDropzoneImageFormField
+            form={form}
+          ></CarrierDropzoneImageFormField>
+        )}
+
         <FormField
           control={form.control}
           name="companyName"
