@@ -54,7 +54,7 @@ export function AddCarrierDrawer({
       : (form.getValues("carrierImage") as string);
 
   const { mutate: submitCreateCarrier, isPending: isCreating } = useMutation({
-    mutationFn: createCarrier,
+    mutationFn:  ( data : AddCarrierFormData) =>  createCarrier(data) ,
     onSuccess: () => {
       showSonnerToast({
         message: "Carrier added successfully!",
@@ -167,7 +167,7 @@ export function AddCarrierDrawer({
           <SheetFooter className="flex items-end">
             <Button className="w-30" type="submit">
                 {
-                    isCreating? <PulseMultiple className="h-4 w-4 animate-spin" /> : "Add Carrier"
+                    isCreating? <PulseMultiple className="h-4 w-4 animate-spin  " color="white" /> : "   Carrier"
                 }
             </Button>
           </SheetFooter>

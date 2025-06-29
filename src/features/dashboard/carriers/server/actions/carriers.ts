@@ -1,3 +1,4 @@
+"use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { insuranceCompanies } from "@/db/schema";
 import type { AddCarrierFormData } from "@/features/dashboard/carriers/schema/carrier-schema";
@@ -6,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function createCarrier(data: AddCarrierFormData) {
  try{
+    alert("Creating carrier...");
      const drizzle = await createDrizzleSupabaseClient();
   const supabase = await createClient();
   
@@ -29,6 +31,7 @@ const {
       .insert(insuranceCompanies)
       .values({
         code: "",
+        //TDOD: generate a code or something 
         id: carrierId,
         name: data.companyName,
         email: data.email,
