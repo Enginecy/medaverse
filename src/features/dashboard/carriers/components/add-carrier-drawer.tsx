@@ -22,6 +22,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
+import { showSonnerToast } from "@/lib/react-utils";
+import { PulseMultiple } from "react-svg-spinners";
+import { createCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
 export function AddCarrierDrawer({
   resolve,
 }: {
@@ -50,110 +53,126 @@ export function AddCarrierDrawer({
       ? URL.createObjectURL(form.getValues("carrierImage") as File)
       : (form.getValues("carrierImage") as string);
 
-      const { mutate: createCarrier, isPending: isCreating } = useMutation({
-          mutationFn: async (data: AddCarrierFormData) => {},
-        onSuccess: () => {},
-          });
+  const { mutate: submitCreateCarrier, isPending: isCreating } = useMutation({
+    mutationFn: createCarrier,
+    onSuccess: () => {
+      showSonnerToast({
+        message: "Carrier added successfully!",
+        type: "success",
+      }),
+        resolve({ success: true });
+    },
+    onError: (error: any) => {
+      showSonnerToast({
+        message: error.message || "Failed to add carrier",
+        type: "error",
+      }),
+        resolve({ success: false, error });
+    },
+  });
   const onSubmit = (data: AddCarrierFormData) => {
-    resolve(data);
+    submitCreateCarrier(data);
   };
   return (
-    <SheetContent className="w-1/3 p-6 overflow-auto">
+    <SheetContent className="w-1/3 overflow-auto p-6">
       <SheetTitle className="text-2xl font-semibold">Add Carrier</SheetTitle>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <Form {...form}>
+          {hasImage ? (
+            <div className="relative">
+              <Image
+                src={imageSrc!}
+                alt="Profile preview"
+                className="mx-auto h-48 w-69 rounded-lg object-cover"
+                width={192}
+                height={162}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                onClick={removeImage}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          ) : (
+            <CarrierDropzoneImageFormField
+              form={form}
+            ></CarrierDropzoneImageFormField>
+          )}
 
-      <Form {...form} >
-        {hasImage ? (
-          <div className="relative">
-            <Image
-              src={imageSrc!}
-              alt="Profile preview"
-              className="mx-auto h-48 w-69 rounded-lg object-cover"
-              width={192}
-              height={162}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
-              onClick={removeImage}
-            >
-              <X className="h-3 w-3" />
+          <FormField
+            control={form.control}
+            name="companyName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Company Name" type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="(xxx) 123-4567"
+                    type="tel"
+                    inputMode="tel"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="example@domain.com"
+                    type="text"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="website"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company website</FormLabel>
+                <FormControl>
+                  <Input placeholder="www.google.com" type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SheetFooter className="flex items-end">
+            <Button className="w-30" type="submit">
+                {
+                    isCreating? <PulseMultiple className="h-4 w-4 animate-spin" /> : "Add Carrier"
+                }
             </Button>
-          </div>
-        ) : (
-          <CarrierDropzoneImageFormField
-            form={form}
-          ></CarrierDropzoneImageFormField>
-        )}
-
-        <FormField
-          control={form.control}
-          name="companyName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Company Name" type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="phoneNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="(xxx) 123-4567"
-                  type="tel"
-                  inputMode="tel"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="example@domain.com"
-                  type="text"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="website"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company website</FormLabel>
-              <FormControl>
-                <Input placeholder="www.google.com" type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <SheetFooter className="flex items-end">
-          <Button className="w-30" type="submit">Add Carrier</Button>
-        </SheetFooter>
-      </Form>
-        </form>
+          </SheetFooter>
+        </Form>
+      </form>
     </SheetContent>
   );
 }
