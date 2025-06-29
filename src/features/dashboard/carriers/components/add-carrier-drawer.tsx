@@ -21,6 +21,7 @@ import { X } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
+import { useMutation } from "@tanstack/react-query";
 export function AddCarrierDrawer({
   resolve,
 }: {
@@ -48,13 +49,20 @@ export function AddCarrierDrawer({
     form.getValues("carrierImage") instanceof File
       ? URL.createObjectURL(form.getValues("carrierImage") as File)
       : (form.getValues("carrierImage") as string);
+
+      const { mutate: createCarrier, isPending: isCreating } = useMutation({
+          mutationFn: async (data: AddCarrierFormData) => {},
+        onSuccess: () => {},
+          });
   const onSubmit = (data: AddCarrierFormData) => {
     resolve(data);
   };
   return (
-    <SheetContent className="w-1/3 p-6">
+    <SheetContent className="w-1/3 p-6 overflow-auto">
       <SheetTitle className="text-2xl font-semibold">Add Carrier</SheetTitle>
-      <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
+      <Form {...form} >
         {hasImage ? (
           <div className="relative">
             <Image
@@ -142,9 +150,10 @@ export function AddCarrierDrawer({
           )}
         />
         <SheetFooter className="flex items-end">
-          <Button className="w-30">Add Carrier</Button>
+          <Button className="w-30" type="submit">Add Carrier</Button>
         </SheetFooter>
       </Form>
+        </form>
     </SheetContent>
   );
 }
