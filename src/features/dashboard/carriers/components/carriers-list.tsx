@@ -22,7 +22,7 @@ export function CarriersList() {
     return <CarriersListSkeleton />;
   }
   if (isError) {
-    return <ErrorComponent onRetry={refetch} />;
+    return <ErrorComponent onRetry={refetch} message="Something went wrong, please try again." />;
   }
 
   return (
