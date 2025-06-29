@@ -13,12 +13,32 @@ import {
   check,
   boolean,
   pgEnum,
+  bigint,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/relations";
 import { sql } from "drizzle-orm";
 import { authUsers } from "drizzle-orm/supabase";
 
 export const users = authUsers;
+
+export const documentCategory = pgEnum("document_category", [
+  "news",
+  "contracts",
+  "recruiting",
+]);
+
+export const fileType = pgEnum("file_type", [
+  "pdf",
+  "doc",
+  "docx",
+  "xls",
+  "xlsx",
+  "txt",
+  "png",
+  "jpg",
+  "jpeg",
+]);
+
 export const paymentStatus = pgEnum("payment_status", [
   "pending",
   "paid",
@@ -663,6 +683,91 @@ export const userPermissionsEnhanced = pgTable(
   ],
 );
 
+export const documents = pgTable(
+  "documents",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    fileName: varchar("file_name", { length: 255 }).notNull(),
+    originalFileName: varchar("original_file_name", { length: 255 }).notNull(),
+    fileType: fileType("file_type").notNull(),
+    fileSize: bigint("file_size", { mode: "bigint" }).notNull(),
+    filePath: text("file_path").notNull(),
+    storageBucket: varchar("storage_bucket", { length: 100 }).default(
+      "documents",
+    ),
+    category: documentCategory().notNull(),
+    tags: text().array(),
+    title: varchar({ length: 500 }),
+    description: text(),
+    uploadedBy: uuid("uploaded_by").notNull(),
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+      mode: "date",
+    }).defaultNow(),
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+      mode: "date",
+    }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "date" }),
+    searchVector: text("search_vector"),
+  },
+  (table) => [
+    index("idx_documents_category").using(
+      "btree",
+      table.category.asc().nullsLast().op("enum_ops"),
+    ),
+    index("idx_documents_created_at").using(
+      "btree",
+      table.createdAt.asc().nullsLast().op("timestamptz_ops"),
+    ),
+    index("idx_documents_deleted_at")
+      .using("btree", table.deletedAt.asc().nullsLast().op("timestamptz_ops"))
+      .where(sql`(deleted_at IS NULL)`),
+    index("idx_documents_file_type").using(
+      "btree",
+      table.fileType.asc().nullsLast().op("enum_ops"),
+    ),
+    index("idx_documents_search_vector").using(
+      "gin",
+      table.searchVector.asc().nullsLast().op("tsvector_ops"),
+    ),
+    index("idx_documents_tags").using(
+      "gin",
+      table.tags.asc().nullsLast().op("array_ops"),
+    ),
+    index("idx_documents_uploaded_by").using(
+      "btree",
+      table.uploadedBy.asc().nullsLast().op("uuid_ops"),
+    ),
+    foreignKey({
+      columns: [table.uploadedBy],
+      foreignColumns: [users.id],
+      name: "documents_uploaded_by_fkey",
+    }).onDelete("cascade"),
+    pgPolicy("Users can view documents based on permissions", {
+      as: "permissive",
+      for: "select",
+      to: ["authenticated"],
+      using: sql`((deleted_at IS NULL) AND (user_has_permission(auth.uid(), 'documents:read'::text) OR (uploaded_by = auth.uid()) OR issuperadmin()))`,
+    }),
+    pgPolicy("Users can upload documents with permission", {
+      as: "permissive",
+      for: "insert",
+      to: ["authenticated"],
+    }),
+    pgPolicy("Users can update documents with permission", {
+      as: "permissive",
+      for: "update",
+      to: ["authenticated"],
+    }),
+    pgPolicy("Users can delete documents with permission", {
+      as: "permissive",
+      for: "delete",
+      to: ["authenticated"],
+    }),
+  ],
+);
+
 export const profileRelations = relations(profile, ({ one }) => ({
   users: one(users, {
     fields: [profile.userId],
@@ -803,3 +908,10 @@ export const userPermissionsEnhancedRelations = relations(
     }),
   }),
 );
+
+export const documentsRelations = relations(documents, ({ one }) => ({
+  users: one(users, {
+    fields: [documents.uploadedBy],
+    references: [users.id],
+  }),
+}));

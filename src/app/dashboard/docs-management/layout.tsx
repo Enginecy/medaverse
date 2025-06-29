@@ -1,8 +1,7 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsLinkTrigger, TabsList } from "@/components/ui/tabs";
-import { Plus } from "lucide-react";
+import { AddDocumentButton } from "@/features/dashboard/docs/components/ui/add-document-button";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -15,22 +14,13 @@ export default function DocsManagementLayout({
     <div className="flex h-full w-full flex-col items-start gap-6 p-6">
       <div className="flex w-full justify-between">
         <h1 className="text-2xl font-semibold">Documents Management</h1>
-        <DocsActions />
+        <AddDocumentButton />
       </div>
       <TabBar />
       <Card className="w-full grow py-0">
         <CardContent className="grow">{children}</CardContent>
       </Card>
     </div>
-  );
-}
-
-function DocsActions() {
-  return (
-    <Button variant="default">
-      <Plus className="h-4 w-4" />
-      Add Document
-    </Button>
   );
 }
 
