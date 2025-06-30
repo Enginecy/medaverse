@@ -42,7 +42,7 @@ export default function Home() {
             <CardTitle>Upcoming Birthdays</CardTitle>
           </CardHeader>
           <CardContent className="px-6">
-            <BirthdayTable  />
+            <BirthdayTable />
           </CardContent>
         </Card>
       </div>
@@ -52,11 +52,17 @@ export default function Home() {
 
 function PersonalGoalsGrid() {
   return (
-    <div className="grid h-126 w-1/2 grid-cols-2 gap-6">
-      <GoalCard title="Weekly Goal" range={{ min: 850, max: 2500 }} />
-      <GoalCard title="Monthly Goal" range={{ min: 6200, max: 18000 }} />
-      <GoalCard title="Quarterly Goal" range={{ min: 15400, max: 45000 }} />
-      <GoalCard title="Yearly Goal" range={{ min: 78000, max: 150000 }} />
+    // <div className="grid h-126 w-1/2 grid-cols-2 gap-6">
+    //   <GoalCard title="Weekly Goal" range={{ min: 850, max: 2500 }} />
+    //   <GoalCard title="Monthly Goal" range={{ min: 6200, max: 18000 }} />
+    //   <GoalCard title="Quarterly Goal" range={{ min: 15400, max: 45000 }} />
+    //   <GoalCard title="Yearly Goal" range={{ min: 78000, max: 150000 }} />
+    // </div>
+    <div className="h-126 w-1/2 rounded-2xl border-1 bg-white flex flex-col justify-center items-center gap-2">
+      <p className="text-2xl">You have no goals</p>
+      <Button className="" variant="default">
+        Set goals
+      </Button>
     </div>
   );
 }
