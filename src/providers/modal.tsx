@@ -9,7 +9,7 @@ export const ModalContext = createContext<{
   closeDrawer: () => void;
   openDialog: (dialog: React.ReactNode, onClose?: () => void) => void;
   closeDialog: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+   
 }>({
   openDrawer: () => {},
   closeDrawer: () => {},

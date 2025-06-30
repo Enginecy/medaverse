@@ -1,7 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Edit } from "lucide-react";
 import { USAMapComponent } from "@/components/usa-map";
 import { states, type State } from "@/lib/data";
 
