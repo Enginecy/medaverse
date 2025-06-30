@@ -37,11 +37,9 @@ export default function RootLayout({
           >
             {navItems.map((item) => (
               <Link href={item.href ?? "#"} key={item.title}>
-                <Button variant={"outline"} className="py-6" asChild>
-                  <span className="flex items-center gap-2">
-                    <item.icon className="h-5 w-5" />
-                    <span>{item.title}</span>
-                  </span>
+                <Button variant={"outline"} className="py-6">
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.title}</span>
                 </Button>
               </Link>
             ))}
