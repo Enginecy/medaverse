@@ -73,6 +73,7 @@ export const insuranceCompanies = pgTable(
     email: varchar({ length: 255 }).notNull(),
     phone: varchar({ length: 20 }).notNull(),
     website: varchar({ length: 255 }).notNull(),
+    imageUrl: varchar({length: 255}).notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "date" }),

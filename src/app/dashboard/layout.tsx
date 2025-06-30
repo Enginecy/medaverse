@@ -5,6 +5,7 @@ import { ProfileButton } from "@/features/dashboard/home/components/profile_butt
 import { MailIcon, Newspaper, TruckIcon } from "lucide-react";
 import Link from "next/link";
 
+
 const navItems = [
   {
     title: "News",
@@ -14,10 +15,12 @@ const navItems = [
   {
     title: "MedaMail",
     icon: MailIcon,
+    href : "/dashboard/medamail",
   },
   {
     title: "Carriers",
     icon: TruckIcon,
+    href : "/dashboard/carriers",
   },
 ];
 
@@ -35,10 +38,10 @@ export default function RootLayout({
           >
             {navItems.map((item) => (
               <Link href={item.href ?? "#"} key={item.title}>
-                <Button variant={"outline"} className="py-6">
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.title}</span>
-                </Button>
+                <Button variant={"outline"} className="py-6" asChild>
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.title}</span>
+              </Button>
               </Link>
             ))}
             <ProfileButton />
