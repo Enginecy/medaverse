@@ -120,7 +120,7 @@ export const profile = pgTable(
     name: varchar().notNull(),
     address: varchar().notNull(),
     dob: date("dob", { mode: "date" }).notNull(),
-    role: title().notNull(),
+    // role: title().notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "date" }),
@@ -134,7 +134,6 @@ export const profile = pgTable(
     index("idx_profile_role_status")
       .using(
         "btree",
-        table.role.asc().nullsLast().op("enum_ops"),
         table.status.asc().nullsLast().op("enum_ops"),
       )
       .where(sql`(deleted_at IS NULL)`),

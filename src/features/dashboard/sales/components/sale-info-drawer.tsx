@@ -24,7 +24,7 @@ export function SaleInfoDrawer({
       <div className="flex flex-col gap-2">
         <AgentTile
           agentName={selectedRow.user.name}
-          agentRole={selectedRow.user.role}
+          agentRole={"selectedRow.user.role"} //TODO: replace with actual role
           avatarUlr={selectedRow.user.avatar || "/public/profile.jpg"}
         />
         <DataTile title="Client Name" content={selectedRow.customerName} />

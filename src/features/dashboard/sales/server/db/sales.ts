@@ -20,7 +20,7 @@ export async function getSales() {
         id: sales.id,
         user: {
           name: profile.name,
-          role: profile.role,
+          // role: profile.role,
           avatar: profile.avatarUrl,
         },
         totalAmount: sales.totalSaleValue,
@@ -53,7 +53,8 @@ export async function getSales() {
       )
       .innerJoin(users, eq(sales.userId, users.id))
       .innerJoin(profile, eq(users.id, profile.userId))
-      .groupBy(sales.id, insuranceProducts.name, insuranceCompanies.name ,profile.name, profile.role, profile.avatarUrl)
+      .groupBy(sales.id, insuranceProducts.name, insuranceCompanies.name ,profile.name,  profile.avatarUrl)
+      //TODO : Add role when available
       .orderBy(desc(sales.createdAt));
   });
 

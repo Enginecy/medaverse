@@ -14,7 +14,7 @@ export async function getUpComingDBs() {
         dob: profile.dob,
         name: profile.name,
         imageUrl: profile.avatarUrl,
-        title: profile.role,
+        // title: "profile.role", //TODO: Add user role when available
         email: users.email,
       })
       .from(profile)
@@ -31,7 +31,7 @@ export async function getUpComingDBs() {
         agent: {
           name: row.name,
           imageUrl: row.imageUrl,
-          title: row.title,
+          // title: row.title,
           email: row.email,
         },
         date: dob,

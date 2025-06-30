@@ -78,7 +78,8 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <p>{row.original.role}</p>,
+    // cell: ({ row }) => <p>{row.original.role}</p>, 
+    // TODO: Add user role when available
   },
   {
     id: "actions",

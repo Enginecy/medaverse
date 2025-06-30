@@ -70,7 +70,7 @@ export async function createAgent(data: AddUserFormData) {
           username: data.username,
           address: data.address ?? null,
           dob: data.dateOfBirth,
-          role: data.contractId,
+          // role: data.contractId,
           status: "active",
           avatarUrl: publicUrl,
           userId: user.id,
@@ -160,7 +160,6 @@ export async function updateAgent(data: AddUserFormData, id: string) {
             username: data.username,
             address: data.address ?? null,
             dob: data.dateOfBirth,
-            role: "Associate",
             status: "active",
             avatarUrl: publicUrl,
           })

@@ -25,7 +25,7 @@ export const birthdayColumns: ColumnDef<Birthday>[] = [
               {row.original.agent.name}
             </span>
             <span className="text-muted-foreground text-xs">
-              {row.original.agent.title}
+              {/* {row.original.agent.title} */} //TODO: Add agent title when available
             </span>
           </div>
         </div>
