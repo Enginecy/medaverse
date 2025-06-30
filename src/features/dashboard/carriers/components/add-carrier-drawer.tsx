@@ -21,7 +21,7 @@ import { X } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showSonnerToast } from "@/lib/react-utils";
 import { PulseMultiple } from "react-svg-spinners";
 import { createCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
@@ -54,6 +54,8 @@ export function AddCarrierDrawer({
       ? URL.createObjectURL(form.getValues("carrierImage") as File)
       : (form.getValues("carrierImage") as string);
 
+  const queryClient = useQueryClient();
+
   const { mutate: submitCreateCarrier, isPending: isCreating } = useMutation({
     mutationFn: (data: AddCarrierFormData) => createCarrier(data),
     onSuccess: () => {
@@ -61,7 +63,8 @@ export function AddCarrierDrawer({
         message: "Carrier added successfully!",
         type: "success",
       }),
-        resolve({ success: true });
+        queryClient.invalidateQueries({ queryKey: ["carriers"] });
+      resolve({ success: true });
     },
     onError: (error: any) => {
       showSonnerToast({
