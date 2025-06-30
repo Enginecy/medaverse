@@ -1,9 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+
 import { AddCarrierDrawer } from "@/features/dashboard/carriers/components/add-carrier-drawer";
 import { useShowDrawer } from "@/lib/react-utils";
-import { SquarePen } from "lucide-react";
+import {Plus, SquarePen } from "lucide-react";
 
 export function AddCarrierButton() {
   const useDrawer = useShowDrawer();
@@ -14,11 +15,11 @@ export function AddCarrierButton() {
   return (
     <Button
       variant="default"
-      className="bg-primary-500 h-auto w-20"
+      className="bg-primary-500 h-auto w-30"
       onClick={handleAddClick}
     >
-      <SquarePen />
-      Edit
+      <Plus />
+      Add Carrier
     </Button>
   );
 }

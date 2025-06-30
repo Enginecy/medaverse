@@ -10,7 +10,7 @@ export default function CarriersPage() {
         <AddCarrierButton />
       </div>
       <div
-        className="w-full rounded-2xl border-2 bg-white p-6"
+        className="w-full rounded-2xl border-1 bg-white p-6"
         style={{ minHeight: "calc(100% - 80px)" }}
       >
         <CarriersList />
