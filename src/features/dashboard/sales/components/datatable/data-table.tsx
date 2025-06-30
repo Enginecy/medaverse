@@ -78,7 +78,7 @@ export function SalesTable() {
       pagination,
     },
   });
-
+  
   // const [drawerOpen, setDrawerOpen] = useState(false);
   // const [selectedRow, setSelectedRow] = useState<any>(null);
 

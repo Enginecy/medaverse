@@ -3,55 +3,8 @@ export type Birthday = {
     name: string;
     imageUrl: string;
     title: string;
+    email: string | null; 
   };
   date: Date;
   isToday: boolean;
 };
-
-export const birthdays: Birthday[] = [
-  {
-    agent: {
-      name: "Austin Woodruff",
-      imageUrl: "/profile.jpg",
-      title: "Senior Associate",
-    },
-    date: new Date(),
-    isToday: true,
-  },
-  {
-    agent: {
-      name: "Ryan Hoffman",
-      imageUrl: "/profile.jpg",
-      title: "Associate Director",
-    },
-    date: new Date(),
-    isToday: true,
-  },
-  {
-    agent: {
-      name: "Austin Woodruff",
-      imageUrl: "/profile.jpg",
-      title: "Senior Associate",
-    },
-    date: new Date("2024-08-22"),
-    isToday: false,
-  },
-  {
-    agent: {
-      name: "Austin Woodruff",
-      imageUrl: "/profile.jpg",
-      title: "Senior Associate",
-    },
-    date: new Date("2024-08-22"),
-    isToday: false,
-  },
-  {
-    agent: {
-      name: "Austin Woodruff",
-      imageUrl: "/profile.jpg",
-      title: "Senior Associate",
-    },
-    date: new Date("2024-08-22"),
-    isToday: false,
-  },
-];

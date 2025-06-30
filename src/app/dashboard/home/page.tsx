@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { birthdays } from "@/features/dashboard/home/data/birthday-data";
+
 import { BirthdayTable } from "@/features/dashboard/home/components/birthday-table";
 import { columns } from "@/features/dashboard/home/components/columns";
 import { sales as data } from "@/features/dashboard/home/data/data";
@@ -42,7 +42,7 @@ export default function Home() {
             <CardTitle>Upcoming Birthdays</CardTitle>
           </CardHeader>
           <CardContent className="px-6">
-            <BirthdayTable columns={birthdayColumns} data={birthdays} />
+            <BirthdayTable  />
           </CardContent>
         </Card>
       </div>
