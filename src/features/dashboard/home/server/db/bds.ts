@@ -21,7 +21,6 @@ export async function getUpComingDBs() {
       .innerJoin(users, eq(users.id, profile.userId))
       .orderBy(profile.dob)
       ;
-    console.log("Birthdays from DB:", birthdays);
     return birthdays.map((row) => {
       const dob = new Date(row.dob);
       const isToday =
