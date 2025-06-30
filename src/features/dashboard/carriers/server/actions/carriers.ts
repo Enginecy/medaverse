@@ -45,8 +45,8 @@ export async function createCarrier(data: AddCarrierFormData) {
 }
 
 export async function deleteCarrier(id: string) {
-  const drizzle = await createDrizzleSupabaseClient();
-  const supabase = await createClient();
+  try{const drizzle = await createDrizzleSupabaseClient();
+  
 
   drizzle.rls(async (tx) => {
     return tx
@@ -54,4 +54,9 @@ export async function deleteCarrier(id: string) {
       .where(eq(insuranceCompanies.id, id))
       .returning();
   });
+return {success: true, message: "Carrier deleted successfully"};
+
+}catch(e){
+    throw {success: false, message: "Failed to delete carrier", error: e};
+  }
 }
