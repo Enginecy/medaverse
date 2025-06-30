@@ -200,3 +200,48 @@ COMMENT ON COLUMN public.user_permissions.created_at IS 'When the permission rec
 COMMENT ON COLUMN public.user_permissions.updated_at IS 'When the permission record was last updated';
 COMMENT ON COLUMN public.user_permissions.deleted_at IS 'Soft delete timestamp, null if not deleted';
 
+
+CREATE TYPE public.goal_recurring_duration AS ENUM ('daily', 'weekly', 'monthly', 'yearly');
+COMMENT ON TYPE public.goal_recurring_duration IS 'How often the goal repeats (daily, weekly, monthly, yearly)';
+
+ALTER TABLE public.goals ADD COLUMN recurring_duration goal_recurring_duration;
+
+CREATE TABLE IF NOT EXISTS goals (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    profile_id UUID NOT NULL REFERENCES profile(id) ON DELETE CASCADE,
+    label VARCHAR(255) NOT NULL,
+    recurring_duration goal_recurring_duration, -- 'daily', 'weekly', 'monthly', 'yearly', etc.
+    target NUMERIC,
+    achieved NUMERIC,
+    end_date DATE, -- Only used when recurring_duration is NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    deleted_at TIMESTAMP WITH TIME ZONE,
+    
+    -- Constraint: either recurring_duration is set OR end_date is set, but not both
+    CONSTRAINT goals_duration_or_end_date_check 
+        CHECK (
+            (recurring_duration IS NOT NULL AND end_date IS NULL) OR 
+            (recurring_duration IS NULL AND end_date IS NOT NULL)
+        )
+);
+
+-- Create index on profile_id for efficient queries
+CREATE INDEX IF NOT EXISTS idx_goals_profile_id ON goals(profile_id);
+
+-- Create index on deleted_at for soft delete queries
+CREATE INDEX IF NOT EXISTS idx_goals_deleted_at ON goals(deleted_at) WHERE deleted_at IS NULL;
+
+
+-- Add comment to table
+COMMENT ON TABLE goals IS 'User goals with either recurring duration or end date';
+COMMENT ON COLUMN goals.id IS 'Unique identifier for each goal';
+COMMENT ON COLUMN goals.profile_id IS 'Reference to the profile this goal belongs to';
+COMMENT ON COLUMN goals.label IS 'Goal description/label';
+COMMENT ON COLUMN goals.recurring_duration IS 'How often the goal repeats (daily, weekly, monthly, yearly)';
+COMMENT ON COLUMN goals.target IS 'Target value for the goal (numeric)';
+COMMENT ON COLUMN goals.achieved IS 'Achieved value for the goal (numeric)';
+COMMENT ON COLUMN goals.end_date IS 'End date for non-recurring goals';
+COMMENT ON COLUMN goals.created_at IS 'When the goal was created';
+COMMENT ON COLUMN goals.updated_at IS 'When the goal was last updated';
+COMMENT ON COLUMN goals.deleted_at IS 'Soft delete timestamp, null if not deleted';"

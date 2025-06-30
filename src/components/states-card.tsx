@@ -9,16 +9,16 @@ export function StatesCard() {
   const selectedStates: State[] = [...states];
 
   return (
-    <Card className="flex-1 min-w-[630px] items-center justify-center">
+    <Card className="min-w-[630px] flex-1 items-center justify-center">
       <CardContent className="flex gap-4">
         <div className="flex w-1/3 flex-col gap-6">
           <CardTitle className="flex items-center justify-between gap-2">
             States
             {/* button */}
-            <Button variant="outline" size="sm">
+            {/* <Button variant="outline" size="sm">
               <Edit />
               Edit
-            </Button>
+            </Button> */}
           </CardTitle>
           {/* chips for selected states */}
           <div className="flex max-h-[300px] flex-wrap gap-2 overflow-y-auto">

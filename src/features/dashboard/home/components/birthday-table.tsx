@@ -22,7 +22,7 @@ export function BirthdayTable() {
     error,
   } = useQuery<Birthday[]>({
     queryKey: ["birthdays"],
-    queryFn:getUpComingDBs
+    queryFn: getUpComingDBs,
   });
 
   const columns = birthdayColumns;
@@ -30,7 +30,7 @@ export function BirthdayTable() {
   const todaysBirthdays = birthdays?.filter((b) => b.isToday) ?? [];
   const upcomingBirthdays = birthdays?.filter((b) => !b.isToday) ?? [];
 
-  const limitedUpComingBirthdays = upcomingBirthdays?.reverse().slice(0, 5) ;
+  const limitedUpComingBirthdays = upcomingBirthdays?.reverse().slice(0, 5);
   const todayTable = useReactTable({
     data: todaysBirthdays,
     columns,
@@ -55,7 +55,7 @@ export function BirthdayTable() {
 
   if (isError) {
     return (
-      <div className="text-center text-sm text-destructive">
+      <div className="text-destructive text-center text-sm">
         Failed to load birthdays. {error.message}
       </div>
     );
@@ -91,7 +91,9 @@ function BirthdaySection({
 }) {
   return (
     <div>
-      <h3 className="text-muted-foreground mb-3 text-sm font-medium">{title}</h3>
+      <h3 className="text-muted-foreground mb-3 text-sm font-medium">
+        {title}
+      </h3>
       <Table>
         <TableBody>
           {table.getRowModel().rows.map((row) => (
@@ -119,7 +121,9 @@ function BirthdaySection({
 function SkeletonSection({ title, rows }: { title: string; rows: number }) {
   return (
     <div>
-      <h3 className="text-muted-foreground mb-3 text-sm font-medium">{title}</h3>
+      <h3 className="text-muted-foreground mb-3 text-sm font-medium">
+        {title}
+      </h3>
       <Table>
         <TableBody>
           {Array.from({ length: rows }).map((_, idx) => (

@@ -16,6 +16,12 @@ export async function addSale(
         id: crypto.randomUUID(),
         customerName: clientName,
         saleDate: date,
+        totalSaleValue: products
+          .reduce((acc, product) => {
+            const premium = product.premium!;
+            return acc + premium;
+          }, 0)
+          .toString(),
         userId,
       })
       .returning({

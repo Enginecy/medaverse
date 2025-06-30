@@ -1,100 +1,135 @@
-import React from "react";
-import { cn } from "@/lib/utils";
 import { ChartRadialText } from "@/components/radial-chart";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { AddGoalButton } from "./modals/add-goal-drawer";
+import { getUserGoalsAction } from "../server/actions/goals";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import type { Goal } from "../server/db/goals";
+import { format } from "date-fns";
+import { Suspense } from "react";
 
 export function AgentGoals() {
-  const goals = [
-    { label: "Weekly Goal", currentValue: 11560, targetValue: 18000, trend: 7 },
-    {
-      label: "Monthly Goal",
-      currentValue: 11560,
-      targetValue: 20000,
-      trend: 7,
-    },
-    {
-      label: "Quarterly Goal",
-      currentValue: 11560,
-      targetValue: 15000,
-      trend: -8,
-    },
-    { label: "Yearly Goal", currentValue: 11560, targetValue: 25000, trend: 7 },
-  ];
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold text-gray-900">
+          Agent Goals
+        </CardTitle>
+        <CardAction>
+          <AddGoalButton />
+        </CardAction>
+      </CardHeader>
+      <CardContent className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+        <Suspense fallback={<GoalsLoadingSkeleton />}>
+          <GoalsList />
+        </Suspense>
+      </CardContent>
+    </Card>
+  );
+}
+
+async function GoalsList() {
+  const result = await getUserGoalsAction();
+
+  if (!result.success) {
+    return (
+      <div
+        className="col-span-full flex flex-col items-center justify-center py-8"
+      >
+        <p className="text-destructive text-sm">
+          {result.error ?? "Failed to fetch goals"}
+        </p>
+        <p className="text-muted-foreground mt-1 text-xs">
+          Please refresh the page to try again
+        </p>
+      </div>
+    );
+  }
+
+  const goals = result.data ?? [];
+
+  if (goals.length === 0) {
+    return (
+      <div
+        className="col-span-full flex flex-col items-center justify-center py-8"
+      >
+        <p className="text-muted-foreground text-sm">No goals found</p>
+        <p className="text-muted-foreground mt-1 text-xs">
+          Create your first goal to start tracking progress
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {goals.map((goal) => (
+        <GoalCard key={goal.id} goal={goal} />
+      ))}
+    </>
+  );
+}
+
+function GoalsLoadingSkeleton() {
+  return (
+    <>
+      {Array.from({ length: 4 }).map((_, index) => (
+        <GoalCardSkeleton key={index} />
+      ))}
+    </>
+  );
+}
+
+function GoalCardSkeleton() {
   return (
     <div
-      className="h-auto w-2/3 rounded-3xl border border-[#E5ECF6] bg-white p-6"
+      className="flex min-h-[150px] w-full min-w-[260px] flex-col items-center
+        justify-between gap-4 rounded-2xl border border-[#E5ECF6] bg-white p-6
+        shadow-sm md:flex-row"
     >
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Agent Goals</h2>
-        <button
-          className="flex items-center gap-2 rounded-lg border border-[#E5ECF6]
-            px-4 py-2 text-sm font-medium text-gray-700 transition
-            hover:bg-gray-50"
-        >
-          <svg
-            width="18"
-            height="18"
-            fill="none"
-            stroke="#222"
-            strokeWidth="1.5"
-            viewBox="0 0 24 24"
-          >
-            <rect x="4" y="4" width="16" height="16" rx="2" />
-            <path d="M9 12h6M12 9v6" />
-          </svg>
-          Edit
-        </button>
+      <div className="flex flex-1 flex-col items-start gap-1">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-3 w-32" />
       </div>
-      <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
-        {goals.map((goal) => (
-          <GoalCard
-            key={goal.label}
-            label={goal.label}
-            currentValue={goal.currentValue}
-            targetValue={goal.targetValue}
-            trend={goal.trend}
-          />
-        ))}
+      <div className="flex items-center justify-center">
+        <Skeleton className="h-16 w-16 rounded-full" />
       </div>
     </div>
   );
 }
 
-function Trend({ value }: { value: number }) {
-  const isPositive = value >= 0;
-  return (
-    <div
-      className={cn(
-        "mt-2 flex items-center gap-1 text-xs font-medium",
-        isPositive ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500",
-        "w-fit rounded-full px-2 py-0.5",
-      )}
-    >
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path
-          d={isPositive ? "M2 8l4-4 4 4" : "M2 6l4 4 4-4"}
-          stroke={isPositive ? "#22C55E" : "#EF4444"}
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      {isPositive ? `+${value}%` : `${value}%`}
-    </div>
-  );
-}
+function GoalCard({ goal }: { goal: Goal }) {
+  const target = parseFloat(goal.target ?? "0");
+  const achieved = parseFloat(goal.achieved ?? "0");
+  const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
 
-function GoalCard({
-  label,
-  currentValue,
-  targetValue,
-  trend,
-}: {
-  label: string;
-  currentValue: number;
-  targetValue: number;
-  trend: number;
-}) {
-  const percent = Math.round((currentValue / targetValue) * 100);
+  const getGoalPeriod = () => {
+    if (goal.endDate) {
+      return `Ends ${format(new Date(goal.endDate), "MMM d, yyyy")}`;
+    }
+    if (goal.recurringDuration) {
+      return `${goal.recurringDuration.charAt(0).toUpperCase() + goal.recurringDuration.slice(1)} Goal`;
+    }
+    return "One-time Goal";
+  };
+
+  const getGoalTypeColor = (type: string | null) => {
+    switch (type) {
+      case "sales":
+        return "bg-blue-100 text-blue-800";
+      case "revenue":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   return (
     <div
@@ -103,14 +138,21 @@ function GoalCard({
         shadow-sm md:flex-row"
     >
       <div className="flex flex-1 flex-col items-start gap-1">
-        <span className="text-md font-medium text-gray-500">{label}</span>
+        <div className="mb-1 flex items-center gap-2">
+          <span className="text-md font-medium text-gray-500">
+            {goal.label}
+          </span>
+          <Badge className={`text-xs ${getGoalTypeColor(goal.goalType)}`}>
+            {goal.goalType?.toUpperCase()}
+          </Badge>
+        </div>
         <span className="text-3xl font-bold text-gray-900">
-          {currentValue.toLocaleString()}
+          {achieved.toLocaleString()}
         </span>
         <span className="text-sm font-normal text-gray-700">
-          {"of target $" + targetValue.toLocaleString()}
+          of target ${target.toLocaleString()}
         </span>
-        <Trend value={trend} />
+        <span className="text-xs text-gray-500">{getGoalPeriod()}</span>
       </div>
       <div className="flex items-center justify-center">
         <ChartRadialText title={`${percent}%`} value={percent} />

@@ -51,6 +51,12 @@ export const premiumFrequency = pgEnum("premium_frequency", [
   "quarterly",
   "annually",
 ]);
+export const goalRecurringDuration = pgEnum("goal_recurring_duration", [
+  "daily",
+  "weekly",
+  "monthly",
+  "yearly",
+]);
 export const status = pgEnum("status", ["active", "disabled", "delete"]);
 export const title = pgEnum("title", [
   "SuperAdmin",
@@ -73,7 +79,7 @@ export const insuranceCompanies = pgTable(
     email: varchar({ length: 255 }).notNull(),
     phone: varchar({ length: 20 }).notNull(),
     website: varchar({ length: 255 }).notNull(),
-    imageUrl: varchar({length: 255}).notNull(),
+    imageUrl: varchar({ length: 255 }).notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "date" }),
@@ -769,11 +775,12 @@ export const documents = pgTable(
   ],
 );
 
-export const profileRelations = relations(profile, ({ one }) => ({
+export const profileRelations = relations(profile, ({ one, many }) => ({
   users: one(users, {
     fields: [profile.userId],
     references: [users.id],
   }),
+  goals: many(goals),
 }));
 
 export const usersInAuthRelations = relations(users, ({ many }) => ({
@@ -910,9 +917,87 @@ export const userPermissionsEnhancedRelations = relations(
   }),
 );
 
+export const goals = pgTable(
+  "goals",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    profileId: uuid("profile_id").notNull(),
+    label: varchar().notNull(),
+    target: numeric({ precision: 15, scale: 2 }),
+    endDate: date("end_date", { mode: "date" }),
+    goalType: varchar("goal_type").default("sales"),
+    recurringDuration: goalRecurringDuration("recurring_duration"),
+    achieved: numeric({ precision: 15, scale: 2 }).default("0").notNull(),
+    lastResetDate: timestamp("last_reset_date", {
+      withTimezone: true,
+      mode: "date",
+    }).defaultNow(),
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+      mode: "date",
+    }).defaultNow(),
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+      mode: "date",
+    }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "date" }),
+  },
+  (table) => [
+    index("idx_goals_profile_id").using(
+      "btree",
+      table.profileId.asc().nullsLast().op("uuid_ops"),
+    ),
+    index("idx_goals_deleted_at")
+      .using("btree", table.deletedAt.asc().nullsLast().op("timestamptz_ops"))
+      .where(sql`(deleted_at IS NULL)`),
+    index("idx_goals_end_date").using(
+      "btree",
+      table.endDate.asc().nullsLast().op("date_ops"),
+    ),
+    foreignKey({
+      columns: [table.profileId],
+      foreignColumns: [profile.id],
+      name: "goals_profile_id_fkey",
+    })
+      .onUpdate("cascade")
+      .onDelete("cascade"),
+    pgPolicy("Users can view their own goals", {
+      as: "permissive",
+      for: "select",
+      to: ["authenticated"],
+      using: sql`(profile_id IN (SELECT id FROM profile WHERE user_id = auth.uid()))`,
+    }),
+    pgPolicy("Users can create their own goals", {
+      as: "permissive",
+      for: "insert",
+      to: ["authenticated"],
+      withCheck: sql`(profile_id IN (SELECT id FROM profile WHERE user_id = auth.uid()))`,
+    }),
+    pgPolicy("Users can update their own goals", {
+      as: "permissive",
+      for: "update",
+      to: ["authenticated"],
+      using: sql`(profile_id IN (SELECT id FROM profile WHERE user_id = auth.uid()))`,
+    }),
+    pgPolicy("Users can delete their own goals", {
+      as: "permissive",
+      for: "delete",
+      to: ["authenticated"],
+      using: sql`(profile_id IN (SELECT id FROM profile WHERE user_id = auth.uid()))`,
+    }),
+  ],
+);
+
 export const documentsRelations = relations(documents, ({ one }) => ({
   users: one(users, {
     fields: [documents.uploadedBy],
     references: [users.id],
+  }),
+}));
+
+export const goalsRelations = relations(goals, ({ one }) => ({
+  profile: one(profile, {
+    fields: [goals.profileId],
+    references: [profile.id],
   }),
 }));
