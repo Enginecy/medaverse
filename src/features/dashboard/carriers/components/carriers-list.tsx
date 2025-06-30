@@ -40,12 +40,14 @@ export function CarriersList() {
 
 function CarriersListSkeleton() {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-5">
       {Array.from({ length: 6 }).map((_, idx) => (
-        <Card key={idx} className="flex h-32 w-40 items-center justify-center">
-          <Skeleton className="mb-2 h-24 w-24 rounded-full" />
-          <Skeleton className="h-4 w-20" />
-        </Card>
+        <div
+          key={idx}
+          className="h-40 w-60 rounded-2xl border-4 border-gray-100 bg-white p-2 flex items-center justify-center"
+        >
+          <Skeleton className="h-[120px] w-[190px] rounded-md bg-gray-200" />
+        </div>
       ))}
     </div>
   );
