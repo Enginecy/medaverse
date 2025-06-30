@@ -6,9 +6,11 @@ import Image from "next/image";
 export function CarrierContainer({
   imageUrl,
   link,
+  id,
 }: {
   imageUrl: string;
   link: string;
+  id: string;
 }) {
   return (
     <div className="relative">
@@ -27,7 +29,7 @@ export function CarrierContainer({
           />
         </div>
       </Button>
-       <DeleteCarrierButton/>
+       <DeleteCarrierButton id={id} />
     </div>
   );
 }

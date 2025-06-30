@@ -1,10 +1,11 @@
 import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
+import { deleteCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
 import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
 import { useMutation } from "@tanstack/react-query";
 import { X } from "lucide-react";
 
-export function DeleteCarrierButton() {
+export function DeleteCarrierButton({id}:{id : string}) {
     
   const showDialog = useShowDialog();
   const handleDeleteCarrier = () => {
@@ -29,11 +30,11 @@ export function DeleteCarrierButton() {
         <DeleteDialog
           title="Delete Carrier"
           content="Are you sure you want to delete this carrier?"
-          onSubmit={() => Promise.resolve()}
+          onSubmit={deleteCarrier}
           onSuccess={onSuccess}
           onError={onError}
           onCancel={() => resolve(false)}
-          variables={{}}
+          variables={id}
         />
       );
     });
