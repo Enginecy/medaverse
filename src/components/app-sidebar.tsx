@@ -1,5 +1,12 @@
 "use client";
-import { DollarSign, Grid2x2, LogOut, Settings, Users } from "lucide-react";
+import {
+  DollarSign,
+  Grid2x2,
+  LogOut,
+  Settings,
+  Users,
+  File,
+} from "lucide-react";
 import Image from "next/image";
 import logo from "public/meda_health_logo.png";
 
@@ -34,6 +41,11 @@ const items = [
     title: "Sales",
     url: "/dashboard/sales",
     icon: DollarSign,
+  },
+  {
+    title: "Documents Management",
+    url: "/dashboard/docs-management",
+    icon: File,
   },
   {
     title: "Admin Settings",

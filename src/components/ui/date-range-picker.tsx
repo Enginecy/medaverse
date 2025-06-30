@@ -96,8 +96,8 @@ const PRESETS: Preset[] = [
 
 /** The DateRangePicker component allows a user to select a range of dates */
 export const DateRangePicker: FC<DateRangePickerProps> = ({
-  initialDateFrom = new Date(new Date().setHours(0, 0, 0, 0)),
-  initialDateTo,
+  initialDateFrom = new Date(new Date().setDate(new Date().getDate() - 30)),
+  initialDateTo = new Date(),
   initialCompareFrom,
   initialCompareTo,
   onUpdate,

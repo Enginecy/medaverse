@@ -2,19 +2,15 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ProfileButton } from "@/features/dashboard/home/components/profile_button";
-import { DockIcon, MailIcon, Newspaper, TruckIcon } from "lucide-react";
+import { MailIcon, Newspaper, TruckIcon } from "lucide-react";
+import Link from "next/link";
 import Link from "next/link";
 
 const navItems = [
   {
     title: "News",
     icon: Newspaper,
-    link : "/dashboard/news",
-  },
-  {
-    title: "Docs",
-    icon: DockIcon,
-    link : "/dashboard/docs",
+    href: "/dashboard/news",
   },
   {
     title: "MedaMail",
@@ -41,12 +37,14 @@ export default function RootLayout({
               justify-end gap-4 border-b px-4"
           >
             {navItems.map((item) => (
-              <Button key={item.title} variant={"outline"} className="py-6" asChild>
+              <Link href={item.href ?? "#"} key={item.title}>
+                <Button variant={"outline"} className="py-6" asChild>
                 <Link href={item.link} >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.title}</span>
-                </Link>
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.title}</span>
+                  </Link>
               </Button>
+              </Link>
             ))}
             <ProfileButton />
           </nav>
