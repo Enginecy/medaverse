@@ -6,9 +6,9 @@ import { useShowDrawer } from "@/lib/react-utils";
 import {Plus } from "lucide-react";
 
 export function AddCarrierButton() {
-  const useDrawer = useShowDrawer();
+  const showDrawer = useShowDrawer();
   const handleAddClick = () => {
-    useDrawer((resolve) => <AddCarrierDrawer resolve={resolve} />);
+    showDrawer((resolve) => <AddCarrierDrawer resolve={resolve} />);
   };
 
   return (

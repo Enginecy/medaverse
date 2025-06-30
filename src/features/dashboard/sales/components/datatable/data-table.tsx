@@ -135,7 +135,7 @@ export function SalesTable() {
                   onClick={() => {
                     showDrawer((resolve) => (
                       <SaleInfoDrawer
-                        closeDrawer={resolve}
+                        // closeDrawer={resolve}
                         selectedRow={row.original}
                       />
                     ));

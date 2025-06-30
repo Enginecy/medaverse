@@ -1,7 +1,6 @@
 "use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, users } from "@/db/schema";
-import { createAdminClient } from "@/lib/supabase/server";
 import { eq } from "drizzle-orm";
 
 export async function getUpComingDBs() {

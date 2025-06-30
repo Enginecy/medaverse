@@ -11,10 +11,18 @@ export const ModalContext = createContext<{
   closeDialog: () => void;
    
 }>({
-  openDrawer: () => {},
-  closeDrawer: () => {},
-  openDialog: () => {},
-  closeDialog: () => {},
+  openDrawer: () => {
+    throw new Error("openDrawer function not implemented");
+  },
+  closeDrawer: () => {
+    throw new Error("closeDrawer function not implemented");
+  },
+  openDialog: () => {
+    throw new Error("openDialog function not implemented");
+  },
+  closeDialog: () => {
+    throw new Error("closeDialog function not implemented");
+  },
 });
 
 export function ModalProvider({ children }: { children: React.ReactNode }) {
