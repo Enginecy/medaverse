@@ -7,8 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function createCarrier(data: AddCarrierFormData) {
  try{
-    alert("Creating carrier...");
-     const drizzle = await createDrizzleSupabaseClient();
+  const drizzle = await createDrizzleSupabaseClient();
   const supabase = await createClient();
   
   
@@ -17,22 +16,22 @@ export async function createCarrier(data: AddCarrierFormData) {
     const fileExt = file.name.split(".").pop();
     const fileName = `${carrierId}/carrier.${fileExt}`;
     const { error: uploadError } = await supabase.storage
-          .from("carrier-images")
+          .from("company-images")
           .upload(fileName, file, { upsert: true });
    if (uploadError)
       throw { message: "Failed to upload file", error: uploadError };
-  const  uploadedFileName = fileName;
+  
 
-const {
+  const {
       data: { publicUrl },
-    } = supabase.storage.from("profile-images").getPublicUrl(fileName);
+    } = supabase.storage.from("company-images").getPublicUrl(fileName);
+
   const carrier = await drizzle.rls(async (tx) => {
     return tx
       .insert(insuranceCompanies)
       .values({
-        code: "",
+        code: data.code,
         //TDOD: generate a code or something 
-        id: carrierId,
         name: data.companyName,
         email: data.email,
         phone: data.phoneNumber,
@@ -46,6 +45,6 @@ const {
   return {success : true , carrier: carrier};
  }catch (error) {
     console.error("Error creating carrier:", error);
-    return { success: false, error: "Failed to create carrier" };
+    throw { success: false, message: "Failed to create carrier" };
  }
 }
