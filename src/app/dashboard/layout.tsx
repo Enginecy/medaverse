@@ -4,7 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { ProfileButton } from "@/features/dashboard/home/components/profile_button";
 import { MailIcon, Newspaper, TruckIcon } from "lucide-react";
 import Link from "next/link";
-import Link from "next/link";
+
 
 const navItems = [
   {
@@ -15,12 +15,12 @@ const navItems = [
   {
     title: "MedaMail",
     icon: MailIcon,
-    link : "/dashboard/medamail",
+    href : "/dashboard/medamail",
   },
   {
     title: "Carriers",
     icon: TruckIcon,
-    link : "/dashboard/carriers",
+    href : "/dashboard/carriers",
   },
 ];
 
@@ -39,10 +39,8 @@ export default function RootLayout({
             {navItems.map((item) => (
               <Link href={item.href ?? "#"} key={item.title}>
                 <Button variant={"outline"} className="py-6" asChild>
-                <Link href={item.link} >
                     <item.icon className="h-5 w-5" />
                     <span>{item.title}</span>
-                  </Link>
               </Button>
               </Link>
             ))}
