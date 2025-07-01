@@ -3,12 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { AddCarrierDrawer } from "@/features/dashboard/carriers/components/add-carrier-drawer";
 import { useShowDrawer } from "@/lib/react-utils";
-import {Plus, SquarePen } from "lucide-react";
+import {Plus } from "lucide-react";
 
 export function AddCarrierButton() {
-  const useDrawer = useShowDrawer();
+  const showDrawer = useShowDrawer();
   const handleAddClick = () => {
-    useDrawer((resolve) => <AddCarrierDrawer resolve={resolve} />);
+    showDrawer((resolve) => <AddCarrierDrawer resolve={resolve} />);
   };
 
   return (

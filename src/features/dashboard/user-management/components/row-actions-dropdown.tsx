@@ -16,7 +16,7 @@ import {
   useShowDialog,
   useShowDrawer,
 } from "@/lib/react-utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query"; // Import useQueryClient
+import {  useQueryClient } from "@tanstack/react-query"; // Import useQueryClient
 import { Copy, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 
 export function RowActionsDropdown({ user }: { user: User }) {

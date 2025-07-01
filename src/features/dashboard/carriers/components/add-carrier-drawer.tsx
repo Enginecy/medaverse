@@ -62,16 +62,16 @@ export function AddCarrierDrawer({
       showSonnerToast({
         message: "Carrier added successfully!",
         type: "success",
-      }),
+      });
         queryClient.invalidateQueries({ queryKey: ["carriers"] });
       resolve({ success: true });
     },
-    onError: (error: any) => {
+    onError: () => {
       showSonnerToast({
-        message: error.message || "Failed to add carrier",
+        message:  "Failed to add carrier",
         type: "error",
-      }),
-        resolve({ success: false, error });
+      });
+        resolve({ success: false });
     },
   });
   const onSubmit = (data: AddCarrierFormData) => {

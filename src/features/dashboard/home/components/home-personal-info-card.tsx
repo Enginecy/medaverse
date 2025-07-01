@@ -69,8 +69,10 @@ export async function PersonalInfoCard() {
                   <div className="flex flex-col gap-3">
                     <p className="text-lg font-semibold">{profile?.name}</p>
                     <p className="text-md text-muted-foreground">
-                      {/* {profile?.role} */}
+                      {/* {profile?.role} 
+                      
                       //TODO: Add user role when available
+                      */}
                     </p>
                   </div>
                 </Suspense>
