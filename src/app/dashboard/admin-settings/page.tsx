@@ -6,7 +6,12 @@ import { RolesTable } from "@/features/dashboard/admin-settings/components/table
 import { UserRolesTable } from "@/features/dashboard/admin-settings/components/tables/user-roles-table";
 import { UserPermissionsTable } from "@/features/dashboard/admin-settings/components/tables/user-permissions-table";
 import { Shield, Users, Lock, Settings } from "lucide-react";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+title: "Admin Settings - Dashboard",
+description: "Manage system resources, permissions, roles, and user access.",
+};
 export default function AdminSettingsPage() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
