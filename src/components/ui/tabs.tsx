@@ -76,7 +76,7 @@ const TabsList = React.forwardRef<
   }, [updateIndicator]);
 
   return (
-    <div className="relative" ref={tabsListRef}>
+    <div className="relative h-full" ref={tabsListRef}>
       <TabsPrimitive.List
         ref={ref}
         data-slot="tabs-list"
@@ -88,7 +88,7 @@ const TabsList = React.forwardRef<
         {...props}
       />
       <div
-        className="bg-primary dark:border-input dark:bg-input/30 absolute
+        className="bg-primary dark:border-input dark:bg-primary absolute
           rounded-md border border-transparent shadow-sm transition-all
           duration-300 ease-in-out"
         style={indicatorStyle}

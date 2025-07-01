@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { SupabaseClientProvider } from "@/lib/supabase/provider";
 import { QueryProvider } from "@/providers/client-query";
 import { ModalProvider } from "@/providers/modal";
+import { ThemeProvider } from "@/providers/theme";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -25,10 +26,12 @@ export default function RootLayout({
       <SupabaseClientProvider>
         <html lang="en" className={`${urbanist.className}`}>
           <body>
-            <ModalProvider>
-              {children}
-              <Toaster />
-            </ModalProvider>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+              <ModalProvider>
+                {children}
+                <Toaster />
+              </ModalProvider>
+            </ThemeProvider>
           </body>
         </html>
       </SupabaseClientProvider>

@@ -1,16 +1,42 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useEffect, useRef, useState } from "react";
 
 type UserChipProps = {
+  size?: "sm" | "md" | "lg";
   user: {
     name: string;
     email?: string | null;
     avatar?: string;
   };
 };
-export function UserChip({ user }: UserChipProps) {
+export function UserChip({ user, size = "md" }: UserChipProps) {
+  const sizeClass = {
+    sm: "h-8 w-8",
+    md: "h-10 w-10",
+    lg: "h-12 w-12",
+  };
+  const [animate, setAnimate] = useState(false);
+  const prevUser = useRef(user);
+
+  useEffect(() => {
+    if (
+      prevUser.current.name !== user.name ||
+      prevUser.current.email !== user.email ||
+      prevUser.current.avatar !== user.avatar
+    ) {
+      setAnimate(true);
+      prevUser.current = user;
+      const timeout = setTimeout(() => setAnimate(false), 700);
+      return () => clearTimeout(timeout);
+    }
+  }, [user]);
+
   return (
-    <div className="flex items-center gap-3">
-      <Avatar className="h-8 w-8">
+    <div
+      className={`flex items-center gap-3
+        ${animate ? "animate-bottom-to-top" : ""}`}
+    >
+      <Avatar className={sizeClass[size]}>
         <AvatarImage src={user.avatar} />
       </Avatar>
       <div>
