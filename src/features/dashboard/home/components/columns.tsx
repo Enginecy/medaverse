@@ -26,8 +26,10 @@ export const columns: ColumnDef<
               {row.original.user.name}
             </span>
             <span className="text-muted-foreground text-sm">
-              {/* {row.original.user.role} */}
+              {/* {row.original.user.role}
               //TODO: Add user role when available
+              
+              */}
             </span>
           </div>
         </div>

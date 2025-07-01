@@ -8,10 +8,10 @@ import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Accordion } from "@/components/ui/accordion";
 
 export function SaleInfoDrawer({
-  closeDrawer,
+  // closeDrawer,
   selectedRow,
 }: {
-  closeDrawer: (value: unknown) => void;
+  // closeDrawer: (value: unknown) => void;
 
   selectedRow: Sale;
 }) {

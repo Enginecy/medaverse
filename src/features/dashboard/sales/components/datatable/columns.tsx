@@ -44,8 +44,10 @@ export const columns: ColumnDef<Sale>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const sale = row.original;
+    cell: (
+      // { row }
+    ) => {
+      // const sale = row.original;
       return <p>Actions</p>;
       // return <RowActionsDropdown sale={sale} />;
     },

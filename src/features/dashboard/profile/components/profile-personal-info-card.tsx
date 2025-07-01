@@ -36,8 +36,10 @@ export async function ProfilePersonalInfoCard() {
                 <div>
                   <p className="text-lg font-semibold">{user?.profile?.name}</p>
                   <p className="text-md text-muted-foreground">
-                    {/* {user?.profile?.role}  */}
+                    {/* {user?.profile?.role} 
                     // TODO: Add user role when available
+                    
+                    */}
                   </p>
                 </div>
               </div>
