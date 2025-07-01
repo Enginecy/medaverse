@@ -45,7 +45,6 @@ export function DeleteCarrierButton({id}:{id : string}) {
         bg-transparent hover:bg-red-200"
       onClick={(e) => {
         handleDeleteCarrier();
-        2;
       }}
     >
       <X color="black" />
