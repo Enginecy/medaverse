@@ -4,6 +4,7 @@ import { Tabs, TabsLinkTrigger, TabsList } from "@/components/ui/tabs";
 import { AddDocumentButton } from "@/features/dashboard/docs/components/ui/add-document-button";
 import { usePathname } from "next/navigation";
 import React from "react";
+import type { Metadata } from "next";
 
 export default function DocsManagementLayout({
   children,
