@@ -47,7 +47,6 @@ export async function createCarrier(data: AddCarrierFormData) {
 export async function deleteCarrier(id: string) {
   try {
     const drizzle = await createDrizzleSupabaseClient();
-
     await drizzle.rls(async (tx) => {
       return tx
         .delete(insuranceCompanies)
