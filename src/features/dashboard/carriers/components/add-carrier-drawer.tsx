@@ -234,7 +234,7 @@ export function CarrierDrawer({
               </FormItem>
             )}
           />
-          <SheetFooter className="flex flex-row items-stretch">
+          <SheetFooter className="flex flex-row justify-between items-end p-0">
             {isEditing ? (
               <Button
                 className="w-30 bg-red-500 hover:bg-red-400"
