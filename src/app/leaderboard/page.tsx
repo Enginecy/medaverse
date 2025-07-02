@@ -1,6 +1,5 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import logo from "public/meda_health_logo.png";
@@ -8,51 +7,49 @@ import { Tabs, TabsTrigger, TabsList } from "@/components/ui/tabs";
 import { ChartSplineIcon, ClockIcon } from "lucide-react";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 import { LeaderboardTable } from "@/components/leaderboard-table";
+import Link from "next/link";
 
 export default function LeaderboardPage() {
-  const { setTheme } = useTheme();
-
-  useEffect(() => {
-    setTimeout(() => {
-      setTheme("dark");
-    }, 500);
-  }, [setTheme]);
-
   return (
-    <div className="bg-background flex h-screen flex-col items-center gap-4 p-6">
-      <div className="grid w-full grid-cols-4 gap-6">
-        <LogoCard />
-        <TotalCard week />
-        <TotalCard />
+    <>
+      <div
+        className="bg-background flex h-screen flex-col items-center gap-4 p-6"
+      >
+        <div className="grid w-full grid-cols-4 gap-6">
+          <LogoCard />
+          <TotalCard week />
+          <TotalCard />
 
-        <Tabs defaultValue="option1" orientation="vertical">
-          <TabsList
-            className="flex h-full w-full flex-col items-stretch justify-between
-              rounded-3xl border border-zinc-800 bg-zinc-900 p-4"
-          >
-            <TabsTrigger value="option1">This week</TabsTrigger>
-            <TabsTrigger value="option3">This month</TabsTrigger>
-            <TabsTrigger value="option5">All time</TabsTrigger>
-          </TabsList>
-        </Tabs>
+          <Tabs defaultValue="option1" orientation="vertical">
+            <TabsList
+              className="flex h-full w-full flex-col items-stretch
+                justify-between rounded-3xl border border-zinc-800 bg-zinc-900
+                p-4"
+            >
+              <TabsTrigger value="option1">This week</TabsTrigger>
+              <TabsTrigger value="option3">This month</TabsTrigger>
+              <TabsTrigger value="option5">All time</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        <StockCard />
+
+        <div className="grid w-full grid-cols-4 gap-6">
+          <LeaderboardCard />
+          <LeaderboardCard />
+          <LeaderboardCard />
+          <LeaderboardCard />
+        </div>
+
+        <div className="grid w-full grid-cols-4 gap-6">
+          <LeaderboardTable title="Personal Production" />
+          <LeaderboardTable title="Associate Director" />
+          <LeaderboardTable title="Divisional Director" />
+          <LeaderboardTable title="Regional Director" />
+        </div>
       </div>
-
-      <StockCard />
-
-      <div className="grid w-full grid-cols-4 gap-6">
-        <LeaderboardCard />
-        <LeaderboardCard />
-        <LeaderboardCard />
-        <LeaderboardCard />
-      </div>
-
-      <div className="grid w-full grid-cols-4 gap-6">
-        <LeaderboardTable title="Personal Production" />
-        <LeaderboardTable title="Associate Director" />
-        <LeaderboardTable title="Divisional Director" />
-        <LeaderboardTable title="Regional Director" />
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -111,12 +108,14 @@ function LeaderboardCard() {
 
 function LogoCard() {
   return (
-    <div
-      className="flex h-full w-full items-center justify-center rounded-3xl
-        bg-zinc-900 p-6 outline outline-offset-[-1px] outline-zinc-800"
-    >
-      <Image alt="logo" src={logo} className="h-16 w-auto" />
-    </div>
+    <Link href="/dashboard/home">
+      <div
+        className="flex h-full w-full items-center justify-center rounded-3xl
+          bg-zinc-900 p-6 outline outline-offset-[-1px] outline-zinc-800"
+      >
+        <Image alt="logo" src={logo} className="h-16 w-auto" />
+      </div>
+    </Link>
   );
 }
 

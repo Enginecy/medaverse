@@ -75,12 +75,12 @@ export const columns: ColumnDef<User>[] = [
       </Badge>
     ),
   },
-  {
-    accessorKey: "role",
-    header: "Role",
-    // cell: ({ row }) => <p>{row.original.role}</p>, 
-    // TODO: Add user role when available
-  },
+  // {
+  //   accessorKey: "role",
+  //   header: "Role",
+  //   // cell: ({ row }) => <p>{row.original.role}</p>,
+  //   // TODO: Add user role when available
+  // },
   {
     id: "actions",
     enableHiding: false,

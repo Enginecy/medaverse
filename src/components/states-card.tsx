@@ -1,14 +1,17 @@
 "use client";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { USAMapComponent } from "@/components/usa-map";
-import { states, type State } from "@/lib/data";
+import { type State } from "@/lib/data";
 
 export function StatesCard() {
-  const selectedStates: State[] = [...states];
+  const selectedStates: State[] = [
+    { code: "NY", name: "New York" },
+    { code: "FL", name: "Florida" },
+  ];
 
   return (
     <Card className="min-w-[630px] flex-1 items-center justify-center">
-      <CardContent className="flex gap-4">
+      <CardContent className="flex h-full w-full gap-4">
         <div className="flex w-1/3 flex-col gap-6">
           <CardTitle className="flex items-center justify-between gap-2">
             States
@@ -34,7 +37,7 @@ export function StatesCard() {
               ))}
           </div>
         </div>
-        <div className="grow rounded-2xl bg-[#084D851A]">
+        <div className="rounded-2xl bg-[#084D851A]">
           <USAMapComponent selectedStates={selectedStates} />
         </div>
       </CardContent>
