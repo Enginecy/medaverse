@@ -20,8 +20,8 @@ export function CarrierContainer({ carrier}: {carrier: Carrier }) {
       fieldValues={{
         carrierImage: carrier.imageUrl,
         companyName: carrier.name,
-        phoneNumber:carrier.phoneNumber || "",
-        email: "",
+        phoneNumber:carrier.phoneNumber ,
+        email: carrier.email,
         website: carrier.website,
         code: carrier.code,
       }}

@@ -43,6 +43,9 @@ export function CarrierDrawer({
           website: "",
           code: "",
         };
+
+  const isEditing = fieldValues != null;
+
   const form = useForm<AddCarrierFormData>({
     resolver: zodResolver(addCarrierSchema),
     defaultValues: defaultValues,
@@ -191,6 +194,8 @@ export function CarrierDrawer({
             <Button className="w-30" type="submit">
               {isCreating ? (
                 <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
+              ) : isEditing ? (
+                "Update Carrier"
               ) : (
                 "Create Carrier"
               )}
