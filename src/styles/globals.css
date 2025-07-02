@@ -189,7 +189,7 @@
 }
 
 .dark {
-  --background: #1a1a1a; /* neutral-900 */
+  --background: #141414; /* neutral-900 */
   --foreground: #ffffff; /* neutral-white */
   --card: #292929; /* neutral-850 */
   --card-foreground: #ffffff; /* neutral-white */
@@ -229,4 +229,45 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@keyframes fill-bar {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 1;
+  }
+  80% {
+    transform: scaleX(1);
+    transform-origin: left;
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left;
+    opacity: 0;
+  }
+}
+
+.animate-fill-bar {
+  animation: fill-bar 5s linear infinite;
+}
+
+@keyframes bottom-to-top {
+  0% {
+    opacity: 0;
+    transform: translateY(30%);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-2%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-bottom-to-top {
+  animation: bottom-to-top 2s cubic-bezier(0.4, 0, 0.2, 1);
 }

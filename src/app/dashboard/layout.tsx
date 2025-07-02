@@ -2,10 +2,17 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ProfileButton } from "@/features/dashboard/home/components/profile_button";
-import { MailIcon, Newspaper, TruckIcon } from "lucide-react";
+import { MailIcon, Newspaper, TrophyIcon, TruckIcon } from "lucide-react";
+import { ThemeProvider } from "@/providers/theme";
+
 import Link from "next/link";
 
 const navItems = [
+  {
+    title: "Leaderboard",
+    icon: TrophyIcon,
+    href: "/leaderboard",
+  },
   {
     title: "News",
     icon: Newspaper,
@@ -27,27 +34,31 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full">
-        <AppSidebar />
-        <div className="flex flex-1 flex-col">
-          <nav
-            className="border-border bg-card flex h-24 w-full items-center
-              justify-end gap-4 border-b px-4"
-          >
-            {navItems.map((item) => (
-              <Link href={item.href ?? "#"} key={item.title}>
-                <Button variant={"outline"} className="py-6">
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.title}</span>
-                </Button>
-              </Link>
-            ))}
-            <ProfileButton />
-          </nav>
-          <main className="bg-background flex-1 overflow-auto">{children}</main>
+    <ThemeProvider attribute="class" forcedTheme="light" enableSystem>
+      <SidebarProvider>
+        <div className="flex h-screen w-full">
+          <AppSidebar />
+          <div className="flex flex-1 flex-col">
+            <nav
+              className="border-border bg-card flex h-24 w-full items-center
+                justify-end gap-4 border-b px-4"
+            >
+              {navItems.map((item) => (
+                <Link href={item.href ?? "#"} key={item.title}>
+                  <Button variant={"outline"} className="py-6">
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.title}</span>
+                  </Button>
+                </Link>
+              ))}
+              <ProfileButton />
+            </nav>
+            <main className="bg-background flex-1 overflow-auto">
+              {children}
+            </main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }

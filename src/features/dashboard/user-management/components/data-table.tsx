@@ -141,13 +141,34 @@ export function UserManagementTable() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className={
+                        header.column.getCanSort()
+                          ? "hover:bg-muted/50 cursor-pointer select-none"
+                          : ""
+                      }
+                      onClick={() => {
+                        if (header.column.getCanSort()) {
+                          header.column.toggleSorting();
+                        }
+                      }}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
                             header.getContext(),
                           )}
+                      {header.column.getCanSort() && (
+                        <span className="ml-1">
+                          {header.column.getIsSorted() === "asc"
+                            ? "↑"
+                            : header.column.getIsSorted() === "desc"
+                              ? "↓"
+                              : "↕"}
+                        </span>
+                      )}
                     </TableHead>
                   );
                 })}
