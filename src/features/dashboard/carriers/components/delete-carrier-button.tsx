@@ -1,12 +1,14 @@
+"use client";
 import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import { deleteCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
 import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 
-export function DeleteCarrierButton({id}:{id : string}) {
-    
+export function DeleteCarrierButton({ id }: { id: string }) {
+  const queryClient = useQueryClient();
+
   const showDialog = useShowDialog();
   const handleDeleteCarrier = () => {
     showDialog((resolve) => {
@@ -16,6 +18,7 @@ export function DeleteCarrierButton({id}:{id : string}) {
           message: "Carrier deleted successfully.",
           type: "success",
         });
+        queryClient.invalidateQueries({ queryKey: ["carriers"] });
       };
 
       const onError = (error: Error) => {
@@ -41,13 +44,13 @@ export function DeleteCarrierButton({id}:{id : string}) {
   };
   return (
     <Button
-      className="absolute top-0 right-0 z-20 cursor-pointer rounded-full
-        bg-transparent hover:bg-red-200"
+      type="button"
+      className="w-30 bg-red-500 hover:bg-red-400"
       onClick={(e) => {
         handleDeleteCarrier();
       }}
     >
-      <X color="black" />
+      Delete Carrier
     </Button>
   );
 }

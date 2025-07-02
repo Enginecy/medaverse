@@ -31,11 +31,11 @@ export function CarriersList() {
   }
   if (!carriers || carriers.length === 0) {
     return (
-<NoItems
-      message="There are no carriers to display."
-      description="You can add a new carrier by clicking the button above."
-      icon={<CircleAlert/>}
-></NoItems>
+      <NoItems
+        message="There are no carriers to display."
+        description="You can add a new carrier by clicking the button above."
+        icon={<CircleAlert />}
+      ></NoItems>
     );
   }
   return (

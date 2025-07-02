@@ -30,6 +30,7 @@ import {
   updateCarrier,
 } from "@/features/dashboard/carriers/server/actions/carriers";
 import type { Carrier } from "@/features/dashboard/carriers/server/db/carriers";
+import { DeleteCarrierButton } from "@/features/dashboard/carriers/components/delete-carrier-button";
 export function CarrierDrawer({
   resolve,
   fieldValues,
@@ -77,30 +78,7 @@ export function CarrierDrawer({
 
   const queryClient = useQueryClient();
  
-  const { mutate: deleteCarrierData, isPending: isDeleting } = useMutation({
-    mutationFn: deleteCarrier,
-    onSuccess: () => {
-      showSonnerToast({
-        message: "Carrier deleted successfully!",
-        type: "success",
-      });
-      queryClient.invalidateQueries({ queryKey: ["carriers"] });
-      resolve({ success: true });
-    },
-    onError: () => {
-      showSonnerToast({
-        message: "Failed to delete carrier",
-        type: "error",
-      });
-      resolve({ success: false });
-    },
-  });
-
-   const onDelete = () => {
-    if (isEditing === true) {
-      deleteCarrierData(fieldValues?.id!);
-    }
-  };
+  
   
   const { mutate: submitCarrierData, isPending: isLoading } = useMutation({
     mutationFn: async (data: AddCarrierFormData) => {
@@ -239,20 +217,7 @@ export function CarrierDrawer({
           />
           <SheetFooter className="flex flex-row justify-between items-end p-0">
             {isEditing ? (
-              <Button
-                type="button"
-                className="w-30 bg-red-500 hover:bg-red-400"
-                onClick={onDelete}
-              >
-                {isDeleting ? (
-                  <PulseMultiple
-                    className="h-4 w-4 animate-spin"
-                    color="white"
-                  />
-                ) : (
-                  "Delete"
-                )}
-              </Button>
+            <DeleteCarrierButton id={fieldValues.id}/>
             ) : null}
             <Button className="w-30" type="submit">
               {isLoading ? (
