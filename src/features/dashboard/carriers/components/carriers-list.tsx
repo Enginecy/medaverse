@@ -24,7 +24,7 @@ export function CarriersList() {
   if (isError) {
     return <ErrorComponent onRetry={refetch} message="Something went wrong, please try again." />;
   }
-
+ 
   return (
     <div className="flex flex-wrap gap-5">
       {carriers!.map((carrier) => (
