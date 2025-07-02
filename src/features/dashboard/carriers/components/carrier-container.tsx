@@ -17,6 +17,14 @@ export function CarrierContainer({ carrier}: {carrier: Carrier }) {
      (resolve) =>(
       <CarrierDrawer
       resolve={resolve}
+      fieldValues={{
+        carrierImage: carrier.imageUrl,
+        companyName: carrier.name,
+        phoneNumber:carrier.phoneNumber || "",
+        email: "",
+        website: carrier.website,
+        code: carrier.code,
+      }}
       >
 
       </CarrierDrawer>

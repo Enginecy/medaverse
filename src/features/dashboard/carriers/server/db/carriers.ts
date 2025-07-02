@@ -12,6 +12,8 @@ export async function getCarriers() {
   const carrierList = carriers.map((carrier) => ({
     id: carrier.id,
     name: carrier.name,
+    phoneNumber: carrier.phone,
+    email: carrier.email,
     code: carrier.code,
     imageUrl: carrier.imageUrl,
     website: carrier.website,
