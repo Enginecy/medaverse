@@ -76,11 +76,7 @@ export function CarrierDrawer({
       : (form.getValues("carrierImage") as string);
 
   const queryClient = useQueryClient();
-  const onDelete = () => {
-    if (isEditing === true) {
-      deleteCarrierData(fieldValues?.id!);
-    }
-  };
+ 
   const { mutate: deleteCarrierData, isPending: isDeleting } = useMutation({
     mutationFn: deleteCarrier,
     onSuccess: () => {
@@ -99,6 +95,13 @@ export function CarrierDrawer({
       resolve({ success: false });
     },
   });
+
+   const onDelete = () => {
+    if (isEditing === true) {
+      deleteCarrierData(fieldValues?.id!);
+    }
+  };
+  
   const { mutate: submitCarrierData, isPending: isLoading } = useMutation({
     mutationFn: async (data: AddCarrierFormData) => {
       if (isEditing) {
@@ -237,10 +240,11 @@ export function CarrierDrawer({
           <SheetFooter className="flex flex-row justify-between items-end p-0">
             {isEditing ? (
               <Button
+                type="button"
                 className="w-30 bg-red-500 hover:bg-red-400"
                 onClick={onDelete}
               >
-                {isLoading ? (
+                {isDeleting ? (
                   <PulseMultiple
                     className="h-4 w-4 animate-spin"
                     color="white"
