@@ -32,8 +32,8 @@ export function CarriersList() {
   if (!carriers || carriers.length === 0) {
     return (
 <NoItems
-      message="No carriers found"
-      description="There are no carriers to display."
+      message="There are no carriers to display."
+      description="You can add a new carrier by clicking the button above."
       icon={<CircleAlert/>}
 ></NoItems>
     );

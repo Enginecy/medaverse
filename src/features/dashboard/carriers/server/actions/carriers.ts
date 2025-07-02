@@ -50,7 +50,7 @@ export async function deleteCarrier(id: string) {
     await drizzle.rls(async (tx) => {
       return tx.update(insuranceCompanies).set({
         deletedAt: new Date(),
-      });
+      }).where(eq(insuranceCompanies.id, id));
     });
     return { success: true, message: "Carrier deleted successfully" };
   } catch (e) {

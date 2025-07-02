@@ -15,9 +15,14 @@ export function NoItems({
   children?: ReactNode;
 }) {
   return (
-    <div className="mt-10 w-full   px-6 py-10 text-center ">
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow">
+    <div className="mt-10 h-full w-full px-6 py-10 text-center">
+      <div
+        className="flex h-full flex-col items-center justify-center space-y-4"
+      >
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-full
+            bg-white shadow"
+        >
           {icon}
         </div>
         <div>
