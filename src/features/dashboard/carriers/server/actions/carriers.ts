@@ -28,6 +28,7 @@ export async function createCarrier(data: AddCarrierFormData) {
       return tx
         .insert(insuranceCompanies)
         .values({
+          id: carrierId,
           code: data.code,
           name: data.companyName,
           email: data.email,
@@ -48,9 +49,12 @@ export async function deleteCarrier(id: string) {
   try {
     const drizzle = await createDrizzleSupabaseClient();
     await drizzle.rls(async (tx) => {
-      return tx.update(insuranceCompanies).set({
-        deletedAt: new Date(),
-      }).where(eq(insuranceCompanies.id, id));
+      return tx
+        .update(insuranceCompanies)
+        .set({
+          deletedAt: new Date(),
+        })
+        .where(eq(insuranceCompanies.id, id));
     });
     return { success: true, message: "Carrier deleted successfully" };
   } catch (e) {
@@ -58,4 +62,40 @@ export async function deleteCarrier(id: string) {
   }
 }
 
-export async function updateCarrier(data: AddCarrierFormData) {}
+export async function updateCarrier(
+  data: AddCarrierFormData,
+  carrierId: string,
+) {
+  try {
+    const drizzle = await createDrizzleSupabaseClient();
+    const supabase = await createClient();
+
+    if (data.carrierImage instanceof File) {
+      const file = data.carrierImage as File;
+      const fileName = `${carrierId}/carrier.jpg`;
+      const { error: uploadError } = await supabase.storage
+        .from("company-images")
+        .upload(fileName, file, { upsert: true });
+      if (uploadError)
+        throw { message: "Failed to upload file", error: uploadError };
+    }
+
+    const carrier = await drizzle.rls(async (tx) => {
+      return tx
+        .update(insuranceCompanies)
+        .set({
+          code: data.code,
+          name: data.companyName,
+          email: data.email,
+          phone: data.phoneNumber,
+          website: data.website,
+        })
+        .where(eq(insuranceCompanies.id, carrierId))
+        .returning();
+    });
+    return { success: true, carrier: carrier };
+  } catch (error) {
+    console.error("Error creating carrier:", error);
+    throw { success: false, message: "Failed to create carrier" };
+  }
+}

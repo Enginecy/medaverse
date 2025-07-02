@@ -48,7 +48,7 @@ export function CarrierDrawer({
           code: fieldValues.code,
       }
       : {
-          carrierImage: "",
+          carrierImage: new File([], ""),
           companyName: "",
           phoneNumber: "",
           email: "",
@@ -105,7 +105,7 @@ export function CarrierDrawer({
   const { mutate: submitCarrierData, isPending: isLoading } = useMutation({
     mutationFn: async (data: AddCarrierFormData) => {
       if (isEditing) {
-        await updateCarrier(data);
+        await updateCarrier(data , fieldValues!.id!);
       } else {
         await createCarrier(data);
       }
