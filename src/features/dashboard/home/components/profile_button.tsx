@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
+//TODO: onhover text should be white
 function ProfileButtonSkeleton() {
   return (
     <Button variant="outline" className="py-6" asChild>

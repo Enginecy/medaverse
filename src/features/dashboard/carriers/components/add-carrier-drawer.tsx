@@ -24,22 +24,44 @@ import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showSonnerToast } from "@/lib/react-utils";
 import { PulseMultiple } from "react-svg-spinners";
-import { createCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
-export function AddCarrierDrawer({
+import {
+  createCarrier,
+  deleteCarrier,
+  updateCarrier,
+} from "@/features/dashboard/carriers/server/actions/carriers";
+import type { Carrier } from "@/features/dashboard/carriers/server/db/carriers";
+import { DeleteCarrierButton } from "@/features/dashboard/carriers/components/delete-carrier-button";
+export function CarrierDrawer({
   resolve,
+  fieldValues,
 }: {
   resolve: (_: unknown) => void;
+  fieldValues?: Carrier;
 }) {
+  const defaultValues =
+    fieldValues != null
+      ? {
+          carrierImage: fieldValues.imageUrl,
+          companyName: fieldValues.name,
+          phoneNumber: fieldValues.phoneNumber,
+          email: fieldValues.email,
+          website: fieldValues.website,
+          code: fieldValues.code,
+      }
+      : {
+          carrierImage: new File([], ""),
+          companyName: "",
+          phoneNumber: "",
+          email: "",
+          website: "",
+          code: "",
+        };
+
+  const isEditing = fieldValues != null;
+
   const form = useForm<AddCarrierFormData>({
     resolver: zodResolver(addCarrierSchema),
-    defaultValues: {
-      carrierImage: "",
-      companyName: "",
-      phoneNumber: "",
-      email: "",
-      website: "",
-      code: "",
-    },
+    defaultValues: defaultValues,
   });
   const removeImage = () => {
     form.setValue("carrierImage", new File([], ""));
@@ -55,27 +77,39 @@ export function AddCarrierDrawer({
       : (form.getValues("carrierImage") as string);
 
   const queryClient = useQueryClient();
-
-  const { mutate: submitCreateCarrier, isPending: isCreating } = useMutation({
-    mutationFn: (data: AddCarrierFormData) => createCarrier(data),
+ 
+  
+  
+  const { mutate: submitCarrierData, isPending: isLoading } = useMutation({
+    mutationFn: async (data: AddCarrierFormData) => {
+      if (isEditing) {
+        await updateCarrier(data , fieldValues!.id!);
+      } else {
+        await createCarrier(data);
+      }
+    },
     onSuccess: () => {
       showSonnerToast({
-        message: "Carrier added successfully!",
+        message: isEditing
+          ? "Carrier updated successfully!"
+          : "Carrier added successfully!",
         type: "success",
       });
-        queryClient.invalidateQueries({ queryKey: ["carriers"] });
+      queryClient.invalidateQueries({ queryKey: ["carriers"] });
       resolve({ success: true });
     },
     onError: () => {
       showSonnerToast({
-        message:  "Failed to add carrier",
+        message: isEditing
+          ? "Failed to update carrier"
+          : "Failed to add carrier",
         type: "error",
       });
-        resolve({ success: false });
+      resolve({ success: false });
     },
   });
   const onSubmit = (data: AddCarrierFormData) => {
-    submitCreateCarrier(data);
+    submitCarrierData(data);
   };
   return (
     <SheetContent className="w-1/3 overflow-auto p-6">
@@ -181,10 +215,15 @@ export function AddCarrierDrawer({
               </FormItem>
             )}
           />
-          <SheetFooter className="flex items-end">
-            <Button className="w-30" type="submit">
-              {isCreating ? (
+          <SheetFooter className=" flex flex-row justify-justify-end items-end p-0">
+            {isEditing ? (
+            <DeleteCarrierButton id={fieldValues.id}/>
+            ) : null}
+            <Button className="w-30 ml-auto" type="submit">
+              {isLoading ? (
                 <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
+              ) : isEditing ? (
+                "Update Carrier"
               ) : (
                 "Create Carrier"
               )}

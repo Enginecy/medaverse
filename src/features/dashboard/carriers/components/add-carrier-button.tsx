@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { AddCarrierDrawer } from "@/features/dashboard/carriers/components/add-carrier-drawer";
+import { CarrierDrawer } from "@/features/dashboard/carriers/components/add-carrier-drawer";
 import { useShowDrawer } from "@/lib/react-utils";
 import {Plus } from "lucide-react";
 
 export function AddCarrierButton() {
   const showDrawer = useShowDrawer();
   const handleAddClick = () => {
-    showDrawer((resolve) => <AddCarrierDrawer resolve={resolve} />);
+    showDrawer((resolve) => <CarrierDrawer resolve={resolve} />);
   };
 
   return (
