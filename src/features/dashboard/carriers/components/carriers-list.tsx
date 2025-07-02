@@ -28,8 +28,7 @@ export function CarriersList() {
       {carriers!.map((carrier) => (
         <CarrierContainer
           key={carrier.id}
-          imageUrl={carrier.imageUrl}
-          link={carrier.website}
+          carrier={carrier}
         />
       ))}
     </div>
