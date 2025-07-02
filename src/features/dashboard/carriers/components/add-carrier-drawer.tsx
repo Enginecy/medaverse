@@ -39,7 +39,14 @@ export function CarrierDrawer({
 }) {
   const defaultValues =
     fieldValues != null
-      ? fieldValues
+      ? {
+          carrierImage: fieldValues.imageUrl,
+          companyName: fieldValues.name,
+          phoneNumber: fieldValues.phoneNumber,
+          email: fieldValues.email,
+          website: fieldValues.website,
+          code: fieldValues.code,
+      }
       : {
           carrierImage: "",
           companyName: "",
@@ -227,13 +234,12 @@ export function CarrierDrawer({
               </FormItem>
             )}
           />
-          <SheetFooter className="flex flex-row items-end justify-between">
+          <SheetFooter className="flex flex-row items-stretch">
             {isEditing ? (
               <Button
                 className="w-30 bg-red-500 hover:bg-red-400"
                 onClick={onDelete}
               >
-                {/* TODO: make the delete logic */}
                 {isLoading ? (
                   <PulseMultiple
                     className="h-4 w-4 animate-spin"
