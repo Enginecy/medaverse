@@ -2,11 +2,12 @@
 
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { insuranceCompanies } from "@/db/schema";
+import { isNull } from "drizzle-orm"; 
 
 export async function getCarriers() {
   const db = await createDrizzleSupabaseClient();
   const carriers = await db.rls((tx) => {
-    return tx.select().from(insuranceCompanies);
+    return tx.select().from(insuranceCompanies).where(isNull(insuranceCompanies.deletedAt));
   });
   // Map carriers to extract id, name, and other fields as needed
   const carrierList = carriers.map((carrier) => ({
