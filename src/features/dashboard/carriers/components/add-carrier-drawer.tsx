@@ -215,11 +215,11 @@ export function CarrierDrawer({
               </FormItem>
             )}
           />
-          <SheetFooter className="flex flex-row justify-between items-end p-0">
+          <SheetFooter className=" flex flex-row justify-justify-end items-end p-0">
             {isEditing ? (
             <DeleteCarrierButton id={fieldValues.id}/>
             ) : null}
-            <Button className="w-30" type="submit">
+            <Button className="w-30 ml-auto" type="submit">
               {isLoading ? (
                 <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
               ) : isEditing ? (
