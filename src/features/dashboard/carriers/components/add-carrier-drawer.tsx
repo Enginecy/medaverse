@@ -26,14 +26,16 @@ import { showSonnerToast } from "@/lib/react-utils";
 import { PulseMultiple } from "react-svg-spinners";
 import {
   createCarrier,
+  deleteCarrier,
   updateCarrier,
 } from "@/features/dashboard/carriers/server/actions/carriers";
+import type { Carrier } from "@/features/dashboard/carriers/server/db/carriers";
 export function CarrierDrawer({
   resolve,
   fieldValues,
 }: {
   resolve: (_: unknown) => void;
-  fieldValues?: AddCarrierFormData;
+  fieldValues?: Carrier;
 }) {
   const defaultValues =
     fieldValues != null
@@ -67,7 +69,29 @@ export function CarrierDrawer({
       : (form.getValues("carrierImage") as string);
 
   const queryClient = useQueryClient();
-  const onDelete = () => {};
+  const onDelete = () => {
+    if (isEditing === true) {
+      deleteCarrierData(fieldValues?.id!);
+    }
+  };
+  const { mutate: deleteCarrierData, isPending: isDeleting } = useMutation({
+    mutationFn: deleteCarrier,
+    onSuccess: () => {
+      showSonnerToast({
+        message: "Carrier deleted successfully!",
+        type: "success",
+      });
+      queryClient.invalidateQueries({ queryKey: ["carriers"] });
+      resolve({ success: true });
+    },
+    onError: () => {
+      showSonnerToast({
+        message: "Failed to delete carrier",
+        type: "error",
+      });
+      resolve({ success: false });
+    },
+  });
   const { mutate: submitCarrierData, isPending: isLoading } = useMutation({
     mutationFn: async (data: AddCarrierFormData) => {
       if (isEditing) {
@@ -204,17 +228,22 @@ export function CarrierDrawer({
             )}
           />
           <SheetFooter className="flex flex-row items-end justify-between">
-            <Button
-              className="w-30 bg-red-500 hover:bg-red-400"
-              onClick={onDelete}
-            >
-              {/* TODO: make the delete logic */}
-              {isLoading ? (
-                <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
-              ) : (
-                "Delete"
-              )}
-            </Button>
+            {isEditing ? (
+              <Button
+                className="w-30 bg-red-500 hover:bg-red-400"
+                onClick={onDelete}
+              >
+                {/* TODO: make the delete logic */}
+                {isLoading ? (
+                  <PulseMultiple
+                    className="h-4 w-4 animate-spin"
+                    color="white"
+                  />
+                ) : (
+                  "Delete"
+                )}
+              </Button>
+            ) : null}
             <Button className="w-30" type="submit">
               {isLoading ? (
                 <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
