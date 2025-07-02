@@ -48,10 +48,9 @@ export async function deleteCarrier(id: string) {
   try {
     const drizzle = await createDrizzleSupabaseClient();
     await drizzle.rls(async (tx) => {
-      return tx
-        .delete(insuranceCompanies)
-        .where(eq(insuranceCompanies.id, id))
-        .returning();
+      return tx.update(insuranceCompanies).set({
+        deletedAt: new Date(),
+      });
     });
     return { success: true, message: "Carrier deleted successfully" };
   } catch (e) {
@@ -59,6 +58,4 @@ export async function deleteCarrier(id: string) {
   }
 }
 
-export async function updateCarrier(data: AddCarrierFormData) {
-  
-}
+export async function updateCarrier(data: AddCarrierFormData) {}
