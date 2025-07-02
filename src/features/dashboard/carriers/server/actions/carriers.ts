@@ -58,3 +58,7 @@ export async function deleteCarrier(id: string) {
     throw { success: false, message: "Failed to delete carrier", error: e };
   }
 }
+
+export async function updateCarrier(data: AddCarrierFormData) {
+  
+}

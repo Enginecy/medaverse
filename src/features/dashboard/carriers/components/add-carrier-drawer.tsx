@@ -24,7 +24,10 @@ import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showSonnerToast } from "@/lib/react-utils";
 import { PulseMultiple } from "react-svg-spinners";
-import { createCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
+import {
+  createCarrier,
+  updateCarrier,
+} from "@/features/dashboard/carriers/server/actions/carriers";
 export function CarrierDrawer({
   resolve,
   fieldValues,
@@ -64,12 +67,20 @@ export function CarrierDrawer({
       : (form.getValues("carrierImage") as string);
 
   const queryClient = useQueryClient();
-
-  const { mutate: submitCreateCarrier, isPending: isCreating } = useMutation({
-    mutationFn: (data: AddCarrierFormData) => createCarrier(data),
+  const onDelete = () => {};
+  const { mutate: submitCarrierData, isPending: isLoading } = useMutation({
+    mutationFn: async (data: AddCarrierFormData) => {
+      if (isEditing) {
+        await updateCarrier(data);
+      } else {
+        await createCarrier(data);
+      }
+    },
     onSuccess: () => {
       showSonnerToast({
-        message: "Carrier added successfully!",
+        message: isEditing
+          ? "Carrier updated successfully!"
+          : "Carrier added successfully!",
         type: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["carriers"] });
@@ -77,14 +88,16 @@ export function CarrierDrawer({
     },
     onError: () => {
       showSonnerToast({
-        message: "Failed to add carrier",
+        message: isEditing
+          ? "Failed to update carrier"
+          : "Failed to add carrier",
         type: "error",
       });
       resolve({ success: false });
     },
   });
   const onSubmit = (data: AddCarrierFormData) => {
-    submitCreateCarrier(data);
+    submitCarrierData(data);
   };
   return (
     <SheetContent className="w-1/3 overflow-auto p-6">
@@ -190,9 +203,20 @@ export function CarrierDrawer({
               </FormItem>
             )}
           />
-          <SheetFooter className="flex items-end">
+          <SheetFooter className="flex flex-row items-end justify-between">
+            <Button
+              className="w-30 bg-red-500 hover:bg-red-400"
+              onClick={onDelete}
+            >
+              {/* TODO: make the delete logic */}
+              {isLoading ? (
+                <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
+              ) : (
+                "Delete"
+              )}
+            </Button>
             <Button className="w-30" type="submit">
-              {isCreating ? (
+              {isLoading ? (
                 <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
               ) : isEditing ? (
                 "Update Carrier"
