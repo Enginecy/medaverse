@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { FileSpreadsheet, FileText, FileBox, FileIcon } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function NewsCard({ title, file }: { title: string; file: string }) {
@@ -85,9 +86,11 @@ export function NewsCard({ title, file }: { title: string; file: string }) {
     >
       <CardContent className="flex h-full w-full flex-col p-2">
         {thumbnail?.data ? (
-          <img
+          <Image
             src={thumbnail.data}
             alt={title}
+            width={300}
+            height={200}
             className="h-52 w-full object-cover"
           />
         ) : (

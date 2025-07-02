@@ -1,6 +1,5 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { CarrierContainer } from "@/features/dashboard/carriers/components/carrier-container";
 import { getCarriers } from "@/features/dashboard/carriers/server/db/carriers";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +12,6 @@ export function CarriersList() {
     isLoading,
     isError,
     refetch,
-    error,
   } = useQuery({
     queryKey: ["carriers"],
     queryFn: getCarriers,
@@ -30,9 +28,7 @@ export function CarriersList() {
       {carriers!.map((carrier) => (
         <CarrierContainer
           key={carrier.id}
-          id={carrier.id}
-          imageUrl={carrier.imageUrl}
-          link={carrier.website}
+          carrier={carrier}
         />
       ))}
     </div>

@@ -4,7 +4,11 @@ import { ProfilePersonalInfoCard } from "@/features/dashboard/profile/components
 import { AgentGoals } from "@/features/dashboard/profile/components/agent-goals";
 import { RecentSales } from "@/features/dashboard/profile/components/recent-sales";
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
-
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "View and manage your profile information, goals, and recent sales.",
+};
 export default async function Profile() {
   const sales = await getSales().then((sales) => sales.slice(0, 5));
 

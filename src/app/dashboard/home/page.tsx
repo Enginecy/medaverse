@@ -24,7 +24,11 @@ import type { Goal } from "@/features/dashboard/profile/server/db/goals";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddGoalButton } from "@/features/dashboard/profile/components/modals/add-goal-drawer";
 import { Target, TrendingUp, Calendar, DollarSign } from "lucide-react";
-
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Dashboard Home",
+  description: "Welcome to the dashboard. Explore your data and insights.",
+};
 export default async function Home() {
   const sales = await getSales().then((sales) => sales.slice(0, 5));
 

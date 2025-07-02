@@ -25,21 +25,27 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showSonnerToast } from "@/lib/react-utils";
 import { PulseMultiple } from "react-svg-spinners";
 import { createCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
-export function AddCarrierDrawer({
+export function CarrierDrawer({
   resolve,
+  fieldValues,
 }: {
   resolve: (_: unknown) => void;
+  fieldValues?: AddCarrierFormData;
 }) {
+  const defaultValues =
+    fieldValues != null
+      ? fieldValues
+      : {
+          carrierImage: "",
+          companyName: "",
+          phoneNumber: "",
+          email: "",
+          website: "",
+          code: "",
+        };
   const form = useForm<AddCarrierFormData>({
     resolver: zodResolver(addCarrierSchema),
-    defaultValues: {
-      carrierImage: "",
-      companyName: "",
-      phoneNumber: "",
-      email: "",
-      website: "",
-      code: "",
-    },
+    defaultValues: defaultValues,
   });
   const removeImage = () => {
     form.setValue("carrierImage", new File([], ""));
@@ -62,16 +68,16 @@ export function AddCarrierDrawer({
       showSonnerToast({
         message: "Carrier added successfully!",
         type: "success",
-      }),
-        queryClient.invalidateQueries({ queryKey: ["carriers"] });
+      });
+      queryClient.invalidateQueries({ queryKey: ["carriers"] });
       resolve({ success: true });
     },
-    onError: (error: any) => {
+    onError: () => {
       showSonnerToast({
-        message: error.message || "Failed to add carrier",
+        message: "Failed to add carrier",
         type: "error",
-      }),
-        resolve({ success: false, error });
+      });
+      resolve({ success: false });
     },
   });
   const onSubmit = (data: AddCarrierFormData) => {
