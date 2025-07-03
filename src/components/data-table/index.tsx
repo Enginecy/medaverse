@@ -243,7 +243,7 @@ export function DataTable<TData, TValue>({
   }, new Date());
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       {(title ?? addButton) && (
         <div className="flex items-center justify-between">
           {title && (
