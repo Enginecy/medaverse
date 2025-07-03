@@ -100,7 +100,7 @@ export function SalesTable() {
 
   const canPreviousPage = table.getCanPreviousPage();
   const canNextPage = table.getCanNextPage();
-
+  // TODO: Implement the sale info drawer 
   return (
     <div className="py-6">
 
