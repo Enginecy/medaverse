@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/card";
 
 import { BirthdayTable } from "@/features/dashboard/home/components/birthday-table";
-import { columns } from "@/features/dashboard/home/components/columns";
-import { DataTable } from "@/features/dashboard/home/components/data-table";
+import { recentSalesColumns } from "@/features/dashboard/home/components/columns";
+import { SalesDataTable } from "@/features/dashboard/home/components/data-table";
 import { PersonalInfoCard } from "@/features/dashboard/home/components/home-personal-info-card";
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
 import { getUserGoalsAction } from "@/features/dashboard/profile/server/actions/goals";
@@ -25,13 +25,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddGoalButton } from "@/features/dashboard/profile/components/modals/add-goal-drawer";
 import { Target, TrendingUp, Calendar, DollarSign } from "lucide-react";
 import type { Metadata } from "next";
+import { DataTableSkeleton } from "@/components/data-table";
 export const metadata: Metadata = {
   title: "Dashboard Home",
   description: "Welcome to the dashboard. Explore your data and insights.",
 };
 export default async function Home() {
-  const sales = await getSales().then((sales) => sales.slice(0, 5));
-
   return (
     <div className="flex w-full flex-col items-start gap-6 p-6">
       <div className="flex w-full items-stretch gap-6">
@@ -53,7 +52,9 @@ export default async function Home() {
             </CardAction>
           </CardHeader>
           <CardContent className="px-6">
-            <DataTable columns={columns} data={sales} />
+            <Suspense fallback={<DataTableSkeleton/>}>
+              <SalesDataTable />
+            </Suspense>
           </CardContent>
         </Card>
 
