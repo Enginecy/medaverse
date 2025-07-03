@@ -13,6 +13,7 @@ export async function SalesDataTable() {
       enableGlobalSearch={false}
       enableColumnVisability={false}
       enableDateFilter={false}
+      enablePagination={false}
     />
   );
 }

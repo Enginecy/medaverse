@@ -122,6 +122,10 @@ interface DataTableProps<TData, TValue> {
    * Enable column filtering functionality
    */
   enableColumnFilter?: boolean;
+  /**
+   * Enable pagination functionality
+   */
+  enablePagination?: boolean;
 }
 
 export function DataTableSkeleton() {
@@ -182,6 +186,7 @@ export function DataTable<TData, TValue>({
   enableGlobalSearch = true,
   dateFilterKey = "createdAt" as keyof TData,
   enableColumnFilter = true,
+  enablePagination = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -393,27 +398,29 @@ export function DataTable<TData, TValue>({
               table.getSelectedRowModel().rows.map((row) => row.original),
             )}
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground text-sm">
-            Page {pagination.pageIndex + 1} of {table.getPageCount()}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={table.previousPage}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={table.nextPage}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+        {enablePagination && (
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground text-sm">
+              Page {pagination.pageIndex + 1} of {table.getPageCount()}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={table.previousPage}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={table.nextPage}
+              disabled={!table.getCanNextPage()}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
