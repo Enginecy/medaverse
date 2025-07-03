@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { columns } from "@/features/dashboard/sales/components/datatable/columns";
+import { salesColumnsDef } from "@/features/dashboard/sales/components/datatable/columns";
 import { useQuery } from "@tanstack/react-query";
 
 import { ErrorComponent } from "@/components/ui/error-component";
@@ -40,6 +40,7 @@ import { DateRangePicker } from "@/components/ui/date-range-picker";
 
 import { SaleInfoDrawer } from "@/features/dashboard/sales/components/sale-info-drawer";
 import { useShowDrawer } from "@/lib/react-utils";
+import { DataTable } from "@/components/data-table";
 
 export function SalesTable() {
   const showDrawer = useShowDrawer();
@@ -64,7 +65,7 @@ export function SalesTable() {
 
   const table = useReactTable({
     data: sales!,
-    columns,
+    columns: salesColumnsDef,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -78,7 +79,7 @@ export function SalesTable() {
       pagination,
     },
   });
-  
+
   // const [drawerOpen, setDrawerOpen] = useState(false);
   // const [selectedRow, setSelectedRow] = useState<any>(null);
 
@@ -101,72 +102,85 @@ export function SalesTable() {
   const canNextPage = table.getCanNextPage();
 
   return (
-    <div className="flex h-full w-full flex-col">
-      <Header />
-      <div
-        className="max-h-[calc(100vh-350px)] overflow-y-scroll rounded-md
-          border"
-      >
-        <Table>
-          <TableHeader className="bg-muted sticky top-0 z-10">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="hover:bg-muted cursor-pointer"
-                  onClick={() => {
-                    showDrawer((resolve) => (
-                      <SaleInfoDrawer
-                        // closeDrawer={resolve}
-                        selectedRow={row.original}
-                      />
-                    ));
-                  }}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+    <div className="py-6">
+
+    <DataTable
+      columns={salesColumnsDef}
+      data={sales}
+      enableColumnFilter={true}
+      enableColumnVisability={true}
+      enableGlobalSearch={true}
+      enableDateFilter= {true}
+      dateFilterKey="saleDate"
+    />
+
       </div>
-      <div className="grow" />
-      <Footer />
-    </div>
+    // <div className="flex h-full w-full flex-col">
+    //   <Header />
+    //   <div
+    //     className="max-h-[calc(100vh-350px)] overflow-y-scroll rounded-md
+    //       border"
+    //   >
+    //     <Table>
+    //       <TableHeader className="bg-muted sticky top-0 z-10">
+    //         {table.getHeaderGroups().map((headerGroup) => (
+    //           <TableRow key={headerGroup.id}>
+    //             {headerGroup.headers.map((header) => {
+    //               return (
+    //                 <TableHead key={header.id}>
+    //                   {header.isPlaceholder
+    //                     ? null
+    //                     : flexRender(
+    //                         header.column.columnDef.header,
+    //                         header.getContext(),
+    //                       )}
+    //                 </TableHead>
+    //               );
+    //             })}
+    //           </TableRow>
+    //         ))}
+    //       </TableHeader>
+    //       <TableBody>
+    //         {table.getRowModel().rows?.length ? (
+    //           table.getRowModel().rows.map((row) => (
+    //             <TableRow
+    //               key={row.id}
+    //               className="hover:bg-muted cursor-pointer"
+    //               onClick={() => {
+    //                 showDrawer((resolve) => (
+    //                   <SaleInfoDrawer
+    //                     // closeDrawer={resolve}
+    //                     selectedRow={row.original}
+    //                   />
+    //                 ));
+    //               }}
+    //             >
+    //               {row.getVisibleCells().map((cell) => (
+    //                 <TableCell key={cell.id}>
+    //                   {flexRender(
+    //                     cell.column.columnDef.cell,
+    //                     cell.getContext(),
+    //                   )}
+    //                 </TableCell>
+    //               ))}
+    //             </TableRow>
+    //           ))
+    //         ) : (
+    //           <TableRow>
+    //             <TableCell
+    //               colSpan={columns.length}
+    //               className="h-24 text-center"
+    //             >
+    //               No results.
+    //             </TableCell>
+    //           </TableRow>
+    //         )}
+    //       </TableBody>
+    //     </Table>
+    //   </div>
+    //   <div className="grow" />
+    //   <Footer />
+    // </div>
   );
 
   function Header() {

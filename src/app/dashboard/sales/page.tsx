@@ -1,5 +1,5 @@
 import { SalesActions } from "@/features/dashboard/sales/components/sales-actions";
-import { SalesTable } from "@/features/dashboard/sales/components/datatable/data-table";
+import { SalesTable } from "@/features/dashboard/sales/components/datatable/sales-data-table";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Metadata } from "next";
 export const metadata: Metadata = {
