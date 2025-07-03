@@ -89,7 +89,6 @@ export function DataTable<TData, TValue>({
           onUpdate={(values) => console.log(values)}
           align="start"
           locale="en-GB"
-          showCompare={false}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

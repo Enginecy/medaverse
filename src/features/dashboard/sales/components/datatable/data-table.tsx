@@ -193,7 +193,6 @@ export function SalesTable() {
           initialDateTo={initialDateTo}
           align="start"
           locale="en-GB"
-          showCompare={false}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

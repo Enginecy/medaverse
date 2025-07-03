@@ -24,7 +24,6 @@ export function RolesTable() {
       columns={rolesColumns}
       data={roles!}
       isLoading={isPending}
-      searchKey="roles"
       title="User Roles"
       description="Manage user roles and their permission levels"
       addButton={{
