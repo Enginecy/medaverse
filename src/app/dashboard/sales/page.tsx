@@ -2,6 +2,7 @@ import { SalesActions } from "@/features/dashboard/sales/components/sales-action
 import { SalesTable } from "@/features/dashboard/sales/components/datatable/sales-data-table";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 export const metadata: Metadata = {
   title: "Sales",
   description: "Manage your sales data and insights.",
@@ -15,7 +16,9 @@ export default function SalesPage() {
       </div>
       <Card className="w-full grow py-0">
         <CardContent className="grow">
-          <SalesTable />
+          <Suspense fallback={<div className="flex h-full items-center justify-center">Loading...</div>}>
+            <SalesTable />
+          </Suspense>
         </CardContent>
       </Card>
     </div>

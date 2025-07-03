@@ -11,7 +11,7 @@ import {
 
 import { BirthdayTable } from "@/features/dashboard/home/components/birthday-table";
 import { recentSalesColumns } from "@/features/dashboard/home/components/columns";
-import { SalesDataTable } from "@/features/dashboard/home/components/data-table";
+import { RecentSalesDataTable } from "@/features/dashboard/home/components/data-table";
 import { PersonalInfoCard } from "@/features/dashboard/home/components/home-personal-info-card";
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
 import { getUserGoalsAction } from "@/features/dashboard/profile/server/actions/goals";
@@ -53,7 +53,7 @@ export default async function Home() {
           </CardHeader>
           <CardContent className="px-6">
             <Suspense fallback={<DataTableSkeleton/>}>
-              <SalesDataTable />
+              <RecentSalesDataTable />
             </Suspense>
           </CardContent>
         </Card>
