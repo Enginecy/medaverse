@@ -23,7 +23,6 @@ export function UserRolesTable() {
       columns={userRolesColumns}
       data={userRoles!}
       isLoading={isPending}
-      searchKey="users or roles"
       title="User Role Assignments"
       description="Current role assignments for users"
       addButton={{

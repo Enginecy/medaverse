@@ -59,7 +59,7 @@ const getTypeColor = (type: string): string => {
 
 export const columns: ColumnDef<NewsDocument>[] = [
   {
-    accessorKey: "fileName",
+    accessorKey: "title",
     header: "File Name",
     cell: ({ row }) => {
       return (
@@ -70,7 +70,7 @@ export const columns: ColumnDef<NewsDocument>[] = [
     },
   },
   {
-    accessorKey: "type",
+    accessorKey: "file_type",
     header: "Type",
     cell: ({ row }) => {
       return (
@@ -84,19 +84,19 @@ export const columns: ColumnDef<NewsDocument>[] = [
     },
   },
   {
-    accessorKey: "size",
+    accessorKey: "file_size",
     header: "Size",
     cell: ({ row }) => <p>{formatFileSize(Number(row.original.file_size))}</p>,
   },
   {
-    accessorKey: "uploadedBy",
+    accessorKey: "uploaded_by",
     header: "Uploaded By",
     cell: ({ row }) => {
       return <UserChip user={row.original.uploaded_by} />;
     },
   },
   {
-    accessorKey: "submittedDate",
+    accessorKey: "created_at",
     header: "Submitted Date",
     cell: ({ row }) => (
       <p>{new Date(row.original.created_at).toLocaleDateString()}</p>

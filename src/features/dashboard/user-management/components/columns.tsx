@@ -1,3 +1,4 @@
+"use client";
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { RowActionsDropdown } from "@/features/dashboard/user-management/components/row-actions-dropdown";
 
-export const columns: ColumnDef<User>[] = [
+export const userManagementColumns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => (

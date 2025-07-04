@@ -24,7 +24,6 @@ export function UserPermissionsTable() {
       columns={userPermissionsColumns}
       isLoading={isPending}
       data={userPermissions!}
-      searchKey="users or permissions"
       title="User Permission Assignments"
       description="Direct permission assignments to users"
       addButton={{

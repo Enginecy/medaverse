@@ -4,7 +4,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import type { Sale } from "@/features/dashboard/sales/server/db/sales";
 import Image from "next/image";
 
-export const columns: ColumnDef<
+export const recentSalesColumns: ColumnDef<
   Pick<Sale, "user" | "saleDate" | "totalAmount" | "productName">
 >[] = [
   {

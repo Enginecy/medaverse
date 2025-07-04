@@ -5,6 +5,7 @@ import { profile, users } from "@/db/schema";
 import { desc, getTableColumns, eq } from "drizzle-orm";
 
 export async function getUsers() {
+  await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate a delay for demonstration purposes
   const db = await createDrizzleSupabaseClient();
 
   const profiles = await db.rls((tx) => {

@@ -16,7 +16,6 @@ export function ResourcesTable() {
       columns={resourcesColumns}
       data={resources!}
       isLoading={isPending}
-      searchKey="resources"
       title="System Resources"
       description="View application resources and their permissions"
     />
