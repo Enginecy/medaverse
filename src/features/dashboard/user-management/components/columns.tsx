@@ -1,3 +1,4 @@
+"use client";
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";

@@ -130,7 +130,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTableSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="bg-muted h-6 w-48 animate-pulse rounded" />
