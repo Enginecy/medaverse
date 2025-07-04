@@ -1,5 +1,3 @@
-'use server';
-
 import * as React from "react";
 import { salesColumnsDef } from "@/features/dashboard/sales/components/datatable/columns";
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
