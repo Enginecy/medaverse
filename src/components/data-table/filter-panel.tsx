@@ -58,7 +58,7 @@ export function FilterPanel({
       <CardHeader className="p-0">
         <CardTitle>Filters</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6 p-0">
+      <CardContent className="grid grid-cols-2 space-y-6 p-0 gap-3">
         {filters.map((filter) => (
           <MultiSelectFilter
             key={filter.key}

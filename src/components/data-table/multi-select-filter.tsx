@@ -51,7 +51,7 @@ export function MultiSelectFilter({
   );
 
   return (
-    <div className="space-y-2">
+    <div className="px-2">
       <label className="text-sm font-medium">{title}</label>
 
       <div className="space-y-2">
@@ -97,11 +97,12 @@ export function MultiSelectFilter({
               <CommandList>
                 <CommandEmpty>No options found.</CommandEmpty>
                 <CommandGroup>
+                
                   {options.map((option) => (
                     <CommandItem
-                      key={option.value}
-                      onSelect={() => handleSelect(option.value)}
-                      className="cursor-pointer"
+                    key={option.value}
+                    onSelect={() => handleSelect(option.value)}
+                    className="cursor-pointer"
                     >
                       <Check
                         className={cn(
@@ -109,7 +110,7 @@ export function MultiSelectFilter({
                           selected.includes(option.value)
                             ? "opacity-100"
                             : "opacity-0",
-                        )}
+                          )}
                       />
                       {option.label}
                     </CommandItem>
