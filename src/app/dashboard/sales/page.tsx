@@ -3,6 +3,7 @@ import { SalesTable } from "@/features/dashboard/sales/components/datatable/sale
 import { Card, CardContent } from "@/components/ui/card";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { DataTableSkeleton } from "@/components/data-table";
 export const metadata: Metadata = {
   title: "Sales",
   description: "Manage your sales data and insights.",
@@ -16,7 +17,7 @@ export default function SalesPage() {
       </div>
       <Card className="w-full grow py-0">
         <CardContent className="grow">
-          <Suspense fallback={<div className="flex h-full items-center justify-center">Loading...</div>}>
+          <Suspense fallback={<DataTableSkeleton />}>
             <SalesTable />
           </Suspense>
         </CardContent>

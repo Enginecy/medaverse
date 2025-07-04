@@ -5,7 +5,6 @@ import * as React from "react";
 import { userManagementColumns } from "@/features/dashboard/user-management/components/columns";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
-
 import { ErrorComponent } from "@/components/ui/error-component";
 import { UserTableSkeleton } from "@/components/ui/user-table-skeleton";
 import { DataTable } from "@/components/data-table";

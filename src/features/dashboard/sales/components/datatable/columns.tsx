@@ -1,3 +1,4 @@
+'use client';
 import type { Sale } from "@/features/dashboard/sales/server/db/sales";
 import type { ColumnDef } from "@tanstack/react-table";
 import { generateFriendlyId } from "@/lib/utils";
