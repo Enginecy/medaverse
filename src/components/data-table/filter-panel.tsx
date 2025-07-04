@@ -58,7 +58,7 @@ export function FilterPanel({
       <CardHeader className="p-0">
         <CardTitle>Filters</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 space-y-6 p-0 gap-3">
+      <CardContent className="grid grid-cols-2 gap-6 w-full">
         {filters.map((filter) => (
           <MultiSelectFilter
             key={filter.key}
@@ -69,7 +69,7 @@ export function FilterPanel({
           />
         ))}
       </CardContent>
-      <CardFooter className="flex gap-2">
+      <CardFooter className="grid grid-cols-2 gap-2 px-4">
         <Button variant="outline" onClick={handleReset} className="flex-1">
           Reset
         </Button>

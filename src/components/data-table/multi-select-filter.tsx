@@ -51,33 +51,10 @@ export function MultiSelectFilter({
   );
 
   return (
-    <div className="px-2">
+    <div className="w-full flex flex-col gap-2">
       <label className="text-sm font-medium">{title}</label>
 
-      <div className="space-y-2">
-        {/* Selected chips */}
-        {selectedOptions.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {selectedOptions.map((option) => (
-              <Badge
-                key={option.value}
-                variant="secondary"
-                className="gap-1 pr-1"
-              >
-                <span className="text-xs">{option.label}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-4 w-4 p-0 hover:bg-transparent"
-                  onClick={() => handleRemove(option.value)}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </Badge>
-            ))}
-          </div>
-        )}
-
+     
         {/* Dropdown selector */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -85,7 +62,7 @@ export function MultiSelectFilter({
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-full justify-between"
+              className="w-full flex justify-between items-center"
             >
               <span className="text-muted-foreground">{placeholder}</span>
               <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -106,7 +83,7 @@ export function MultiSelectFilter({
                     >
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
+                          "mr-2 h-4 w-4 text-black",
                           selected.includes(option.value)
                             ? "opacity-100"
                             : "opacity-0",
@@ -120,7 +97,29 @@ export function MultiSelectFilter({
             </Command>
           </PopoverContent>
         </Popover>
-      </div>
+         {/* Selected chips */}
+        {selectedOptions.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {selectedOptions.map((option) => (
+              <Badge
+                key={option.value}
+                variant="secondary"
+                className="gap-1 pr-1 border-1 border-primary-200 bg-primary-100"
+              >
+                <span className="text-xs">{option.label}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-4 w-4 p-0 hover:bg-transparent"
+                  onClick={() => handleRemove(option.value)}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            ))}
+          </div>
+        )}
+      
     </div>
   );
 }

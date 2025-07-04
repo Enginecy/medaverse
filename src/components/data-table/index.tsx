@@ -517,7 +517,7 @@ function ColumnFilter<TData>({ table }: { table: ReactTable<TData> }) {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-100"
+        className="w-150 max-h-120 overflow-auto"
         align="center"
         sideOffset={-120}
         avoidCollisions={true}
