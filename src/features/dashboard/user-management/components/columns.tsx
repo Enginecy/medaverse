@@ -48,16 +48,19 @@ export const userManagementColumns: ColumnDef<User>[] = [
         </div>
       );
     },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "username",
     header: "Username",
     cell: ({ row }) => <p>{row.original.username}</p>,
+    enableColumnFilter: false,
   },
   {
     accessorKey: "email",
     header: "Email",
     cell: ({ row }) => <p>{row.original.email}</p>,
+    enableColumnFilter: false,
   },
   {
     accessorKey: "status",
