@@ -130,7 +130,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTableSkeleton() {
   return (
-    <div className="space-y-4 w-full">
+    <div className="w-full space-y-4">
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="bg-muted h-6 w-48 animate-pulse rounded" />
@@ -243,7 +243,7 @@ export function DataTable<TData, TValue>({
   }, new Date());
 
   return (
-    <div className="space-y-4 w-full">
+    <div className="w-full space-y-4">
       {(title ?? addButton) && (
         <div className="flex items-center justify-between">
           {title && (
@@ -461,8 +461,6 @@ function ColumnFilter<TData>({ table }: { table: ReactTable<TData> }) {
   const tableData = table
     .getPreFilteredRowModel()
     .rows.map((row) => row.original);
-
-  // Check if there are any active column filters
   const activeFilters = table.getState().columnFilters;
   const hasActiveFilters = activeFilters.length > 0;
   const activeFilterCount = activeFilters.length;
@@ -517,10 +515,9 @@ function ColumnFilter<TData>({ table }: { table: ReactTable<TData> }) {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-150 max-h-120 overflow-auto"
-        align="center"
-        sideOffset={-120}
-        avoidCollisions={true}
+        className="max-h-120 w-150 overflow-auto"
+        align="end"
+        sideOffset={0}
       >
         <FilterPanel
           filters={filters}

@@ -54,7 +54,7 @@ export function FilterPanel({
   );
 
   return (
-    <Card className="m-0 w-full max-w-md border-none p-0 shadow-none">
+    <Card className="m-0 w-full  border-none p-0 shadow-none">
       <CardHeader className="p-0">
         <CardTitle>Filters</CardTitle>
       </CardHeader>
