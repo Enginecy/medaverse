@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { transformToTitleCase } from "@/lib/utils";
 import { useState } from "react";
 
 interface FilterConfig {
@@ -62,7 +63,7 @@ export function FilterPanel({
         {filters.map((filter) => (
           <MultiSelectFilter
             key={filter.key}
-            title={filter.title}
+            title={transformToTitleCase(filter.title)}
             options={filter.options}
             selected={selectedFilters[filter.key] ?? []}
             onChange={(selected) => handleFilterChange(filter.key, selected)}

@@ -35,3 +35,11 @@ export function generateFriendlyId(prefix: string, id: string) {
   const firstPart = splitId[0];
   return `${prefix}-${firstPart}`;
 }
+
+export function transformToTitleCase(name: string){
+    return name
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, str => str.toUpperCase())
+      .replace(/_/g, " ")
+      .trim();
+}
