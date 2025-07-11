@@ -212,7 +212,7 @@ export function RolesFormSheet<T>({
                   <FormLabel>Level</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value.toString()}
                   >
                     <FormControl className="w-full">
                       <SelectTrigger>
@@ -220,15 +220,17 @@ export function RolesFormSheet<T>({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {["management", "staff", "executive"].map((level) => (
-                        <SelectItem key={level} value={level}>
+                      {Array.from({ length: 11 }, (_, i) => i).map((level) => (
+                        <SelectItem key={level} value={level.toString()}>
                           {level}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    The level is the role of the user.
+                    The level is the role of the user. 0 is the lowest level and
+                    10 is the highest level. The level is used to determine the
+                    hierarchy of the user.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

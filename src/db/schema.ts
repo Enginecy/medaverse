@@ -14,6 +14,7 @@ import {
   boolean,
   pgEnum,
   bigint,
+  integer,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/relations";
 import { sql } from "drizzle-orm";
@@ -426,7 +427,7 @@ export const roles = pgTable(
     name: text().notNull(),
     code: text().notNull(),
     description: text(),
-    level: text().notNull(),
+    level: integer().notNull().default(0),
     isSystemRole: boolean("is_system_role").default(false),
     status: status().default("active"),
     createdAt: timestamp("created_at", {

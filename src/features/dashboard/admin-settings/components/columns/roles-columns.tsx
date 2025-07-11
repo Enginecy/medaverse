@@ -102,7 +102,7 @@ export const rolesColumns: ColumnDef<Role>[] = [
               id: row.original.id,
               code: row.original.code,
               name: row.original.name,
-              level: row.original.level as "management" | "staff" | "executive",
+              level: row.original.level,
               status: row.original.status as "active" | "disabled",
               permissions: row.original.permissions,
               users: row.original.users,

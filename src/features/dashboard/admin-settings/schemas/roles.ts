@@ -4,7 +4,7 @@ export const rolesFormSchema = z.object({
   id: z.string().optional(),
   name: z.string(),
   code: z.string(),
-  level: z.enum(["management", "staff", "executive"]),
+  level: z.number().min(0).max(10),
   description: z.string().optional(),
   permissions: z.array(
     z.object({
