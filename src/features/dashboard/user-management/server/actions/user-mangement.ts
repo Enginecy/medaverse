@@ -5,8 +5,9 @@ import { profile } from "@/db/schema";
 import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
 import { eq } from "drizzle-orm";
-import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
@@ -220,11 +221,11 @@ export async function deleteAgent(id: string) {
   if (currentUserError) {
     throw { message: "Failed to get current user", error: currentUserError };
   }
-  
+
   if (currentUser?.id === existingProfile.userId) {
     throw { message: "You cannot delete your account" };
   }
-  
+
   const banUntil = new Date();
   banUntil.setFullYear(banUntil.getFullYear() + 100);
 
