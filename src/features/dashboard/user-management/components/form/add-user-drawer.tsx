@@ -33,7 +33,7 @@ import {
 import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createAgent,
   updateAgent,
@@ -57,7 +57,10 @@ import { EmailField } from "@/features/dashboard/user-management/components/form
 import { PhoneField } from "@/features/dashboard/user-management/components/form/phone-field";
 import { UsernameField } from "@/features/dashboard/user-management/components/form/username-field";
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
-import type { User } from "@/features/dashboard/user-management/server/db/user-management";
+import {
+  getAboveSuperiors,
+  type User,
+} from "@/features/dashboard/user-management/server/db/user-management";
 
 export function AddUserDrawer({
   user,
@@ -99,6 +102,10 @@ export function AddUserDrawer({
   const form = useForm<AddUserFormData>({
     resolver: zodResolver(addUserSchema),
     defaultValues,
+  });
+  const { data: aboveSuperiors = [], isPending: isLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getAboveSuperiors,
   });
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
@@ -215,8 +222,8 @@ export function AddUserDrawer({
           </div>
 
           {/* Upline and NPN Number */}
-          <NpnNumberForm form={form} />
-          {/* States */}
+          
+          <NpnNumberForm form={form}   />
           <FormField
             control={form.control}
             name="states"
