@@ -34,16 +34,20 @@ export function CarriersList() {
       <NoItems
         message="There are no carriers to display."
         description="You can add a new carrier by clicking the button above."
-        icon={<CircleAlert />}
-      ></NoItems>
+      />
     );
   }
   return (
-    <div className="flex flex-wrap gap-5">
-      {carriers!.map((carrier) => (
-        <CarrierContainer key={carrier.id} carrier={carrier} />
-      ))}
-    </div>
+     <NoItems
+        message="There are no carriers to display."
+        description="You can add a new carrier by clicking the button above."
+        
+      />
+    // <div className="flex flex-wrap gap-5">
+    //   {carriers!.map((carrier) => (
+    //     <CarrierContainer key={carrier.id} carrier={carrier} />
+    //   ))}
+    // </div>
   );
 }
 
