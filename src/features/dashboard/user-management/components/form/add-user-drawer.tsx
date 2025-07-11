@@ -209,10 +209,6 @@ export function AddUserDrawer({
             <DobField form={form} />
           </div>
 
-          {/* Contract ID and Regional */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <RegionalField form={form} />
-          </div>
 
           {/* Upline and NPN Number */}
           <NpnNumberForm form={form} />
