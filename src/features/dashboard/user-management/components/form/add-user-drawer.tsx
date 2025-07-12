@@ -61,6 +61,9 @@ import {
   getAboveSuperiors,
   type User,
 } from "@/features/dashboard/user-management/server/db/user-management";
+import { ContractIdField } from "@/features/dashboard/user-management/components/form/contract-id-field";
+import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+import { is } from "drizzle-orm";
 
 export function AddUserDrawer({
   user,
@@ -102,6 +105,10 @@ export function AddUserDrawer({
   const form = useForm<AddUserFormData>({
     resolver: zodResolver(addUserSchema),
     defaultValues,
+  });
+  const { data: roles, isPending: isLoadingRoles } = useQuery({
+    queryKey: ["roles"],
+    queryFn: getRoles,
   });
   const { data: aboveSuperiors = [], isPending: isLoading } = useQuery({
     queryKey: ["users"],
@@ -219,11 +226,16 @@ export function AddUserDrawer({
           {/* Contract ID and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <RegionalField form={form} />
+            {isLoadingRoles ? (
+              <div className="w-full h-full flex justify-center items-center pt-6">Loading</div>
+            ) : (
+              <ContractIdField form={form} roles={roles ?? []} />
+            )}
           </div>
 
           {/* Upline and NPN Number */}
-          
-          <NpnNumberForm form={form}   />
+
+          <NpnNumberForm form={form} upLines={[]} />
           <FormField
             control={form.control}
             name="states"

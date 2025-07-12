@@ -27,8 +27,8 @@ export async function getUsers() {
 export type User = Awaited<ReturnType<typeof getUsers>>[number];
 
 export async function getAboveSuperiors() {
-  try{
-    const {auth} =   createAdminClient();
+  try {
+    const { auth } = createAdminClient();
     const user = await auth.getUser();
 
     if (!user) {
@@ -38,9 +38,9 @@ export async function getAboveSuperiors() {
     const userRole = user.data.user?.role;
 
     const db = await createDrizzleSupabaseClient();
-    
+
     const superiors = await db.admin
-  
+
       .select({
         ...getTableColumns(profile),
         email: users.email,
@@ -49,14 +49,14 @@ export async function getAboveSuperiors() {
       .from(profile)
       .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
       .innerJoin(roles, eq(userRoles.roleId, roles.id))
-  
+
       .where(eq(roles.name, userRole));
     return superiors;
-  } catch(e){
-
-    throw new Error(`Failed to get superiors: ${e instanceof Error ? e.message : String(e)}`);
-
-  }  
+  } catch (e) {
+    throw new Error(
+      `Failed to get superiors: ${e instanceof Error ? e.message : String(e)}`,
+    );
+  }
 }
 
 export type Superiors = Awaited<ReturnType<typeof getAboveSuperiors>>[number];
