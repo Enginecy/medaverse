@@ -6,8 +6,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { desc, getTableColumns, eq } from "drizzle-orm";
 
 export async function getUsers() {
-  //TODO: Remove this delay in production code
-  await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate a delay for demonstration purposes
+  
   const db = await createDrizzleSupabaseClient();
 
   const profiles = await db.rls((tx) => {
@@ -26,7 +25,7 @@ export async function getUsers() {
 
 export type User = Awaited<ReturnType<typeof getUsers>>[number];
 
-export async function getAboveSuperiors() {
+export async function getAboveSuperiors({selectedRole}: { selectedRole: string }) {
   try {
     const { auth } = createAdminClient();
     const user = await auth.getUser();
@@ -50,7 +49,7 @@ export async function getAboveSuperiors() {
       .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
       .innerJoin(roles, eq(userRoles.roleId, roles.id))
 
-      .where(eq(roles.name, userRole));
+      .where(eq(roles.name, selectedRole));
     return superiors;
   } catch (e) {
     throw new Error(

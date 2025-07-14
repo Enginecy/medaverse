@@ -15,10 +15,12 @@ import {
   pgEnum,
   bigint,
   integer,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/relations";
 import { sql } from "drizzle-orm";
 import { authUsers } from "drizzle-orm/supabase";
+import type { State } from "@/lib/data";
 
 export const users = authUsers;
 
@@ -121,7 +123,11 @@ export const profile = pgTable(
     name: varchar().notNull(),
     address: varchar().notNull(),
     dob: date("dob", { mode: "date" }).notNull(),
-    // role: title().notNull(),
+    phoneNumber: varchar("phone_number"), //TODO: Add notNull before deploying
+    regional: varchar("regional"), //TODO: Add notNull before deploying
+    upLine: varchar("upline"), //TODO: Add notNull before deploying
+    npnNumber: varchar("npn_number"), //TODO: Add notNull before deploying
+    states: jsonb("states").array().$type<State[]>(), //TODO: Add notNull before deploying
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "date" }),
@@ -133,10 +139,7 @@ export const profile = pgTable(
   },
   (table) => [
     index("idx_profile_role_status")
-      .using(
-        "btree",
-        table.status.asc().nullsLast().op("enum_ops"),
-      )
+      .using("btree", table.status.asc().nullsLast().op("enum_ops"))
       .where(sql`(deleted_at IS NULL)`),
     index("idx_profile_user_id").using(
       "btree",

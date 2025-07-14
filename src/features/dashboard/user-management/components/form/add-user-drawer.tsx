@@ -79,12 +79,11 @@ export function AddUserDrawer({
         fullName: user!.name!,
         username: user!.username!,
         email: user!.email!,
-        phoneNumber: "",
+        phoneNumber: user!.phoneNumber!,
         address: user!.address!,
-        regional: "",
-        upline: "",
-        npnNumber: "",
-        states: [],
+        upLine: user!.upLine!,
+        npnNumber: user!.npnNumber!,
+        states: user!.states! || [],
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
       }
@@ -95,7 +94,7 @@ export function AddUserDrawer({
         phoneNumber: "",
         address: "",
         regional: "",
-        upline: "",
+        upLine: "",
         npnNumber: "",
         states: [],
         profileImage: new File([], ""),
@@ -115,6 +114,10 @@ export function AddUserDrawer({
     queryKey: ["users"],
     queryFn: () => getAboveSuperiors,
   });
+
+  if(isRoleSelected && roles) {
+    const selectedRole = form.getValues("");
+  }
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
     mutationFn: createAgent,
