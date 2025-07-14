@@ -61,7 +61,7 @@ import {
   getAboveSuperiors,
   type User,
 } from "@/features/dashboard/user-management/server/db/user-management";
-import { ContractIdField } from "@/features/dashboard/user-management/components/form/contract-id-field";
+import { RoleField } from "@/features/dashboard/user-management/components/form/role-field";
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { is } from "drizzle-orm";
 
@@ -223,13 +223,13 @@ export function AddUserDrawer({
             <DobField form={form} />
           </div>
 
-          {/* Contract ID and Regional */}
+          {/* Role and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <RegionalField form={form} />
             {isLoadingRoles ? (
               <div className="w-full h-full flex justify-center items-center pt-6">Loading</div>
             ) : (
-              <ContractIdField form={form} roles={roles ?? []} />
+              <RoleField form={form} roles={roles ?? []} />
             )}
           </div>
 

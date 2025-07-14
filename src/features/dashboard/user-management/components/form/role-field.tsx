@@ -19,7 +19,7 @@ import { type AddUserFormData } from "@/features/dashboard/user-management/schem
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 
 
-export function ContractIdField ({form , roles  } : {form : UseFormReturn<AddUserFormData> , roles : Role[]}) {
+export function RoleField ({form , roles  } : {form : UseFormReturn<AddUserFormData> , roles : Role[]}) {
 
 
     return (  <FormField
@@ -40,7 +40,6 @@ export function ContractIdField ({form , roles  } : {form : UseFormReturn<AddUse
                     {role.name}
                   </SelectItem>
                 ))}
-                
               </SelectContent>
             </Select>
             <FormMessage />
