@@ -73,6 +73,7 @@ export function AddUserDrawer({
   closeDrawer: (value?: unknown) => void;
 }) {
   const isEditing = !!user;
+  var isRoleSelected: boolean = isEditing;
   const defaultValues = isEditing
     ? {
         fullName: user!.name!,
@@ -227,7 +228,11 @@ export function AddUserDrawer({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <RegionalField form={form} />
             {isLoadingRoles ? (
-              <div className="w-full h-full flex justify-center items-center pt-6">Loading</div>
+              <div
+                className="flex h-full w-full items-center justify-center pt-6"
+              >
+                Loading
+              </div>
             ) : (
               <RoleField form={form} roles={roles ?? []} />
             )}
