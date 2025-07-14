@@ -1,5 +1,4 @@
 import type { State } from "@/lib/data";
-import type { PgJsonb } from "drizzle-orm/pg-core";
 import z from "zod";
 
 // Form validation schema
@@ -18,7 +17,7 @@ export const addUserSchema = z.object({
     }),
   role: z.string().min(1, "Please select a role"),
   regional: z.string().min(1, "Please select a regional"),
-  upLine: z.string().min(1, "Please select an upLine"),
+  upLine: z.string(),
   npnNumber: z.string().min(1, "Please select an NPN number"),
   states: z
     .array(

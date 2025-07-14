@@ -2,8 +2,9 @@
 
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, roles, userRoles, users } from "@/db/schema";
+import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { createAdminClient } from "@/lib/supabase/server";
-import { desc, getTableColumns, eq } from "drizzle-orm";
+import { desc, getTableColumns, eq, gt } from "drizzle-orm";
 
 export async function getUsers() {
   
@@ -25,7 +26,7 @@ export async function getUsers() {
 
 export type User = Awaited<ReturnType<typeof getUsers>>[number];
 
-export async function getAboveSuperiors({selectedRole}: { selectedRole: string }) {
+export async function getAboveSuperiors(selectedRole : Role) {
   try {
     const { auth } = createAdminClient();
     const user = await auth.getUser();
@@ -34,22 +35,19 @@ export async function getAboveSuperiors({selectedRole}: { selectedRole: string }
       throw new Error("User not authenticated");
     }
 
-    const userRole = user.data.user?.role;
-
     const db = await createDrizzleSupabaseClient();
 
     const superiors = await db.admin
 
       .select({
         ...getTableColumns(profile),
-        email: users.email,
         role: roles.name,
       })
       .from(profile)
       .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
       .innerJoin(roles, eq(userRoles.roleId, roles.id))
-
-      .where(eq(roles.name, selectedRole));
+      .where(gt(roles.level, selectedRole.level));
+      
     return superiors;
   } catch (e) {
     throw new Error(
@@ -58,4 +56,4 @@ export async function getAboveSuperiors({selectedRole}: { selectedRole: string }
   }
 }
 
-export type Superiors = Awaited<ReturnType<typeof getAboveSuperiors>>[number];
+export type Superior = Awaited<ReturnType<typeof getAboveSuperiors>>[number];

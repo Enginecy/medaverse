@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, X } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,12 @@ import {
 import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   createAgent,
   updateAgent,
@@ -63,7 +68,7 @@ import {
 } from "@/features/dashboard/user-management/server/db/user-management";
 import { RoleField } from "@/features/dashboard/user-management/components/form/role-field";
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
-import { is } from "drizzle-orm";
+import { UpLineField } from "@/features/dashboard/user-management/components/form/upline-field";
 
 export function AddUserDrawer({
   user,
@@ -73,7 +78,8 @@ export function AddUserDrawer({
   closeDrawer: (value?: unknown) => void;
 }) {
   const isEditing = !!user;
-  var isRoleSelected: boolean = isEditing;
+  const [isRoleSelected, setIsRoleSelected] = useState(false);
+
   const defaultValues = isEditing
     ? {
         fullName: user!.name!,
@@ -110,15 +116,21 @@ export function AddUserDrawer({
     queryKey: ["roles"],
     queryFn: getRoles,
   });
-  const { data: aboveSuperiors = [], isPending: isLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => getAboveSuperiors,
+  var selectedRole = roles?.find((role) => role.id === form.watch("role"));
+  const getSuperiorsQueryOptions = queryOptions({
+    queryKey: ["superiors", selectedRole?.id],
+    queryFn: () => getAboveSuperiors(selectedRole!),
+    enabled: !!selectedRole,
+    refetchOnWindowFocus: false,
   });
-
-  if (isRoleSelected && roles) {
-    const selectedRole = form.getValues("role");
-    getAboveSuperiors({ selectedRole });
-  }
+  const { data: aboveSuperiors, isPending: isLoadingSuperiors } = useQuery(
+    getSuperiorsQueryOptions,
+  );
+  // useEffect(() => {
+  //   if (isRoleSelected && roles) {
+  //      getAboveSuperiors(form.getValues("role"));
+  //   }
+  // }, [form.getValues("roleId")]);
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
     mutationFn: createAgent,
@@ -238,13 +250,38 @@ export function AddUserDrawer({
                 Loading
               </div>
             ) : (
-              <RoleField form={form} roles={roles ?? []} />
+              <RoleField
+                form={form}
+                roles={roles ?? []}
+                onChange={(value) => {
+                  setIsRoleSelected(true);
+                  queryClient.invalidateQueries({
+                    queryKey: ["superiors"],
+                  });
+                }}
+              />
             )}
           </div>
 
-          {/* Upline and NPN Number */}
-
-          <NpnNumberForm form={form} upLines={[]} />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* UpLine and NPN Number */}
+            {isLoadingSuperiors ? (
+              <div
+                className="flex h-full w-full items-center justify-center pt-6"
+              >
+                Loading...
+              </div>
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <UpLineField
+                  upLines={aboveSuperiors ?? []}
+                  form={form}
+                  isDisabled={!isRoleSelected}
+                />
+              </div>
+            )}
+            <NpnNumberForm form={form} />
+          </div>
           <FormField
             control={form.control}
             name="states"

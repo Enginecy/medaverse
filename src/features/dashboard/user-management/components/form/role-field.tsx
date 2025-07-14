@@ -19,16 +19,22 @@ import { type AddUserFormData } from "@/features/dashboard/user-management/schem
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 
 
-export function RoleField ({form , roles  } : {form : UseFormReturn<AddUserFormData> , roles : Role[]}) {
+export function RoleField ({form , roles , onChange } : {form : UseFormReturn<AddUserFormData> , roles : Role[] , onChange: ( value: string ) => void}) {
 
 
     return (  <FormField
         control={form.control}
-        name="regional"
+        name="role"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Contract ID</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              onValueChange={(value) => {
+                field.onChange(value);
+                onChange(value);
+              }}
+              defaultValue={field.value}
+            >
               <FormControl>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="name@example.com" />

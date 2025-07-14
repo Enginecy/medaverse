@@ -116,7 +116,7 @@ export async function getRoles() {
       .leftJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
       .groupBy(roles.id);
   });
-  console.dir(data, { depth: null });
+  // console.dir(data, { depth: null });
   return data;
 }
 export type Role = Awaited<ReturnType<typeof getRoles>>[number];

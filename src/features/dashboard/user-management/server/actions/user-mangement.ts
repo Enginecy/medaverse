@@ -1,17 +1,23 @@
 "use server";
 
 import { createDrizzleSupabaseClient } from "@/db/db";
-import { profile } from "@/db/schema";
+import { profile, userRoles } from "@/db/schema";
 import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
 import { eq } from "drizzle-orm";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
+import type { State } from "@/lib/data";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
+  const currentUser = await supabase.auth.getUser();
+
+  if (!currentUser.data.user?.id) {
+    throw { message: "Failed to Create user" };
+  }
 
   // Check if username already exists
   const existingProfile = await db.admin
@@ -61,21 +67,32 @@ export async function createAgent(data: AddUserFormData) {
     } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
     // Step 5: Database operations in transaction
-
-    const profileData = await db.rls((tx) => {
-      return tx
+    const profileData = await db.admin.transaction(async (tx) => {
+      await tx
         .insert(profile)
         .values({
           name: data.fullName,
           username: data.username,
           address: data.address ?? null,
           dob: data.dateOfBirth,
-          // role: data.contractId,
+          phoneNumber: data.phoneNumber,
+          regional: data.regional,
+          upLine: data.upLine,
+          npnNumber: data.npnNumber,
+          states: data.states as State[],
           status: "active",
           avatarUrl: publicUrl,
           userId: user.id,
         })
         .returning();
+        await tx
+              .insert(userRoles)
+              .values({
+                roleId: data.role,
+                userId: user.id,
+                assignedBy: currentUser.data.user?.id,
+              })
+              .returning({ id: userRoles.id });
     });
 
     return { success: true, profile: profileData };
@@ -220,11 +237,11 @@ export async function deleteAgent(id: string) {
   if (currentUserError) {
     throw { message: "Failed to get current user", error: currentUserError };
   }
-  
+
   if (currentUser?.id === existingProfile.userId) {
     throw { message: "You cannot delete your account" };
   }
-  
+
   const banUntil = new Date();
   banUntil.setFullYear(banUntil.getFullYear() + 100);
 

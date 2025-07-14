@@ -122,11 +122,10 @@ export const profile = pgTable(
     status: status().notNull(),
     name: varchar().notNull(),
     address: varchar().notNull(),
+    upLine: varchar("upline"),
     dob: date("dob", { mode: "date" }).notNull(),
-    role: title().notNull(),
     phoneNumber: varchar("phone_number"), //TODO: Add notNull before deploying
     regional: varchar("regional"), //TODO: Add notNull before deploying
-    upLine: varchar("upline"), //TODO: Add notNull before deploying
     npnNumber: varchar("npn_number"), //TODO: Add notNull before deploying
     states: jsonb("states").array().$type<State[]>(), //TODO: Add notNull before deploying
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
