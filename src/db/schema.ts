@@ -123,6 +123,7 @@ export const profile = pgTable(
     name: varchar().notNull(),
     address: varchar().notNull(),
     dob: date("dob", { mode: "date" }).notNull(),
+    role: title().notNull(),
     phoneNumber: varchar("phone_number"), //TODO: Add notNull before deploying
     regional: varchar("regional"), //TODO: Add notNull before deploying
     upLine: varchar("upline"), //TODO: Add notNull before deploying

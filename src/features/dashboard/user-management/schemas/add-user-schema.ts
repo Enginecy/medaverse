@@ -16,6 +16,7 @@ export const addUserSchema = z.object({
     .refine((date) => date <= new Date(), {
       message: "Date of birth cannot be in the future",
     }),
+  role: z.string().min(1, "Please select a role"),
   regional: z.string().min(1, "Please select a regional"),
   upLine: z.string().min(1, "Please select an upLine"),
   npnNumber: z.string().min(1, "Please select an NPN number"),

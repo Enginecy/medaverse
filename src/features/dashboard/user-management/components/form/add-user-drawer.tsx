@@ -115,8 +115,9 @@ export function AddUserDrawer({
     queryFn: () => getAboveSuperiors,
   });
 
-  if(isRoleSelected && roles) {
-    const selectedRole = form.getValues("");
+  if (isRoleSelected && roles) {
+    const selectedRole = form.getValues("role");
+    getAboveSuperiors({ selectedRole });
   }
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
