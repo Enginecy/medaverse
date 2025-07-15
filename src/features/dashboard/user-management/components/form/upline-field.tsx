@@ -20,12 +20,11 @@ import type { Superior } from "@/features/dashboard/user-management/server/db/us
 export function UpLineField({
   form,
   upLines,
-  isDisabled 
 }: {
   form: UseFormReturn<AddUserFormData>;
   upLines: Superior[];
-  isDisabled: boolean;
 }) {
+  const roleField = form.watch("role");
   return (
     <FormField
       control={form.control}
@@ -33,7 +32,11 @@ export function UpLineField({
       render={({ field }) => (
         <FormItem>
           <FormLabel>UpLine</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isDisabled}>
+          <Select
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+            disabled={roleField == null || roleField == undefined}
+          >
             <FormControl>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="James Doe" />

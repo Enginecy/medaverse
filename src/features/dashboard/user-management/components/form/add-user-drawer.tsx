@@ -276,7 +276,6 @@ export function AddUserDrawer({
                 <UpLineField
                   upLines={aboveSuperiors ?? []}
                   form={form}
-                  isDisabled={!isRoleSelected}
                 />
               </div>
             )}

@@ -16,7 +16,7 @@ export async function createAgent(data: AddUserFormData) {
   const currentUser = await supabase.auth.getUser();
 
   if (!currentUser.data.user?.id) {
-    throw { message: "Failed to Create user" };
+    throw { message: "You are unauthenticated" };
   }
 
   // Check if username already exists
@@ -67,7 +67,7 @@ export async function createAgent(data: AddUserFormData) {
     } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
     // Step 5: Database operations in transaction
-    const profileData = await db.admin.transaction(async (tx) => {
+    const profileData = await db.rls(async (tx) => {
       await tx
         .insert(profile)
         .values({
@@ -85,7 +85,7 @@ export async function createAgent(data: AddUserFormData) {
           userId: user.id,
         })
         .returning();
-        await tx
+    return    await tx
               .insert(userRoles)
               .values({
                 roleId: data.role,

@@ -3,7 +3,7 @@
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, roles, userRoles, users } from "@/db/schema";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { desc, getTableColumns, eq, gt } from "drizzle-orm";
 
 export async function getUsers() {
@@ -28,11 +28,11 @@ export type User = Awaited<ReturnType<typeof getUsers>>[number];
 
 export async function getAboveSuperiors(selectedRole : Role) {
   try {
-    const { auth } = createAdminClient();
-    const user = await auth.getUser();
+    const supabase = createClient();
+    const user = (await supabase).auth.getUser();
 
     if (!user) {
-      throw new Error("User not authenticated");
+      throw {message : "You are not authenticated`"};
     }
 
     const db = await createDrizzleSupabaseClient();
@@ -50,9 +50,7 @@ export async function getAboveSuperiors(selectedRole : Role) {
       
     return superiors;
   } catch (e) {
-    throw new Error(
-      `Failed to get superiors: ${e instanceof Error ? e.message : String(e)}`,
-    );
+    throw{ message : `Failed to get superiors: ${e instanceof Error ? e.message : String(e)}`}
   }
 }
 
