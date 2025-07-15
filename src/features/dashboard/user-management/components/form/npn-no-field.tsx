@@ -22,7 +22,6 @@ export function NpnNumberForm({
   form: UseFormReturn<AddUserFormData>;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <FormField
         control={form.control}
         name="npnNumber"
@@ -45,6 +44,5 @@ export function NpnNumberForm({
           </FormItem>
         )}
       />
-    </div>
   );
 }

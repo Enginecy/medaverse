@@ -22,7 +22,7 @@ export function UpLineField({
   upLines,
 }: {
   form: UseFormReturn<AddUserFormData>;
-  upLines: Superior[];
+  upLines?: Superior[];
 }) {
   const roleField = form.watch("role");
   return (
@@ -35,15 +35,26 @@ export function UpLineField({
           <Select
             onValueChange={field.onChange}
             defaultValue={field.value}
-            disabled={roleField == null || roleField == undefined}
+            disabled={
+              roleField == null ||
+              roleField == undefined ||
+              upLines!.length === 0 ||
+              upLines == null ||
+              upLines == undefined
+            }
           >
             <FormControl>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="James Doe" />
+                <SelectValue
+                  className="text-black"
+                  placeholder={
+                    upLines?.length === 0 ? "No UpLines available" : "James Doe"
+                  }
+                />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {upLines.map((upLine) => (
+              {upLines!.map((upLine) => (
                 <SelectItem key={upLine.id} value={upLine.id}>
                   {upLine.name}
                 </SelectItem>

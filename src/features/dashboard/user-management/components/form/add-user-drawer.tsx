@@ -120,17 +120,25 @@ export function AddUserDrawer({
   const getSuperiorsQueryOptions = queryOptions({
     queryKey: ["superiors", selectedRole?.id],
     queryFn: () => getAboveSuperiors(selectedRole!),
-    enabled: !!selectedRole,
+    enabled: false,
     refetchOnWindowFocus: false,
   });
-  const { data: aboveSuperiors, isPending: isLoadingSuperiors } = useQuery(
-    getSuperiorsQueryOptions,
-  );
-  // useEffect(() => {
-  //   if (isRoleSelected && roles) {
-  //      getAboveSuperiors(form.getValues("role"));
-  //   }
-  // }, [form.getValues("roleId")]);
+  const {
+    data: aboveSuperiors,
+    isPending: isLoadingSuperiors,
+    refetch: refetchSuperiors,
+  } = useQuery(getSuperiorsQueryOptions);
+
+  useEffect(() => {
+    if (!roles) return;
+
+    const roleId = form.watch("role");
+    const selectedRole = roles.find((role) => role.id === roleId);
+
+    if (selectedRole) {
+      refetchSuperiors();
+    }
+  }, [form.watch("role"), roles]); // 👈 key point
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
     mutationFn: createAgent,
@@ -247,17 +255,20 @@ export function AddUserDrawer({
               <div
                 className="flex h-full w-full items-center justify-center pt-6"
               >
-                Loading
+                Loading...
               </div>
             ) : (
               <RoleField
                 form={form}
                 roles={roles ?? []}
                 onChange={(value) => {
+                  form.setValue("upLine", "");
                   setIsRoleSelected(true);
                   queryClient.invalidateQueries({
-                    queryKey: ["superiors"],
+                    queryKey: ["superiors", value],
                   });
+                  form.setValue("role", value);
+                  refetchSuperiors();
                 }}
               />
             )}
@@ -265,19 +276,18 @@ export function AddUserDrawer({
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* UpLine and NPN Number */}
-            {isLoadingSuperiors ? (
+            {aboveSuperiors ? (
+             
+                <UpLineField upLines={aboveSuperiors} form={form} />
+             
+            ) : form.watch("role") && isLoadingSuperiors ? (
               <div
                 className="flex h-full w-full items-center justify-center pt-6"
               >
                 Loading...
               </div>
             ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <UpLineField
-                  upLines={aboveSuperiors ?? []}
-                  form={form}
-                />
-              </div>
+              <UpLineField upLines={[]} form={form} />
             )}
             <NpnNumberForm form={form} />
           </div>

@@ -18,38 +18,45 @@ import {
 import { type AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 
-
-export function RoleField ({form , roles , onChange } : {form : UseFormReturn<AddUserFormData> , roles : Role[] , onChange: ( value: string ) => void}) {
-
-
-    return (  <FormField
-        control={form.control}
-        name="role"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Contract ID</FormLabel>
-            <Select
-              onValueChange={(value) => {
-                field.onChange(value);
-                onChange(value);
-              }}
-              defaultValue={field.value}
-            >
-              <FormControl>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="name@example.com" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {roles.map((role) => (
-                  <SelectItem key={role.id} value={role.id}>
-                    {role.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />)
+export function RoleField({
+  form,
+  roles,
+  onChange,
+}: {
+  form: UseFormReturn<AddUserFormData>;
+  roles: Role[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <FormField
+      control={form.control}
+      name="role"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Contract ID</FormLabel>
+          <Select
+            onValueChange={(value) => {
+              field.onChange(value);
+              onChange(value);
+            }}
+            defaultValue={field.value}
+          >
+            <FormControl>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="name@example.com" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {roles.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  {role.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 }

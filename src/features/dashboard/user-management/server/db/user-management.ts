@@ -41,7 +41,7 @@ export async function getAboveSuperiors(selectedRole : Role) {
 
       .select({
         ...getTableColumns(profile),
-        role: roles.name,
+        role: roles,
       })
       .from(profile)
       .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
@@ -50,6 +50,7 @@ export async function getAboveSuperiors(selectedRole : Role) {
       
     return superiors;
   } catch (e) {
+    console.error("Error fetching superiors:", e);
     throw{ message : `Failed to get superiors: ${e instanceof Error ? e.message : String(e)}`}
   }
 }
