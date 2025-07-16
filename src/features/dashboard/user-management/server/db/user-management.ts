@@ -7,7 +7,6 @@ import { createClient } from "@/lib/supabase/server";
 import { desc, getTableColumns, eq, gt } from "drizzle-orm";
 
 export async function getUsers() {
-  
   const db = await createDrizzleSupabaseClient();
 
   const profiles = await db.rls((tx) => {
@@ -26,13 +25,13 @@ export async function getUsers() {
 
 export type User = Awaited<ReturnType<typeof getUsers>>[number];
 
-export async function getAboveSuperiors(selectedRole : Role) {
+export async function getAboveSuperiors(selectedRole: Role) {
   try {
     const supabase = createClient();
     const user = (await supabase).auth.getUser();
 
     if (!user) {
-      throw {message : "You are not authenticated`"};
+      throw { message: "You are not authenticated`" };
     }
 
     const db = await createDrizzleSupabaseClient();
@@ -47,33 +46,38 @@ export async function getAboveSuperiors(selectedRole : Role) {
       .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
       .innerJoin(roles, eq(userRoles.roleId, roles.id))
       .where(gt(roles.level, selectedRole.level));
-      
+
     return superiors;
   } catch (e) {
     console.error("Error fetching superiors:", e);
-    throw{ message : `Failed to get superiors: ${e instanceof Error ? e.message : String(e)}`}
+    throw {
+      message: `Failed to get superiors: ${e instanceof Error ? e.message : String(e)}`,
+    };
   }
 }
 
 export type Superior = Awaited<ReturnType<typeof getAboveSuperiors>>[number];
 
-export async function getRegionalDirectors() { 
-  try{
-    const db = await createDrizzleSupabaseClient(); 
+export async function getRegionalDirectors() {
+  try {
+    const db = await createDrizzleSupabaseClient();
 
     const regionalDirectors = await db.admin
       .select({
         ...getTableColumns(profile),
-        role: roles,
+        email: users.email,
       })
       .from(profile)
       .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
       .innerJoin(roles, eq(userRoles.roleId, roles.id))
       .where(eq(roles.code, "regional_director"));
-      
-    return regionalDirectors;
 
+    return regionalDirectors;
   } catch (e) {
-    throw { message : "Failed to get regional directors: " + (e instanceof Error ? e.message : String(e))}
-  } 
+    throw {
+      message:
+        "Failed to get regional directors: " +
+        (e instanceof Error ? e.message : String(e)),
+    };
+  }
 }

@@ -16,9 +16,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
+import type {  User } from "@/features/dashboard/user-management/server/db/user-management";
 
 
-export function RegionalField ({form } : {form : UseFormReturn<AddUserFormData>}) {
+export function RegionalField ({form  , regionalDirs } : {form : UseFormReturn<AddUserFormData> , regionalDirs : User[]}) {
 
 
     return (  <FormField
@@ -34,10 +35,11 @@ export function RegionalField ({form } : {form : UseFormReturn<AddUserFormData>}
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="north">North</SelectItem>
-                <SelectItem value="south">South</SelectItem>
-                <SelectItem value="east">East</SelectItem>
-                <SelectItem value="west">West</SelectItem>
+                {regionalDirs.map((regional) => (
+                  <SelectItem key={regional.id} value={regional.id}>
+                    {regional.name} 
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <FormMessage />

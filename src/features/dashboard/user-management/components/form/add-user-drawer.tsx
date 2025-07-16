@@ -133,7 +133,6 @@ export function AddUserDrawer({
   const {
     data: aboveSuperiors,
     isLoading: isLoadingSuperiors,
-    refetch: refetchSuperiors,
   } = useQuery(getSuperiorsQueryOptions);
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
@@ -246,7 +245,18 @@ export function AddUserDrawer({
 
           {/* Role and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <RegionalField form={form} />
+            {
+              isLoadingRegionalDirs ? (
+                <div
+                  className="flex h-full w-full items-center justify-center pt-6"
+                >
+                  Loading...
+                </div>
+              ) : (
+
+                <RegionalField form={form}  regionalDirs={regionalDirs ?? []}/>
+              )
+            }
             {isLoadingRoles ? (
               <div
                 className="flex h-full w-full items-center justify-center pt-6"
