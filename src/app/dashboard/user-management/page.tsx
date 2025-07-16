@@ -5,6 +5,7 @@ import { Download } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/data-table";
+import { UsersActions } from "@/features/dashboard/user-management/components/user-actions";
 export const metadata: Metadata = {
   title: "User Management ",
   description: "Manage users within your application.",
@@ -27,14 +28,3 @@ export default function UserManagement() {
   );
 }
 
-function UsersActions() {
-  return (
-    <div className="flex gap-2">
-      <Button variant="outline">
-        Download CSV
-        <Download />
-      </Button>
-      <AddUsersButton />
-    </div>
-  );
-}
