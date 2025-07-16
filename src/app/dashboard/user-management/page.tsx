@@ -12,7 +12,6 @@ export default function UserManagement() {
     <div className="flex h-full w-full flex-col items-start gap-6 p-6">
       <div className="flex w-full justify-between">
         <h1 className="text-2xl font-semibold">User Management</h1>
-        <UsersActions />
       </div>
       <div className="w-full">
         <div className="mb-4 rounded-2xl border border-gray-300 bg-white p-6">
