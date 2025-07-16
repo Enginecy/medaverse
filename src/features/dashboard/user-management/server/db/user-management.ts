@@ -56,3 +56,24 @@ export async function getAboveSuperiors(selectedRole : Role) {
 }
 
 export type Superior = Awaited<ReturnType<typeof getAboveSuperiors>>[number];
+
+export async function getRegionalDirectors() { 
+  try{
+    const db = await createDrizzleSupabaseClient(); 
+
+    const regionalDirectors = await db.admin
+      .select({
+        ...getTableColumns(profile),
+        role: roles,
+      })
+      .from(profile)
+      .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
+      .innerJoin(roles, eq(userRoles.roleId, roles.id))
+      .where(eq(roles.code, "regional_director"));
+      
+    return regionalDirectors;
+
+  } catch (e) {
+    throw { message : "Failed to get regional directors: " + (e instanceof Error ? e.message : String(e))}
+  } 
+}

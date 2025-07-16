@@ -64,6 +64,7 @@ import { UsernameField } from "@/features/dashboard/user-management/components/f
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
 import {
   getAboveSuperiors,
+  getRegionalDirectors,
   type User,
 } from "@/features/dashboard/user-management/server/db/user-management";
 import { RoleField } from "@/features/dashboard/user-management/components/form/role-field";
@@ -110,6 +111,13 @@ export function AddUserDrawer({
   const form = useForm<AddUserFormData>({
     resolver: zodResolver(addUserSchema),
     defaultValues,
+  });
+
+  const { data : regionalDirs, isLoading : isLoadingRegionalDirs  } = useQuery({
+    queryFn : getRegionalDirectors ,
+    queryKey: ["regional_directors"],
+    refetchOnWindowFocus: false,
+    enabled: !isEditing,
   });
   const { data: roles, isPending: isLoadingRoles } = useQuery({
     queryKey: ["roles"],
