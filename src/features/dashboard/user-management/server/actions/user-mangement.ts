@@ -147,6 +147,12 @@ export async function updateAgent(data: AddUserFormData, id: string) {
     } = await auth.admin.updateUserById(existingProfile!.userId!, {
       email: data.email,
     });
+    
+    const currentUser = await supabase.auth.getUser();
+
+  if (currentUser === null || currentUser.data.user === null) {
+      throw { message: "Not Authorized" };
+    }
     if (userError || !user?.id) {
       throw { message: "Failed to update user", error: userError };
     }
@@ -170,6 +176,15 @@ export async function updateAgent(data: AddUserFormData, id: string) {
       } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
       const profileData = await db.rls((tx) => {
+         tx
+              .update(userRoles)
+              .set({
+                roleId: data.role,
+                userId: user.id,
+                assignedBy: currentUser!.data!.user?.id,
+              })
+              .returning({ id: userRoles.id });
+        
         return tx
           .update(profile)
           .set({
@@ -177,8 +192,12 @@ export async function updateAgent(data: AddUserFormData, id: string) {
             username: data.username,
             address: data.address ?? null,
             dob: data.dateOfBirth,
-            status: "active",
             avatarUrl: publicUrl,
+            phoneNumber: data.phoneNumber,
+            regional: data.regional,
+            upLine: data.upLine,
+            npnNumber: data.npnNumber,
+            states: data.states as State[],
           })
           .where(eq(profile.id, id))
           .returning();

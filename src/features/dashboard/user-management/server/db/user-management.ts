@@ -14,9 +14,13 @@ export async function getUsers() {
       .select({
         ...getTableColumns(profile),
         email: users.email,
+        role: roles,
+        
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
+      .leftJoin(userRoles, eq(userRoles.userId, profile.userId))
+      .leftJoin(roles, eq(userRoles.roleId, roles.id))
       .orderBy(desc(profile.createdAt));
   });
 
@@ -66,6 +70,7 @@ export async function getRegionalDirectors() {
       .select({
         ...getTableColumns(profile),
         email: users.email,
+        role: roles,
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))

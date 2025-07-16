@@ -87,9 +87,11 @@ export function AddUserDrawer({
         email: user!.email!,
         phoneNumber: user!.phoneNumber!,
         address: user!.address!,
-        upLine: user!.upLine!,
+        upLine: user!.upLine ?? "",
         npnNumber: user!.npnNumber!,
         states: user!.states! || [],
+        regional: user!.regional! ?? "",
+        role: user!.role!.id ?? "",
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
       }
@@ -117,7 +119,6 @@ export function AddUserDrawer({
     queryFn : getRegionalDirectors ,
     queryKey: ["regional_directors"],
     refetchOnWindowFocus: false,
-    enabled: !isEditing,
   });
   const { data: roles, isPending: isLoadingRoles } = useQuery({
     queryKey: ["roles"],
