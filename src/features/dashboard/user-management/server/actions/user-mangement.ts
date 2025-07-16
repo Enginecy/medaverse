@@ -1,17 +1,23 @@
 "use server";
 
 import { createDrizzleSupabaseClient } from "@/db/db";
-import { profile } from "@/db/schema";
+import { profile, userRoles } from "@/db/schema";
 import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
 import { eq } from "drizzle-orm";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
+import type { State } from "@/lib/data";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
+  const currentUser = await supabase.auth.getUser();
+
+  if (!currentUser.data.user?.id) {
+    throw { message: "You are unauthenticated" };
+  }
 
   // Check if username already exists
   const existingProfile = await db.admin
@@ -37,7 +43,7 @@ export async function createAgent(data: AddUserFormData) {
     });
 
     if (userError || !user?.id)
-      throw { message: "Failed to create user", error: userError };
+      throw { message: "Failed to create user"};
     createdUser = user;
 
     // Step 2: Prepare file upload details
@@ -61,21 +67,32 @@ export async function createAgent(data: AddUserFormData) {
     } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
     // Step 5: Database operations in transaction
-
-    const profileData = await db.rls((tx) => {
-      return tx
+    const profileData = await db.rls(async (tx) => {
+      await tx
         .insert(profile)
         .values({
           name: data.fullName,
           username: data.username,
           address: data.address ?? null,
           dob: data.dateOfBirth,
-          // role: data.contractId,
+          phoneNumber: data.phoneNumber,
+          regional: data.regional,
+          upLine: data.upLine,
+          npnNumber: data.npnNumber,
+          states: data.states as State[],
           status: "active",
           avatarUrl: publicUrl,
           userId: user.id,
         })
         .returning();
+    return    await tx
+              .insert(userRoles)
+              .values({
+                roleId: data.role,
+                userId: user.id,
+                assignedBy: currentUser.data.user?.id,
+              })
+              .returning({ id: userRoles.id });
     });
 
     return { success: true, profile: profileData };
@@ -130,8 +147,14 @@ export async function updateAgent(data: AddUserFormData, id: string) {
     } = await auth.admin.updateUserById(existingProfile!.userId!, {
       email: data.email,
     });
+    
+    const currentUser = await supabase.auth.getUser();
+
+  if (currentUser === null || currentUser.data.user === null) {
+      throw { message: "Not Authorized" };
+    }
     if (userError || !user?.id) {
-      throw { message: "Failed to update user", error: userError };
+      throw { message: "Failed to update user"};
     }
     createdUser = user;
 
@@ -153,6 +176,15 @@ export async function updateAgent(data: AddUserFormData, id: string) {
       } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
       const profileData = await db.rls((tx) => {
+         tx
+              .update(userRoles)
+              .set({
+                roleId: data.role,
+                userId: user.id,
+                assignedBy: currentUser!.data!.user?.id,
+              })
+              .returning({ id: userRoles.id });
+        
         return tx
           .update(profile)
           .set({
@@ -160,8 +192,12 @@ export async function updateAgent(data: AddUserFormData, id: string) {
             username: data.username,
             address: data.address ?? null,
             dob: data.dateOfBirth,
-            status: "active",
             avatarUrl: publicUrl,
+            phoneNumber: data.phoneNumber,
+            regional: data.regional,
+            upLine: data.upLine,
+            npnNumber: data.npnNumber,
+            states: data.states as State[],
           })
           .where(eq(profile.id, id))
           .returning();
@@ -218,13 +254,13 @@ export async function deleteAgent(id: string) {
   } = await supabase.auth.getUser();
 
   if (currentUserError) {
-    throw { message: "Failed to get current user", error: currentUserError };
+    throw { message: "Failed to get current user"};
   }
-  
+
   if (currentUser?.id === existingProfile.userId) {
     throw { message: "You cannot delete your account" };
   }
-  
+
   const banUntil = new Date();
   banUntil.setFullYear(banUntil.getFullYear() + 100);
 

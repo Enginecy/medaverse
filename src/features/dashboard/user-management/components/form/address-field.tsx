@@ -22,7 +22,7 @@ export function AddressField({
         <FormItem>
           <FormLabel>Address</FormLabel>
           <FormControl>
-            <Input placeholder="name@example.com" {...field} />
+            <Input placeholder="Enter Address" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

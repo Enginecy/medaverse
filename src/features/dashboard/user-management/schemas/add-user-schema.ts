@@ -1,3 +1,4 @@
+import type { State } from "@/lib/data";
 import z from "zod";
 
 // Form validation schema
@@ -14,15 +15,16 @@ export const addUserSchema = z.object({
     .refine((date) => date <= new Date(), {
       message: "Date of birth cannot be in the future",
     }),
+  role: z.string().min(1, "Please select a role"),
   regional: z.string().min(1, "Please select a regional"),
-  upline: z.string().min(1, "Please select an upline"),
+  upLine: z.string(),
   npnNumber: z.string().min(1, "Please select an NPN number"),
   states: z
     .array(
       z.object({
         name: z.string(),
         code: z.string(),
-      }),
+      }) as z.ZodType<State>,
     )
     .min(1, "Please select at least one state"),
   profileImage: z.union([z.instanceof(File), z.string().url()]),

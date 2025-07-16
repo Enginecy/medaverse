@@ -22,7 +22,7 @@ export function UsernameField({
         <FormItem>
           <FormLabel>Username</FormLabel>
           <FormControl>
-            <Input placeholder="name@example.com" {...field} />
+            <Input placeholder="Enter username" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

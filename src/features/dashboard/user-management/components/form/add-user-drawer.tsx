@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, X } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,12 @@ import {
 import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   createAgent,
   updateAgent,
@@ -57,7 +62,14 @@ import { EmailField } from "@/features/dashboard/user-management/components/form
 import { PhoneField } from "@/features/dashboard/user-management/components/form/phone-field";
 import { UsernameField } from "@/features/dashboard/user-management/components/form/username-field";
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
-import type { User } from "@/features/dashboard/user-management/server/db/user-management";
+import {
+  getAboveSuperiors,
+  getRegionalDirectors,
+  type User,
+} from "@/features/dashboard/user-management/server/db/user-management";
+import { RoleField } from "@/features/dashboard/user-management/components/form/role-field";
+import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+import { UpLineField } from "@/features/dashboard/user-management/components/form/upline-field";
 
 export function AddUserDrawer({
   user,
@@ -67,17 +79,19 @@ export function AddUserDrawer({
   closeDrawer: (value?: unknown) => void;
 }) {
   const isEditing = !!user;
+
   const defaultValues = isEditing
     ? {
         fullName: user!.name!,
         username: user!.username!,
         email: user!.email!,
-        phoneNumber: "",
+        phoneNumber: user!.phoneNumber!,
         address: user!.address!,
-        regional: "",
-        upline: "",
-        npnNumber: "",
-        states: [],
+        upLine: user!.upLine ?? "",
+        npnNumber: user!.npnNumber!,
+        states: user!.states! || [],
+        regional: user!.regional! ?? "",
+        role: user!.role!.id ?? "",
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
       }
@@ -88,7 +102,7 @@ export function AddUserDrawer({
         phoneNumber: "",
         address: "",
         regional: "",
-        upline: "",
+        upLine: "",
         npnNumber: "",
         states: [],
         profileImage: new File([], ""),
@@ -100,6 +114,27 @@ export function AddUserDrawer({
     resolver: zodResolver(addUserSchema),
     defaultValues,
   });
+
+  const { data : regionalDirs, isLoading : isLoadingRegionalDirs  } = useQuery({
+    queryFn : getRegionalDirectors ,
+    queryKey: ["regional_directors"],
+    refetchOnWindowFocus: false,
+  });
+  const { data: roles, isPending: isLoadingRoles } = useQuery({
+    queryKey: ["roles"],
+    queryFn: getRoles,
+  });
+  var selectedRole = roles?.find((role) => role.id === form.watch("role"));
+  const getSuperiorsQueryOptions = queryOptions({
+    queryKey: ["superiors", selectedRole?.id],
+    queryFn: () => getAboveSuperiors(selectedRole!),
+    enabled: !!selectedRole,
+    refetchOnWindowFocus: false,
+  });
+  const {
+    data: aboveSuperiors,
+    isLoading: isLoadingSuperiors,
+  } = useQuery(getSuperiorsQueryOptions);
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
     mutationFn: createAgent,
@@ -209,14 +244,51 @@ export function AddUserDrawer({
             <DobField form={form} />
           </div>
 
-          {/* Contract ID and Regional */}
+          {/* Role and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <RegionalField form={form} />
+            {
+              isLoadingRegionalDirs ? (
+                <div
+                  className="flex h-full w-full items-center justify-center pt-6"
+                >
+                  Loading...
+                </div>
+              ) : (
+
+                <RegionalField form={form}  regionalDirs={regionalDirs ?? []}/>
+              )
+            }
+            {isLoadingRoles ? (
+              <div
+                className="flex h-full w-full items-center justify-center pt-6"
+              >
+                Loading...
+              </div>
+            ) : (
+              <RoleField
+                form={form}
+                roles={roles ?? []}
+                onChange={(value) => {
+                  form.setValue("upLine", "");
+                  form.setValue("role", value);
+                }}
+              />
+            )}
           </div>
 
-          {/* Upline and NPN Number */}
-          <NpnNumberForm form={form} />
-          {/* States */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* UpLine and NPN Number */}
+            {isLoadingSuperiors ? (
+              <div
+                className="flex h-full w-full items-center justify-center pt-6"
+              >
+                Loading...
+              </div>
+            ) : (
+              <UpLineField upLines={aboveSuperiors ?? []} form={form} />
+            )}
+            <NpnNumberForm form={form} />
+          </div>
           <FormField
             control={form.control}
             name="states"
@@ -247,7 +319,7 @@ export function AddUserDrawer({
                     <PopoverContent className="w-full p-0">
                       <Command>
                         <CommandInput
-                          placeholder="Search states..."
+                          placeholder="Select States..."
                           className="h-9"
                         />
                         <CommandList>

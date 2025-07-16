@@ -21,10 +21,9 @@ export function FullNameField({
       render={({ field }) => (
         <FormItem>
           <FormLabel>Full name</FormLabel>
-
-          <FormControl>
-            <Input placeholder="name@example.com" {...field} />
-          </FormControl>
+            <FormControl>
+            <Input placeholder="Enter full name" {...field} />
+            </FormControl>
           <FormMessage />
         </FormItem>
       )}
