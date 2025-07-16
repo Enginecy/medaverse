@@ -43,7 +43,7 @@ export async function createAgent(data: AddUserFormData) {
     });
 
     if (userError || !user?.id)
-      throw { message: "Failed to create user", error: userError };
+      throw { message: "Failed to create user"};
     createdUser = user;
 
     // Step 2: Prepare file upload details
@@ -154,7 +154,7 @@ export async function updateAgent(data: AddUserFormData, id: string) {
       throw { message: "Not Authorized" };
     }
     if (userError || !user?.id) {
-      throw { message: "Failed to update user", error: userError };
+      throw { message: "Failed to update user"};
     }
     createdUser = user;
 
@@ -254,7 +254,7 @@ export async function deleteAgent(id: string) {
   } = await supabase.auth.getUser();
 
   if (currentUserError) {
-    throw { message: "Failed to get current user", error: currentUserError };
+    throw { message: "Failed to get current user"};
   }
 
   if (currentUser?.id === existingProfile.userId) {

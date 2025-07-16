@@ -55,7 +55,7 @@ export async function getAboveSuperiors(selectedRole: Role) {
   } catch (e) {
     console.error("Error fetching superiors:", e);
     throw {
-      message: `Failed to get superiors: ${e instanceof Error ? e.message : String(e)}`,
+      message: `Failed to get superiors`,
     };
   }
 }
@@ -82,8 +82,7 @@ export async function getRegionalDirectors() {
   } catch (e) {
     throw {
       message:
-        "Failed to get regional directors: " +
-        (e instanceof Error ? e.message : String(e)),
+        "Failed to get regional directors" 
     };
   }
 }
