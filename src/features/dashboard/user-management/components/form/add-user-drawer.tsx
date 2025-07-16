@@ -89,9 +89,9 @@ export function AddUserDrawer({
         address: user!.address!,
         upLine: user!.upLine ?? "",
         npnNumber: user!.npnNumber!,
-        states: user!.states! || [],
         regional: user!.regional! ?? "",
         role: user!.role!.id ?? "",
+        states: user!.states! || [],
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
       }
@@ -104,6 +104,7 @@ export function AddUserDrawer({
         regional: "",
         upLine: "",
         npnNumber: "",
+        role: "",
         states: [],
         profileImage: new File([], ""),
         dateOfBirth: new Date(),

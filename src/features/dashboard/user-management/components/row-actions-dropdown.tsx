@@ -78,7 +78,7 @@ export function RowActionsDropdown({ user }: { user: User }) {
                 variables={user.id}
               />
             ));
-          }}
+          }} disabled={user.status != "active"}
         >
           <Trash2 className="text-destructive" />
           <span className="text-destructive">Delete</span>
