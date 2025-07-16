@@ -78,7 +78,6 @@ export function AddUserDrawer({
   closeDrawer: (value?: unknown) => void;
 }) {
   const isEditing = !!user;
-  const [isRoleSelected, setIsRoleSelected] = useState(false);
 
   const defaultValues = isEditing
     ? {
@@ -120,25 +119,14 @@ export function AddUserDrawer({
   const getSuperiorsQueryOptions = queryOptions({
     queryKey: ["superiors", selectedRole?.id],
     queryFn: () => getAboveSuperiors(selectedRole!),
-    enabled: false,
+    enabled: !!selectedRole,
     refetchOnWindowFocus: false,
   });
   const {
     data: aboveSuperiors,
-    isPending: isLoadingSuperiors,
+    isLoading: isLoadingSuperiors,
     refetch: refetchSuperiors,
   } = useQuery(getSuperiorsQueryOptions);
-
-  useEffect(() => {
-    if (!roles) return;
-
-    const roleId = form.watch("role");
-    const selectedRole = roles.find((role) => role.id === roleId);
-
-    if (selectedRole) {
-      refetchSuperiors();
-    }
-  }, [form.watch("role"), roles]); // 👈 key point
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
     mutationFn: createAgent,
@@ -263,12 +251,7 @@ export function AddUserDrawer({
                 roles={roles ?? []}
                 onChange={(value) => {
                   form.setValue("upLine", "");
-                  setIsRoleSelected(true);
-                  queryClient.invalidateQueries({
-                    queryKey: ["superiors", value],
-                  });
                   form.setValue("role", value);
-                  refetchSuperiors();
                 }}
               />
             )}
@@ -276,18 +259,14 @@ export function AddUserDrawer({
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* UpLine and NPN Number */}
-            {aboveSuperiors ? (
-             
-                <UpLineField upLines={aboveSuperiors} form={form} />
-             
-            ) : form.watch("role") && isLoadingSuperiors ? (
+            {isLoadingSuperiors ? (
               <div
                 className="flex h-full w-full items-center justify-center pt-6"
               >
                 Loading...
               </div>
             ) : (
-              <UpLineField upLines={[]} form={form} />
+              <UpLineField upLines={aboveSuperiors ?? []} form={form} />
             )}
             <NpnNumberForm form={form} />
           </div>
