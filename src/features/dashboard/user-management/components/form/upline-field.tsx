@@ -48,7 +48,7 @@ export function UpLineField({
                 <SelectValue
                   className="text-black"
                   placeholder={
-                    upLines?.length === 0 ? "No UpLines available" : "James Doe"
+                    upLines?.length === 0 ? "No UpLines available" : "Select UpLine"
                   }
                 />
               </SelectTrigger>

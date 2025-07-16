@@ -68,6 +68,7 @@ export async function getRegionalDirectors() {
         email: users.email,
       })
       .from(profile)
+      .leftJoin(users, eq(profile.userId, users.id))
       .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
       .innerJoin(roles, eq(userRoles.roleId, roles.id))
       .where(eq(roles.code, "regional_director"));

@@ -31,7 +31,7 @@ export function RegionalField ({form  , regionalDirs } : {form : UseFormReturn<A
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="name@example.com" />
+                  <SelectValue placeholder="Select Regional Director" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>

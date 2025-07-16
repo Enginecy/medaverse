@@ -17,9 +17,9 @@ export function PhoneField({ form }: { form: UseFormReturn<AddUserFormData> }) {
       render={({ field }) => (
         <FormItem>
           <FormLabel>Phone Number</FormLabel>
-          <FormControl>
-            <Input placeholder="name@example.com" type="tel" {...field} />
-          </FormControl>
+            <FormControl>
+              <Input placeholder="(555) 123-4567" type="tel" {...field} />
+            </FormControl>
           <FormMessage />
         </FormItem>
       )}

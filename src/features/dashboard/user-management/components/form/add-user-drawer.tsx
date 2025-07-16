@@ -318,7 +318,7 @@ export function AddUserDrawer({
                     <PopoverContent className="w-full p-0">
                       <Command>
                         <CommandInput
-                          placeholder="Search states..."
+                          placeholder="Select States..."
                           className="h-9"
                         />
                         <CommandList>

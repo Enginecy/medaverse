@@ -43,7 +43,7 @@ export function RoleField({
           >
             <FormControl>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="name@example.com" />
+                <SelectValue placeholder="Select Role" />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
