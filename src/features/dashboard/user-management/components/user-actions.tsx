@@ -136,10 +136,10 @@ function normalizeRow(row: Record<string, any>, allKeys: string[]) {
 }
 
 function maxWidth(data: Record<string, any>[], key: string) {
-  var maximum = 0;
+  var maximum = key.length;
   data.forEach((row) => {
     if (key in row) {
-      const obj = String(row[key]);
+      const obj = row[key] != null ? String(row[key]) : "";
       const length = obj.length;
 
       if (maximum < length) {
@@ -147,5 +147,5 @@ function maxWidth(data: Record<string, any>[], key: string) {
       }
     }
   });
-  return maximum;
+  return maximum * 1.5;
 }
