@@ -3,8 +3,9 @@
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, roles, userRoles, users } from "@/db/schema";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+import { NpnNumberForm } from "@/features/dashboard/user-management/components/form/npn-no-field";
 import { createClient } from "@/lib/supabase/server";
-import { desc, getTableColumns, eq, gt } from "drizzle-orm";
+import { desc, getTableColumns, eq, gt, sql } from "drizzle-orm";
 
 export async function getUsers() {
   const db = await createDrizzleSupabaseClient();
@@ -94,8 +95,15 @@ export async function getExportUsers() {
   const exportUsers = await db.rls((tx) => {
     return tx
       .select({
-        ...getTableColumns(profile),
-        email: users.email,
+      name: profile.name,
+      username: profile.username,
+      phoneNumber: profile.phoneNumber,
+      email: users.email,
+      role: roles.name,
+      status: profile.status,
+      address: profile.address,
+      dob: sql`TO_CHAR(${profile.dob}, 'YYYY-MM-DD')`.as("dob"),
+      NpnNumber: profile.npnNumber,
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
