@@ -86,6 +86,7 @@ async function generalExport(data: Record<string, any>[], name: string) {
         columnsKeys[i]?.charAt(0).toUpperCase() + columnsKeys[i]!.slice(1),
       key: columnsKeys[i],
       width: width,
+
       style: {
         alignment: {
           horizontal: "center",
@@ -104,13 +105,30 @@ async function generalExport(data: Record<string, any>[], name: string) {
   // add the rows in the worksheet I am trying to export
   data.forEach((row) => {
     const normalized = normalizeRow(row, columnsKeys);
-    workSheet.addRow(normalized);
+    const addedRow = workSheet.addRow(normalized);
+    addedRow.height = 30;
+    addedRow.eachCell((cell) => {
+      cell.font = { name: "Calibri", size: 12, bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFFFF0B3" }, // Light yellow
+      };
+      cell.border = {
+        top: { style: "thin" },
+        bottom: { style: "thin" },
+        left: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+    workSheet.getRow(workSheet.lastRow!.number);
   });
 
-  for (const row of data) {
-    const normalized = normalizeRow(data, columnsKeys);
-    workSheet.addRow(normalized);
-  }
+  // for (const row of data) {
+  //   const normalized = normalizeRow(data, columnsKeys);
+  //   workSheet.addRow(normalized);
+  // }
 
   // Generate buffer
   const buffer = await workBook.xlsx.writeBuffer();
