@@ -86,3 +86,28 @@ export async function getRegionalDirectors() {
     };
   }
 }
+
+
+export async function getExportUsers() {
+   const db = await createDrizzleSupabaseClient();
+
+  const exportUsers = await db.rls((tx) => {
+    return tx
+      .select({
+        ...getTableColumns(profile),
+        email: users.email,
+        
+        
+      })
+      .from(profile)
+      .leftJoin(users, eq(profile.userId, users.id))
+      .leftJoin(userRoles, eq(userRoles.userId, profile.userId))
+      .leftJoin(roles, eq(userRoles.roleId, roles.id))
+      .orderBy(desc(profile.createdAt));
+  });
+
+  return exportUsers;
+}
+
+
+export type ExportedUsers = Awaited<ReturnType<typeof getExportUsers>> [number]
