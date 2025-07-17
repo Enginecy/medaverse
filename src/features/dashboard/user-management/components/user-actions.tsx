@@ -86,8 +86,13 @@ async function generalExport(data: Record<string, any>[], name: string) {
         columnsKeys[i]?.charAt(0).toUpperCase() + columnsKeys[i]!.slice(1),
       key: columnsKeys[i],
       width: width,
-
       style: {
+        border:{
+          top: { style: "thin" },
+          bottom: { style: "thin" },
+          left: { style: "thin" },
+          right: { style: "thin" },
+        },
         alignment: {
           horizontal: "center",
         },
@@ -106,9 +111,9 @@ async function generalExport(data: Record<string, any>[], name: string) {
   data.forEach((row) => {
     const normalized = normalizeRow(row, columnsKeys);
     const addedRow = workSheet.addRow(normalized);
-    addedRow.height = 30;
+    addedRow.height = 20;
     addedRow.eachCell((cell) => {
-      cell.font = { name: "Calibri", size: 12, bold: true };
+      cell.font = { name: "Calibri", size: 12 };
       cell.alignment = { horizontal: "center", vertical: "middle" };
       cell.fill = {
         type: "pattern",
@@ -124,11 +129,6 @@ async function generalExport(data: Record<string, any>[], name: string) {
     });
     workSheet.getRow(workSheet.lastRow!.number);
   });
-
-  // for (const row of data) {
-  //   const normalized = normalizeRow(data, columnsKeys);
-  //   workSheet.addRow(normalized);
-  // }
 
   // Generate buffer
   const buffer = await workBook.xlsx.writeBuffer();
