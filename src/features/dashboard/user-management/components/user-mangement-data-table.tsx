@@ -17,8 +17,7 @@ export async function UserManagementTable() {
       enableGlobalSearch={true}
       enableDateFilter={false}
       action ={
-        <UsersActions users={users}/>
-
+        <UsersActions />
       }
     />
   );

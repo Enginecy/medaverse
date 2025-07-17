@@ -96,8 +96,6 @@ export async function getExportUsers() {
       .select({
         ...getTableColumns(profile),
         email: users.email,
-        
-        
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
