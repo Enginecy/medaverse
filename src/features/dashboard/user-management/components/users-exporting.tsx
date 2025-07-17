@@ -11,7 +11,7 @@ import React from "react";
 
 export function ExportUsersButton() {
     const [ isLoading , setIsLoading ] = React.useState(false);
-  const { } = useQuery({
+useQuery({
     queryKey: ["users_export"],
     queryFn: getExportUsers,
     enabled: false,
