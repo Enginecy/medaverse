@@ -4,6 +4,7 @@ import type { User } from "@/features/dashboard/user-management/server/db/user-m
 import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import { useState } from "react";
+import ExcelJS from "exceljs";
 
 export function UploadCSVDialog<TVars, TData>({
   title,
@@ -39,7 +40,7 @@ export function UploadCSVDialog<TVars, TData>({
       const text = event.target?.result;
       if (typeof text !== "string") return;
       const lines = text.trim().split("\n");
-      console.log("LINES", lines);
+      // console.log("LINES", lines);
 
       const headers = lines[0]?.trim().split(",");
       console.log("HEADERS", headers);
@@ -47,18 +48,18 @@ export function UploadCSVDialog<TVars, TData>({
       const rows = lines.slice(1);
       var usersData: User[] = [];
 
-      console.log("ROWS", rows);
+      // console.log("ROWS", rows);
 
       for (const row of rows) {
-        console.log("ROW", row);
+        // console.log("ROW", row);
         try {
           // const rowData =
           //  usersData.push();
         } catch (e) {}
       }
 
-      reader.readAsText(file);
     };
+    reader.readAsText(file);
   }
   return (
     <DialogContent
@@ -108,7 +109,7 @@ export function UploadCSVDialog<TVars, TData>({
             />
           </label>
         )}
-
+        
         <div className="flex w-full flex-row justify-around py-3">
           <Button className="w-30" variant="outline" onClick={onCancel}>
             Cancel
@@ -117,7 +118,6 @@ export function UploadCSVDialog<TVars, TData>({
             className="bg-primary hover:bg-primary-400 w-30"
             disabled={isPending || csvFile === null}
             onClick={() => {
-              console.log("THIS IS THE CLICK");
               readCSVFile(csvFile!);
             }}
           >

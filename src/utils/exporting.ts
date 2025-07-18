@@ -83,7 +83,7 @@ export async function generalExport(data: Record<string, any>[], name: string) {
   });
 
   // Generate buffer
-  const buffer = await workBook.xlsx.writeBuffer();
+  const buffer = await workBook.csv.writeBuffer();
 
   // Save file
   const blob = new Blob([buffer], {
@@ -93,7 +93,7 @@ export async function generalExport(data: Record<string, any>[], name: string) {
   var csvURL = window.URL.createObjectURL(blob);
   const tempLink = document.createElement("a");
   tempLink.href = csvURL;
-  tempLink.setAttribute("download", "filename.xlsx");
+  tempLink.setAttribute("download", "filename.csv");
   tempLink.click();
 }
 

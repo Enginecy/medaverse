@@ -10,18 +10,18 @@ import { PulseMultiple } from "react-svg-spinners";
 import React from "react";
 
 export function ExportUsersButton() {
-    const [ isLoading , setIsLoading ] = React.useState(false);
-useQuery({
+  const [isLoading, setIsLoading] = React.useState(false);
+  useQuery({
     queryKey: ["users_export"],
     queryFn: getExportUsers,
     enabled: false,
   });
   async function exportUsersData() {
     try {
-        setIsLoading(true);
-        console.log("Exporting users data..." + isLoading);
-        const data = await getExportUsers();
-        console.log("Exporting users data..." + isLoading);
+      setIsLoading(true);
+      console.log("Exporting users data..." + isLoading);
+      const data = await getExportUsers();
+      console.log("Exporting users data..." + isLoading);
 
       if (data) {
         const exportedData = await generalExport(data!, "Users");
@@ -41,7 +41,7 @@ useQuery({
         });
       }
     } catch (e) {
-       setIsLoading(false); 
+      setIsLoading(false);
       showSonnerToast({
         message: "Failure",
         description: "Failed to export users data",
@@ -50,11 +50,16 @@ useQuery({
     }
   }
   return (
-    <Button className="w-35" variant="outline" onClick={() => exportUsersData() } disabled={isLoading}>
+    <Button
+      className="w-35"
+      variant="outline"
+      onClick={() => exportUsersData()}
+      disabled={isLoading}
+    >
       {isLoading ? (
-        <PulseMultiple color="#02459e" /> 
-        //TODO: make it with the primary color global css 
+        <PulseMultiple color="#02459e" />
       ) : (
+        //TODO: make it with the primary color global css
         <>
           Download xlsx
           <Download />
