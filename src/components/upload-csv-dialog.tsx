@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
+import type { User } from "@/features/dashboard/user-management/server/db/user-management";
 import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import { useState } from "react";
@@ -30,6 +31,35 @@ export function UploadCSVDialog<TVars, TData>({
     onSuccess: onSuccess,
     onError: onError,
   });
+
+  function readCSVFile(file: File) {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const text = event.target?.result;
+      if (typeof text !== "string") return;
+      const lines = text.trim().split("\n");
+      console.log("LINES", lines);
+
+      const headers = lines[0]?.trim().split(",");
+      console.log("HEADERS", headers);
+
+      const rows = lines.slice(1);
+      var usersData: User[] = [];
+
+      console.log("ROWS", rows);
+
+      for (const row of rows) {
+        console.log("ROW", row);
+        try {
+          // const rowData =
+          //  usersData.push();
+        } catch (e) {}
+      }
+
+      reader.readAsText(file);
+    };
+  }
   return (
     <DialogContent
       className="w-110 rounded-2xl border-0 p-7 focus-visible:ring-0
@@ -86,6 +116,10 @@ export function UploadCSVDialog<TVars, TData>({
           <Button
             className="bg-primary hover:bg-primary-400 w-30"
             disabled={isPending || csvFile === null}
+            onClick={() => {
+              console.log("THIS IS THE CLICK");
+              readCSVFile(csvFile!);
+            }}
           >
             <label>
               {isPending ? (
@@ -102,23 +136,4 @@ export function UploadCSVDialog<TVars, TData>({
       </div>
     </DialogContent>
   );
-}
-
-export function readCSVFile(file: File) {
-  const reader = new FileReader();
-
-  reader.onload = (event) => {
-    const text = event.target?.result;
-    if(typeof text !== "string") return;
-    const lines = text.trim().split("\n");
-    const headers = lines[0]?.trim().split(",");
-    const rows = lines.slice(1); 
-
-    for( const row of rows ){
-      
-    }
-
-    
-
-  };
 }
