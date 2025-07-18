@@ -56,7 +56,7 @@ useQuery({
         //TODO: make it with the primary color global css 
       ) : (
         <>
-          Download CSV
+          Download xlsx
           <Download />
         </>
       )}
