@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2, Trash2, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 
 export function UploadCSVDialog<TVars, TData>({
   title,
@@ -29,20 +29,20 @@ export function UploadCSVDialog<TVars, TData>({
   });
   return (
     <DialogContent
-      className="w-85 rounded-2xl border-0 p-7 focus-visible:ring-0
+      className="w-95 rounded-2xl border-0 p-7 focus-visible:ring-0
         focus-visible:outline-none"
       showCloseButton={false}
     >
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-3">
         <div
           className="m-2 flex h-14 w-14 items-center justify-center rounded-full
-            bg-red-50"
+            bg-blue-50"
         >
           <div
             className="flex h-10 w-10 items-center justify-center rounded-full
-              bg-red-100"
+              bg-blue-100"
           >
-            <Trash2 className="h-6 w-6 text-red-500" />
+            <Upload className="h-6 w-6 text-blue-500" />
           </div>
         </div>
         <DialogTitle className="text-center text-base font-semibold">
@@ -56,7 +56,7 @@ export function UploadCSVDialog<TVars, TData>({
             Cancel
           </Button>
           <Button
-            className="w-30 bg-blue-400"
+            className="w-30 bg-primary hover:bg-primary-400 "
             onClick={() => mutate(variables)}
             disabled={isPending} 
           >
