@@ -55,9 +55,11 @@ export function UploadCSVDialog<TVars, TData>({
           {content}
         </p>
         {csvFile ? (
-          <div className="flex flex-row gap-3 items-center">
-            <p>Selected file: ${csvFile.name}</p>
-            <Button variant="outline" onClick={() => setCsvFile(null)}>X</Button>
+          <div className="flex flex-row items-center gap-3">
+            <p>Selected file: {csvFile.name}</p>
+            <Button variant="outline" onClick={() => setCsvFile(null)}>
+              X
+            </Button>
           </div>
         ) : (
           <label
@@ -102,12 +104,21 @@ export function UploadCSVDialog<TVars, TData>({
   );
 }
 
-{/* <input
-  type="file"
-  accept=".csv"
-  onClick={() => mutate(variables)}
-  className="hidden"
-  onChange={(event) => {
-  setCsvFile ( event.target.files?.[0] || null);
-  }}
-/>*/}
+export function readCSVFile(file: File) {
+  const reader = new FileReader();
+
+  reader.onload = (event) => {
+    const text = event.target?.result;
+    if(typeof text !== "string") return;
+    const lines = text.trim().split("\n");
+    const headers = lines[0]?.trim().split(",");
+    const rows = lines.slice(1); 
+
+    for( const row of rows ){
+      
+    }
+
+    
+
+  };
+}
