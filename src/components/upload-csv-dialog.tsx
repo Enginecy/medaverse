@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Trash2, Upload } from "lucide-react";
 
 export function UploadCSVDialog<TVars, TData>({
   title,
@@ -26,7 +26,6 @@ export function UploadCSVDialog<TVars, TData>({
     },
     onSuccess: onSuccess,
     onError: onError,
-
   });
   return (
     <DialogContent
@@ -57,17 +56,17 @@ export function UploadCSVDialog<TVars, TData>({
             Cancel
           </Button>
           <Button
-            className="w-30 bg-red-600"
+            className="w-30 bg-blue-400"
             onClick={() => mutate(variables)}
-            disabled={isPending} // Disable button when loading
+            disabled={isPending} 
           >
             {isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Deleting...
+                <Upload className="mr-2 h-4 w-4 animate-spin" />
+                Uploading...
               </>
             ) : (
-              "Delete"
+              "Upload CSV"
             )}
           </Button>
         </div>
