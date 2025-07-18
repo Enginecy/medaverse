@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
+import { useState } from "react";
 
 export function UploadCSVDialog<TVars, TData>({
   title,
@@ -20,6 +21,8 @@ export function UploadCSVDialog<TVars, TData>({
   onCancel: () => void;
   variables: TVars;
 }) {
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+
   const { mutate, isPending } = useMutation({
     mutationFn: (variables: TVars) => {
       return onSubmit(variables);
@@ -29,7 +32,7 @@ export function UploadCSVDialog<TVars, TData>({
   });
   return (
     <DialogContent
-      className="w-95 rounded-2xl border-0 p-7 focus-visible:ring-0
+      className="w-110 rounded-2xl border-0 p-7 focus-visible:ring-0
         focus-visible:outline-none"
       showCloseButton={false}
     >
@@ -51,26 +54,60 @@ export function UploadCSVDialog<TVars, TData>({
         <p className="text-center text-sm font-light text-gray-600">
           {content}
         </p>
+        {csvFile ? (
+          <div className="flex flex-row gap-3 items-center">
+            <p>Selected file: ${csvFile.name}</p>
+            <Button variant="outline" onClick={() => setCsvFile(null)}>X</Button>
+          </div>
+        ) : (
+          <label
+            className="flex h-20 w-85 cursor-pointer flex-col items-center
+              justify-center border-2 border-dotted border-blue-400 bg-blue-50
+              p-5 transition hover:bg-blue-100"
+          >
+            <span className="font-medium text-blue-700">Select CSV File</span>
+            <input
+              type="file"
+              accept=".csv"
+              className="hidden"
+              onChange={(event) => {
+                setCsvFile(event.target.files?.[0] || null);
+              }}
+            />
+          </label>
+        )}
+
         <div className="flex w-full flex-row justify-around py-3">
           <Button className="w-30" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
           <Button
-            className="w-30 bg-primary hover:bg-primary-400 "
-            onClick={() => mutate(variables)}
-            disabled={isPending} 
+            className="bg-primary hover:bg-primary-400 w-30"
+            disabled={isPending || csvFile === null}
           >
-            {isPending ? (
-              <>
-                <Upload className="mr-2 h-4 w-4 animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              "Upload CSV"
-            )}
+            <label>
+              {isPending ? (
+                <>
+                  <Upload className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                "Upload CSV"
+              )}
+            </label>
           </Button>
         </div>
       </div>
     </DialogContent>
   );
 }
+
+{/* <input
+  type="file"
+  accept=".csv"
+  onClick={() => mutate(variables)}
+  className="hidden"
+  onChange={(event) => {
+  setCsvFile ( event.target.files?.[0] || null);
+  }}
+/>*/}
