@@ -7,14 +7,15 @@ export async function usersTemplateXLSX() {
   const workSheet = workBook.addWorksheet("Users Template");
 
   // Define example user to extract keys
-  const exampleUser:  Partial<User> & {excelRole: string}= {
+  const exampleUser: Partial<User> & { Role: string; Dob: Date } = {
     name: "",
     username: "",
     phoneNumber: "",
     email: "",
+    Role: "",
     address: "",
     npnNumber: "",
-    excelRole:"",
+    Dob: new Date("MM/DD/YYYY"),
   };
   const keys = Object.keys(exampleUser);
 
@@ -49,20 +50,33 @@ export async function usersTemplateXLSX() {
   const roleNames = roles.map((r) => r.name).filter(Boolean);
 
   // Add dropdown to the "role" column
-  const roleColIdx = keys.indexOf("excelRole") + 1;
+  const roleColIdx = keys.indexOf("Role") + 1;
   if (roleNames.length > 0 && roleColIdx >= 1) {
     const list = roleNames.join(",");
     workSheet
       .getColumn(roleColIdx)
       .eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+
         if (rowNumber === 1) return; // skip header
         cell.dataValidation = {
           type: "list",
           allowBlank: true,
-          formulae: [`"${list}"`], 
+          formulae: [`"${list}"`],
         };
+
       });
   }
+
+  const dobColIdx = keys.indexOf("Dob") + 1;
+  workSheet
+    .getColumn(dobColIdx)
+    .eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+      cell.dataValidation = {
+        type: "date",
+        operator: "between",
+        formulae: ["1900-01-01", "2200-12-31"],
+      };
+    });
 
   // Download
   const buffer = await workBook.xlsx.writeBuffer();
