@@ -6,7 +6,7 @@ import { Upload } from "lucide-react";
 import { useState } from "react";
 import ExcelJS from "exceljs";
 
-export function UploadCSVDialog<TVars, TData>({
+export function UploadXLSXDialog<TVars, TData>({
   title,
   content,
   onSubmit,
@@ -14,6 +14,7 @@ export function UploadCSVDialog<TVars, TData>({
   onError,
   onCancel,
   variables,
+  templateButton,
 }: {
   title: string;
   content: string;
@@ -22,8 +23,9 @@ export function UploadCSVDialog<TVars, TData>({
   onError?: (error: Error) => void;
   onCancel: () => void;
   variables: TVars;
+  templateButton?: React.ReactNode;
 }) {
-  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [xlsxFile, setCsvFile] = useState<File | null>(null);
 
   const { mutate, isPending } = useMutation({
     mutationFn: (variables: TVars) => {
@@ -40,24 +42,32 @@ export function UploadCSVDialog<TVars, TData>({
       const text = event.target?.result;
       if (typeof text !== "string") return;
       const lines = text.trim().split("\n");
-      // console.log("LINES", lines);
 
       const headers = lines[0]?.trim().split(",");
-      console.log("HEADERS", headers);
 
       const rows = lines.slice(1);
       var usersData: User[] = [];
 
-      // console.log("ROWS", rows);
-
       for (const row of rows) {
-        // console.log("ROW", row);
-        try {
-          // const rowData =
-          //  usersData.push();
-        } catch (e) {}
-      }
 
+       const value = row.split(",");
+        // const user: User = {
+
+        //   // name: value[0]!.trim(),
+        //   // username: value[1]!.trim(),
+        //   // phoneNumber: value[2]!.trim(),
+        //   // email: value[3]!.trim(),
+        //   // role: value[4]!.trim(),
+        //   // address: value[]!.trim(),
+          
+          
+        // };
+        // usersData.push(user);
+
+       
+
+
+      }
     };
     reader.readAsText(file);
   }
@@ -85,9 +95,9 @@ export function UploadCSVDialog<TVars, TData>({
         <p className="text-center text-sm font-light text-gray-600">
           {content}
         </p>
-        {csvFile ? (
+        {xlsxFile ? (
           <div className="flex flex-row items-center gap-3">
-            <p>Selected file: {csvFile.name}</p>
+            <p>Selected file: {xlsxFile.name}</p>
             <Button variant="outline" onClick={() => setCsvFile(null)}>
               X
             </Button>
@@ -101,7 +111,7 @@ export function UploadCSVDialog<TVars, TData>({
             <span className="font-medium text-blue-700">Select CSV File</span>
             <input
               type="file"
-              accept=".csv"
+              accept=".xlsx"
               className="hidden"
               onChange={(event) => {
                 setCsvFile(event.target.files?.[0] || null);
@@ -109,16 +119,16 @@ export function UploadCSVDialog<TVars, TData>({
             />
           </label>
         )}
-        
+
         <div className="flex w-full flex-row justify-around py-3">
           <Button className="w-30" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
           <Button
             className="bg-primary hover:bg-primary-400 w-30"
-            disabled={isPending || csvFile === null}
+            disabled={isPending || xlsxFile === null}
             onClick={() => {
-              readCSVFile(csvFile!);
+              readCSVFile(xlsxFile!);
             }}
           >
             <label>

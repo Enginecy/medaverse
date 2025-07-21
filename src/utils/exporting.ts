@@ -100,7 +100,7 @@ export async function generalExport(data: Record<string, any>[], name: string) {
 function normalizeRow(row: Record<string, any>, allKeys: string[]) {
   const normalized: Record<string, any> = {};
   for (const key of allKeys) {
-    normalized[key] = row[key] ?? null; // or "" if you prefer empty string
+    normalized[key] = row[key] ?? ""; // or "" if you prefer empty string
   }
   return normalized;
 }
