@@ -86,7 +86,7 @@ export function UploadXLSXDialog<TVars, TData>({
         <DialogTitle className="text-center text-base font-semibold">
           {title}
         </DialogTitle>
-        <div className="flex w-full flex-row items-center justify-between">
+        <div className="flex w-full flex-row items-center justify-center px-0">
           <p className="text-center text-sm font-light text-gray-600">
             {content}
           </p>
