@@ -49,8 +49,7 @@ export function UploadXLSXDialog<TVars, TData>({
       var usersData: User[] = [];
 
       for (const row of rows) {
-
-       const value = row.split(",");
+        const value = row.split(",");
         // const user: User = {
 
         //   // name: value[0]!.trim(),
@@ -59,21 +58,16 @@ export function UploadXLSXDialog<TVars, TData>({
         //   // email: value[3]!.trim(),
         //   // role: value[4]!.trim(),
         //   // address: value[]!.trim(),
-          
-          
+
         // };
         // usersData.push(user);
-
-       
-
-
       }
     };
     reader.readAsText(file);
   }
   return (
     <DialogContent
-      className="w-110 rounded-2xl border-0 p-7 focus-visible:ring-0
+      className="w-140 rounded-2xl border-0 p-7 focus-visible:ring-0
         focus-visible:outline-none"
       showCloseButton={false}
     >
@@ -92,9 +86,12 @@ export function UploadXLSXDialog<TVars, TData>({
         <DialogTitle className="text-center text-base font-semibold">
           {title}
         </DialogTitle>
-        <p className="text-center text-sm font-light text-gray-600">
-          {content}
-        </p>
+        <div className="flex w-full flex-row items-center justify-between">
+          <p className="text-center text-sm font-light text-gray-600">
+            {content}
+          </p>
+          {templateButton && (templateButton)}
+        </div>
         {xlsxFile ? (
           <div className="flex flex-row items-center gap-3">
             <p>Selected file: {xlsxFile.name}</p>

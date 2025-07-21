@@ -4,6 +4,7 @@ import { Upload } from "lucide-react";
 import { useShowDialog } from "@/lib/react-utils";
 import React  from "react";
 import { UploadXLSXDialog } from "@/components/upload-csv-dialog";
+import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
 
 export function UploadCSVButton() {
   const showDialog = useShowDialog();
@@ -20,6 +21,7 @@ export function UploadCSVButton() {
             throw new Error("Function not implemented.");
           }}
           variables={undefined}
+          templateButton={<UsersTemplateButton/>}
         />
       );
     });
