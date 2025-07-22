@@ -25,7 +25,7 @@ export function UploadXLSXDialog<TVars, TData>({
   variables: TVars;
   templateButton?: React.ReactNode;
 }) {
-  const [xlsxFile, setCsvFile] = useState<File | null>(null);
+  const [xlsxFile, setXlsxFile] = useState<File | null>(null);
 
   const { mutate, isPending } = useMutation({
     mutationFn: (variables: TVars) => {
@@ -35,7 +35,7 @@ export function UploadXLSXDialog<TVars, TData>({
     onError: onError,
   });
 
-  function readCSVFile(file: File) {
+  function readXlsxFile(file: File) {
     const reader = new FileReader();
 
     reader.onload = (event) => {
@@ -95,7 +95,7 @@ export function UploadXLSXDialog<TVars, TData>({
         {xlsxFile ? (
           <div className="flex flex-row items-center gap-3">
             <p>Selected file: {xlsxFile.name}</p>
-            <Button variant="outline" onClick={() => setCsvFile(null)}>
+            <Button variant="outline" onClick={() => setXlsxFile(null)}>
               X
             </Button>
           </div>
@@ -105,13 +105,13 @@ export function UploadXLSXDialog<TVars, TData>({
               justify-center border-2 border-dotted border-blue-400 bg-blue-50
               p-5 transition hover:bg-blue-100"
           >
-            <span className="font-medium text-blue-700">Select CSV File</span>
+            <span className="font-medium text-blue-700">Select Xlsx File</span>
             <input
               type="file"
               accept=".xlsx"
               className="hidden"
               onChange={(event) => {
-                setCsvFile(event.target.files?.[0] || null);
+                setXlsxFile(event.target.files?.[0] || null);
               }}
             />
           </label>
@@ -125,7 +125,7 @@ export function UploadXLSXDialog<TVars, TData>({
             className="bg-primary hover:bg-primary-400 w-30"
             disabled={isPending || xlsxFile === null}
             onClick={() => {
-              readCSVFile(xlsxFile!);
+              readXlsxFile(xlsxFile!);
             }}
           >
             <label>
@@ -135,7 +135,7 @@ export function UploadXLSXDialog<TVars, TData>({
                   Uploading...
                 </>
               ) : (
-                "Upload CSV"
+                "Upload Xlsx"
               )}
             </label>
           </Button>

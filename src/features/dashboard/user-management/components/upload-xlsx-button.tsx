@@ -3,16 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { useShowDialog } from "@/lib/react-utils";
 import React  from "react";
-import { UploadXLSXDialog } from "@/components/upload-csv-dialog";
+import { UploadXLSXDialog } from "@/components/upload-xlsx-dialog";
 import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
 
-export function UploadCSVButton() {
+export function UploadXlsxButton() {
   const showDialog = useShowDialog();
   function handleUploading() {
     showDialog((resolve) => {
       return (
         <UploadXLSXDialog
-          title={"Upload CSV File"}
+          title={"Upload xlsx File"}
           content={"Please upload a xlsx file that matches with this template"}
           onSubmit={function (variables: unknown): Promise<unknown> {
             throw new Error("Function not implemented.");
@@ -33,7 +33,7 @@ export function UploadCSVButton() {
           rounded-md px-3 py-2 transition-colors"
       >
         <Upload className="text-primary h-5 w-5" />
-        <span className="text-primary font-medium">Upload CSV</span>
+        <span className="text-primary font-medium">Upload Xlsx file</span>
       </label>
     </Button>
   );

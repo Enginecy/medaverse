@@ -16,7 +16,7 @@ export function SalesActions() {
     <div className="flex gap-2">
       <Button variant="outline">
         <Download />
-        Download CSV
+        Download Xlsx
       </Button>
       <Button variant="default" onClick={openAddNewSaleModal}>
         <Plus />
