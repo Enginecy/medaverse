@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import { useState } from "react";
 import ExcelJS from "exceljs";
+import { profile } from "@/db/schema";
 
 export function UploadXLSXDialog<TVars, TData>({
   title,
@@ -35,35 +36,40 @@ export function UploadXLSXDialog<TVars, TData>({
     onError: onError,
   });
 
-  function readXlsxFile(file: File) {
+   function readXlsxFile(file: File) {
+    // console.log("Reading xlsx file:", file.name); 
     const reader = new FileReader();
+    
 
-    reader.onload = (event) => {
-      const text = event.target?.result;
-      if (typeof text !== "string") return;
-      const lines = text.trim().split("\n");
+    reader.onload = async (event) => {
+      const buffer = event.target?.result;
+      if (!(buffer instanceof ArrayBuffer)) return;
+      
+      const workbook = new ExcelJS.Workbook();
 
-      const headers = lines[0]?.trim().split(",");
+      await workbook.xlsx.load(buffer) ; 
 
-      const rows = lines.slice(1);
-      var usersData: User[] = [];
+      const worksheet = workbook.worksheets[0];
 
-      for (const row of rows) {
-        const value = row.split(",");
-        // const user: User = {
+      const rows = worksheet?.getSheetValues();
 
-        //   // name: value[0]!.trim(),
-        //   // username: value[1]!.trim(),
-        //   // phoneNumber: value[2]!.trim(),
-        //   // email: value[3]!.trim(),
-        //   // role: value[4]!.trim(),
-        //   // address: value[]!.trim(),
-
-        // };
-        // usersData.push(user);
+      if (!rows || rows.length < 2) {
+        alert("The file is empty or does not contain valid data.");
+        return;
       }
+
+      const headers = rows.map((row) => row?.toString());
+      Object.keys(profile.$inferSelect).forEach((col) => {
+        console.log(`Checking column: ${col}`); // Debugging line
+        if (!headers.includes(col)) {
+          alert(`Missing required column: ${col}`);
+          return;
+        }
+      });
+      
+      
     };
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
   }
   return (
     <DialogContent

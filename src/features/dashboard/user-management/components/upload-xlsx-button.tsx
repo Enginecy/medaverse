@@ -16,9 +16,11 @@ export function UploadXlsxButton() {
           content={"Please upload a xlsx file that matches with this template"}
           onSubmit={function (variables: unknown): Promise<unknown> {
             throw new Error("Function not implemented.");
+            //TODO: implement this function
           }}
           onCancel={function (): void {
             throw new Error("Function not implemented.");
+            //TODO: implement this function
           }}
           variables={undefined}
           templateButton={<UsersTemplateButton/>}

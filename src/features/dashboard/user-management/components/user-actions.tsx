@@ -5,10 +5,9 @@ import { ExportUsersButton } from "@/features/dashboard/user-management/componen
 export function UsersActions() {
   return (
     <div className="flex gap-2">
-       <UploadXlsxButton />
+      <UploadXlsxButton />
       <ExportUsersButton />
       <AddUsersButton />
     </div>
   );
 }
-
