@@ -51,32 +51,29 @@ export async function usersTemplateXLSX() {
 
   // Add dropdown to the "role" column
   const roleColIdx = keys.indexOf("Role") + 1;
+  const dobColIdx = keys.indexOf("Dob") + 1;
+  const NUM_ROWS = 100;
+
   if (roleNames.length > 0 && roleColIdx >= 1) {
     const list = roleNames.join(",");
-    workSheet
-      .getColumn(roleColIdx)
-      .eachCell({ includeEmpty: true }, (cell, rowNumber) => {
-
-        if (rowNumber === 1) return; // skip header
-        cell.dataValidation = {
-          type: "list",
-          allowBlank: true,
-          formulae: [`"${list}"`],
-        };
-
-      });
+    for (let i = 2; i < NUM_ROWS; i++) {
+      const cell = workSheet.getCell(i, roleColIdx);
+      cell.dataValidation = {
+        type: "list",
+        allowBlank: true,
+        formulae: [`"${list}"`],
+      };
+    }
   }
 
-  const dobColIdx = keys.indexOf("Dob") + 1;
-  workSheet
-    .getColumn(dobColIdx)
-    .eachCell({ includeEmpty: true }, (cell, rowNumber) => {
-      cell.dataValidation = {
-        type: "date",
-        operator: "between",
-        formulae: ["1900-01-01", "2200-12-31"],
-      };
-    });
+  for (let i = 2; i < NUM_ROWS; i++) {
+    const cell = workSheet.getCell(i, dobColIdx);
+    cell.dataValidation = {
+      type: "date",
+      operator: "between",
+      formulae: ["1900-01-01", "2200-12-31"],
+    };
+  }
 
   // Download
   const buffer = await workBook.xlsx.writeBuffer();
