@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { readXlsxFile, type User } from "@/features/dashboard/user-management/server/db/user-management";
+import { readXlsxFile } from "@/utils/importing-users";
 import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import { useState } from "react";
-import ExcelJS from "exceljs";
-import { profile } from "@/db/schema";
+
 
 export function UploadXLSXDialog<TVars, TData>({
   title,

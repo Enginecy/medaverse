@@ -15,6 +15,8 @@ export async function usersTemplateXLSX() {
     Role: "",
     address: "",
     npnNumber: "",
+    upLine: "",
+    regional:"",
     Dob: new Date("MM/DD/YYYY"),
   };
   const keys = Object.keys(exampleUser);
