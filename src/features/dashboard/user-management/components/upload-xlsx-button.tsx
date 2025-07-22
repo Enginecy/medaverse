@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { useShowDialog } from "@/lib/react-utils";
 import React  from "react";
-import { UploadXLSXDialog } from "@/components/upload-xlsx-dialog";
+import { UploadXLSXDialog } from "@/features/dashboard/user-management/components/upload-xlsx-dialog";
 import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
 
 export function UploadXlsxButton() {
