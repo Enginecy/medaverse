@@ -2,7 +2,7 @@ import { addImportedUsers } from "@/features/dashboard/user-management/server/ac
 import { showSonnerToast } from "@/lib/react-utils";
 import ExcelJS from "exceljs";
 
-export function readUsersFile(file: File) {
+export function readUsersFile(file: File) : Promise<void> {
   const user = {
     name: "",
     username: "",
@@ -63,8 +63,6 @@ export function readUsersFile(file: File) {
       users.push(userData);
     }
 
-    console.log(users, "<======== Users Data");
-
     if (users.length === 0) {
       showSonnerToast({
         message: "No users data found in the file.",
@@ -83,7 +81,8 @@ export function readUsersFile(file: File) {
         }
     }) ;
 
-    await addImportedUsers(users);
+    await addImportedUsers(users );
   };
-  reader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(file);
+    return new Promise<void> ((resolve, reject) => {}) ;    
 }

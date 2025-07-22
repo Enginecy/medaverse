@@ -9,7 +9,8 @@ import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
 import type { State } from "@/lib/data";
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
-import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
@@ -281,12 +282,14 @@ export async function deleteAgent(id: string) {
   return { success: true };
 }
 
-export async function addImportedUsers(importedData: Partial<User>[]) {
+export async function addImportedUsers(importedData: Partial<User>[]   ) {
   const { auth } = createAdminClient();
   const db = await createDrizzleSupabaseClient();
   const supabase = await createClient();
 
   const currentUser = await supabase.auth.getUser();
+
+  const roles = await getRoles(); 
 
   if (!currentUser.data.user?.id) {
     throw { message: "You are unauthenticated" };
@@ -332,7 +335,7 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
           userId: user?.id ?? "",
         })
         .returning();
-
+        const role = roles.find((role) => singleUser.role?? "" === role.name);
       return await tx
         .insert(userRoles)
         .values({
@@ -341,6 +344,7 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
           assignedBy: currentUser.data.user?.id,
         })
         .returning({ id: userRoles.id });
+
     });
   }
   return { success: true, message: "Users imported successfully" };

@@ -1,41 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
 import { readUsersFile } from "@/utils/importing-users";
 import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
+import { resolve } from "path";
 import { useState } from "react";
 
-
-export function UploadXLSXDialog<TVars, TData>({
+export function UploadXLSXDialog({
   title,
   content,
-  onSubmit,
-  onSuccess,
-  onError,
-  onCancel,
-  variables,
-  templateButton,
 }: {
   title: string;
   content: string;
-  onSubmit: (variables: TVars) => Promise<TData>;
-  onSuccess?: (result: TData) => void;
-  onError?: (error: Error) => void;
-  onCancel: () => void;
-  variables: TVars;
-  templateButton?: React.ReactNode;
 }) {
   const [xlsxFile, setXlsxFile] = useState<File | null>(null);
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: (variables: TVars) => {
-      return onSubmit(variables);
-    },
-    onSuccess: onSuccess,
-    onError: onError,
+  const { mutate: uploadMutation, isPending } = useMutation({
+    mutationFn: readUsersFile,
   });
 
- 
   return (
     <DialogContent
       className="w-140 rounded-2xl border-0 p-7 focus-visible:ring-0
@@ -61,7 +45,7 @@ export function UploadXLSXDialog<TVars, TData>({
           <p className="text-center text-sm font-light text-gray-600">
             {content}
           </p>
-          {templateButton && templateButton}
+          <UsersTemplateButton />
         </div>
         {xlsxFile ? (
           <div className="flex flex-row items-center gap-3">
@@ -89,14 +73,20 @@ export function UploadXLSXDialog<TVars, TData>({
         )}
 
         <div className="flex w-full flex-row justify-around py-3">
-          <Button className="w-30" variant="outline" onClick={onCancel}>
+          <Button
+            className="w-30"
+            variant="outline"
+            onClick={() => {
+              resolve();
+            }}
+          >
             Cancel
           </Button>
           <Button
             className="bg-primary hover:bg-primary-400 w-30"
             disabled={isPending || xlsxFile === null}
             onClick={() => {
-              readUsersFile(xlsxFile!);
+              uploadMutation(xlsxFile!);
             }}
           >
             <label>
