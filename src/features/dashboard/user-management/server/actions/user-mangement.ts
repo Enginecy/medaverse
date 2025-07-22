@@ -8,6 +8,8 @@ import { eq } from "drizzle-orm";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
 import type { State } from "@/lib/data";
+import type { User } from "@/features/dashboard/user-management/server/db/user-management";
+import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
@@ -42,8 +44,7 @@ export async function createAgent(data: AddUserFormData) {
       password: env.AUTOMATIC_LOGIN_PASSWORD,
     });
 
-    if (userError || !user?.id)
-      throw { message: "Failed to create user"};
+    if (userError || !user?.id) throw { message: "Failed to create user" };
     createdUser = user;
 
     // Step 2: Prepare file upload details
@@ -85,14 +86,14 @@ export async function createAgent(data: AddUserFormData) {
           userId: user.id,
         })
         .returning();
-    return    await tx
-              .insert(userRoles)
-              .values({
-                roleId: data.role,
-                userId: user.id,
-                assignedBy: currentUser.data.user?.id,
-              })
-              .returning({ id: userRoles.id });
+      return await tx
+        .insert(userRoles)
+        .values({
+          roleId: data.role,
+          userId: user.id,
+          assignedBy: currentUser.data.user?.id,
+        })
+        .returning({ id: userRoles.id });
     });
 
     return { success: true, profile: profileData };
@@ -147,14 +148,14 @@ export async function updateAgent(data: AddUserFormData, id: string) {
     } = await auth.admin.updateUserById(existingProfile!.userId!, {
       email: data.email,
     });
-    
+
     const currentUser = await supabase.auth.getUser();
 
-  if (currentUser === null || currentUser.data.user === null) {
+    if (currentUser === null || currentUser.data.user === null) {
       throw { message: "Not Authorized" };
     }
     if (userError || !user?.id) {
-      throw { message: "Failed to update user"};
+      throw { message: "Failed to update user" };
     }
     createdUser = user;
 
@@ -176,15 +177,14 @@ export async function updateAgent(data: AddUserFormData, id: string) {
       } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
       const profileData = await db.rls((tx) => {
-         tx
-              .update(userRoles)
-              .set({
-                roleId: data.role,
-                userId: user.id,
-                assignedBy: currentUser!.data!.user?.id,
-              })
-              .returning({ id: userRoles.id });
-        
+        tx.update(userRoles)
+          .set({
+            roleId: data.role,
+            userId: user.id,
+            assignedBy: currentUser!.data!.user?.id,
+          })
+          .returning({ id: userRoles.id });
+
         return tx
           .update(profile)
           .set({
@@ -254,7 +254,7 @@ export async function deleteAgent(id: string) {
   } = await supabase.auth.getUser();
 
   if (currentUserError) {
-    throw { message: "Failed to get current user"};
+    throw { message: "Failed to get current user" };
   }
 
   if (currentUser?.id === existingProfile.userId) {
@@ -279,4 +279,69 @@ export async function deleteAgent(id: string) {
   });
 
   return { success: true };
+}
+
+export async function addImportedUsers(importedData: Partial<User>[]) {
+  const { auth } = createAdminClient();
+  const db = await createDrizzleSupabaseClient();
+  const supabase = await createClient();
+
+  const currentUser = await supabase.auth.getUser();
+
+  if (!currentUser.data.user?.id) {
+    throw { message: "You are unauthenticated" };
+  }
+
+  for (const singleUser of importedData) {
+    // Check if username already exists
+  
+    if (!singleUser.username) {
+      throw { message: "Username is required for each user:" };
+    }
+    const existingProfile = await db.admin
+      .select()
+      .from(profile)
+      .where(eq(profile.username, singleUser.username ?? ""));
+
+    if (existingProfile.length > 0) {
+      throw { message: "Username already exists" };
+    }
+
+    const {
+      data: { user },
+      error: userError,
+    } = await auth.admin.createUser({
+      email: singleUser.email || "",
+      email_confirm: true,
+      password: env.AUTOMATIC_LOGIN_PASSWORD,
+    });
+
+    const profileData = await db.rls(async (tx) => {
+      await tx
+        .insert(profile)
+        .values({
+          name: singleUser.name ?? "",
+          username: singleUser.username ?? "",
+          address: singleUser.address ?? "",
+          dob: singleUser.dob ?? new Date("MM/DD/YYYY"),
+          phoneNumber: singleUser.phoneNumber ?? "",
+          regional: singleUser.regional ?? "",
+          upLine: singleUser.upLine ?? "",
+          npnNumber: singleUser.npnNumber ?? "",
+          status: "active",
+          userId: user?.id ?? "",
+        })
+        .returning();
+
+      return await tx
+        .insert(userRoles)
+        .values({
+          roleId: singleUser.role?.id ?? "",
+          userId: user?.id ?? "",
+          assignedBy: currentUser.data.user?.id,
+        })
+        .returning({ id: userRoles.id });
+    });
+  }
+  return { success: true, message: "Users imported successfully" };
 }

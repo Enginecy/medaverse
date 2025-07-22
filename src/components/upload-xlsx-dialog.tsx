@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { readXlsxFile } from "@/utils/importing-users";
+import { readUsersFile } from "@/utils/importing-users";
 import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import { useState } from "react";
@@ -96,7 +96,7 @@ export function UploadXLSXDialog<TVars, TData>({
             className="bg-primary hover:bg-primary-400 w-30"
             disabled={isPending || xlsxFile === null}
             onClick={() => {
-              readXlsxFile(xlsxFile!);
+              readUsersFile(xlsxFile!);
             }}
           >
             <label>
