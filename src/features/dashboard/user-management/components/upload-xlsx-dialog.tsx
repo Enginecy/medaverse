@@ -7,16 +7,10 @@ import { Upload } from "lucide-react";
 import { resolve } from "path";
 import { useState } from "react";
 
-export function UploadXLSXDialog({
-  title,
-  content,
-}: {
-  title: string;
-  content: string;
-}) {
+export function UploadXLSXDialog() {
   const [xlsxFile, setXlsxFile] = useState<File | null>(null);
 
-  const { mutate: uploadMutation, isPending } = useMutation({
+  const { mutate: uploadMutation, isPending: isUploadingUsers } = useMutation({
     mutationFn: readUsersFile,
   });
 
@@ -39,11 +33,11 @@ export function UploadXLSXDialog({
           </div>
         </div>
         <DialogTitle className="text-center text-base font-semibold">
-          {title}
+          Upload xlsx File
         </DialogTitle>
         <div className="flex w-full flex-row items-center justify-center px-0">
           <p className="text-center text-sm font-light text-gray-600">
-            {content}
+            Please upload a xlsx file that matches with this template
           </p>
           <UsersTemplateButton />
         </div>
@@ -84,16 +78,16 @@ export function UploadXLSXDialog({
           </Button>
           <Button
             className="bg-primary hover:bg-primary-400 w-30"
-            disabled={isPending || xlsxFile === null}
+            disabled={isUploadingUsers || xlsxFile === null}
             onClick={() => {
               uploadMutation(xlsxFile!);
             }}
           >
             <label>
-              {isPending ? (
+              {isUploadingUsers ? (
                 <>
-                  <Upload className="mr-2 h-4 w-4 animate-spin" />
                   Uploading...
+                  <Upload className="mr-2 h-4 w-4 animate-spin" />
                 </>
               ) : (
                 "Upload Xlsx"

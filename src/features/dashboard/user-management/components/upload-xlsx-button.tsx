@@ -2,20 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { useShowDialog } from "@/lib/react-utils";
-import React  from "react";
+import React from "react";
 import { UploadXLSXDialog } from "@/features/dashboard/user-management/components/upload-xlsx-dialog";
-import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
 
 export function UploadXlsxButton() {
   const showDialog = useShowDialog();
   function handleUploading() {
     showDialog((resolve) => {
-      return (
-        <UploadXLSXDialog
-          title={"Upload xlsx File"}
-          content={"Please upload a xlsx file that matches with this template"}
-        />
-      );
+      return <UploadXLSXDialog />;
     });
   }
   return (

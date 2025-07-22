@@ -2,7 +2,7 @@ import { addImportedUsers } from "@/features/dashboard/user-management/server/ac
 import { showSonnerToast } from "@/lib/react-utils";
 import ExcelJS from "exceljs";
 
-export function readUsersFile(file: File) : Promise<void> {
+export function readUsersFile(file: File): Promise<void> {
   const user = {
     name: "",
     username: "",
@@ -72,17 +72,28 @@ export function readUsersFile(file: File) : Promise<void> {
     }
 
     Object.keys(user).forEach((key) => {
-        if((user as any )[key ] === undefined || (user as any)[key ] === null) {
-          showSonnerToast({
-            message: `The file does not contain the required column: ${key}`,
-            type: "error",
-          });
-          return;
-        }
-    }) ;
+      if ((user as any)[key] === undefined || (user as any)[key] === null) {
+        showSonnerToast({
+          message: `The file does not contain the required column: ${key}`,
+          type: "error",
+        });
+        return;
+      }
+    });
+    console.log("ADDING USERS TO THE DB");
 
-    await addImportedUsers(users );
+    try {
+      await addImportedUsers(users);
+    } catch (error) {
+      console.error("Error processing the file:", error);
+      showSonnerToast({
+        message: "Error processing the file.",
+        type: "error",
+      });
+      return;
+    }
+    
   };
-      reader.readAsArrayBuffer(file);
-    return new Promise<void> ((resolve, reject) => {}) ;    
+  reader.readAsArrayBuffer(file);
+  return new Promise<void>((resolve, reject) => {});
 }
