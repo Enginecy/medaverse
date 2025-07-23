@@ -12,7 +12,7 @@ export async function readUsersFile(file: File) {
     npnNumber: "",
     dob: new Date("MM/DD/YYYY"),
   };
-  const buffer = await readFileAsync(file);
+  const buffer = await file.arrayBuffer();
   if (!(buffer instanceof ArrayBuffer)) return;
 
   const workbook = new ExcelJS.Workbook();
@@ -76,16 +76,3 @@ export async function readUsersFile(file: File) {
   return await addImportedUsers(users);
 }
 
-function readFileAsync(file: File) {
-  return new Promise((resolve, reject) => {
-    let reader = new FileReader();
-
-    reader.onload = () => {
-      resolve(reader.result);
-    };
-
-    reader.onerror = reject;
-
-    reader.readAsArrayBuffer(file.bytes);
-  });
-}

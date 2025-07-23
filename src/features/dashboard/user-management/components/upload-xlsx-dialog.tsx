@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import { resolve } from "path";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function UploadXLSXDialog() {
   const [xlsxFile, setXlsxFile] = useState<File | null>(null);
@@ -14,12 +15,16 @@ export function UploadXLSXDialog() {
   const { mutate: uploadMutation, isPending: isUploadingUsers } = useMutation({
     mutationFn: readUsersFile,
     onError: (error: Error) => {
+
+      const e = JSON.parse(error.message);  
+      console.log(e);
+
       showSonnerToast({
-        type: 'error',
-        message: 'Error uploading file',
-        description: error.message,
+        type: "error",
+        message: "Error uploading file",
+        description: "a;sldjf;lakjdfl;kasjdfl;jsdf;l.,cmxnvkaljn kldjfnalksdjfnaslkdjfn",
       });
-    } 
+    },
   });
 
   return (
