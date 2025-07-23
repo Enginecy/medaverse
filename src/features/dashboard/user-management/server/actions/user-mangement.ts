@@ -10,6 +10,7 @@ import { env } from "@/env";
 import type { State } from "@/lib/data";
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
+import { showSonnerToast } from "@/lib/react-utils";
 
 
 export async function createAgent(data: AddUserFormData) {
@@ -283,7 +284,8 @@ export async function deleteAgent(id: string) {
 }
 
 export async function addImportedUsers(importedData: Partial<User>[]   ) {
-  const { auth } = createAdminClient();
+ try{ 
+   const { auth } = createAdminClient();
   const db = await createDrizzleSupabaseClient();
   const supabase = await createClient();
 
@@ -296,6 +298,7 @@ export async function addImportedUsers(importedData: Partial<User>[]   ) {
   }
 
   for (const singleUser of importedData) {
+    console.log("Processing user:", singleUser);
     // Check if username already exists
   
     if (!singleUser.username) {
@@ -319,6 +322,13 @@ export async function addImportedUsers(importedData: Partial<User>[]   ) {
       password: env.AUTOMATIC_LOGIN_PASSWORD,
     });
 
+    if(userError || !user){
+      throw {message : "Failed to create user", error: userError};
+    }
+    
+    console.log("Created user:", user);
+    console.log("User Error:", userError);
+
     const profileData = await db.rls(async (tx) => {
       await tx
         .insert(profile)
@@ -326,7 +336,7 @@ export async function addImportedUsers(importedData: Partial<User>[]   ) {
           name: singleUser.name ?? "",
           username: singleUser.username ?? "",
           address: singleUser.address ?? "",
-          dob: singleUser.dob ?? new Date("MM/DD/YYYY"),
+          dob: singleUser.dob ? new Date(singleUser.dob  ):  new Date("MM/DD/YYYY"),
           phoneNumber: singleUser.phoneNumber ?? "",
           regional: singleUser.regional ?? "",
           upLine: singleUser.upLine ?? "",
@@ -348,4 +358,8 @@ export async function addImportedUsers(importedData: Partial<User>[]   ) {
     });
   }
   return { success: true, message: "Users imported successfully" };
+ } catch (error) {
+    console.error("Error in addImportedUsers:", error);
+    throw { message: "Failed to import users", error };
+ } 
 }

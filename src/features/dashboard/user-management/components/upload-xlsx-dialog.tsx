@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
+import { showSonnerToast } from "@/lib/react-utils";
 import { readUsersFile } from "@/utils/importing-users";
 import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
@@ -12,6 +13,13 @@ export function UploadXLSXDialog() {
 
   const { mutate: uploadMutation, isPending: isUploadingUsers } = useMutation({
     mutationFn: readUsersFile,
+    onError: (error: Error) => {
+      showSonnerToast({
+        type: 'error',
+        message: 'Error uploading file',
+        description: error.message,
+      });
+    } 
   });
 
   return (
