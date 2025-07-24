@@ -8,11 +8,24 @@ import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import { resolve } from "path";
 import { useState } from "react";
+import { useDropzone } from "react-dropzone";
 import { PulseMultiple } from "react-svg-spinners";
-import { toast } from "sonner";
 
 export function UploadXLSXDialog() {
   const [xlsxFile, setXlsxFile] = useState<File | null>(null);
+
+  const { getInputProps, getRootProps, isDragActive } = useDropzone({
+    accept: {
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        ".xlsx",
+      ],
+    },
+    maxFiles: 1,
+    onDrop: (acceptedFiles) => {
+      setXlsxFile(acceptedFiles[0] || null);
+    },
+    noClick: true,
+  });
 
   const showAlertDialog = useShowDialog();
   const { mutate: uploadMutation, isPending: isUploadingUsers } = useMutation({
@@ -75,9 +88,13 @@ export function UploadXLSXDialog() {
           </div>
         ) : (
           <label
-            className="flex h-20 w-85 cursor-pointer flex-col items-center
-              justify-center border-2 border-dotted border-blue-400 bg-blue-50
-              p-5 transition hover:bg-blue-100"
+            {...getRootProps()}
+            className={
+              `flex h-20 w-85 cursor-pointer flex-col items-center
+                justify-center rounded-2xl border-2 border-dashed
+                border-blue-400 bg-blue-50 p-5 transition hover:bg-blue-100` +
+              (isDragActive ? " bg-blue-200" : "")
+            }
           >
             <span className="font-medium text-blue-700">Select Xlsx File</span>
             <input
@@ -87,6 +104,7 @@ export function UploadXLSXDialog() {
               onChange={(event) => {
                 setXlsxFile(event.target.files?.[0] || null);
               }}
+              {...getInputProps()}
             />
           </label>
         )}
@@ -110,7 +128,10 @@ export function UploadXLSXDialog() {
           >
             <label>
               {isUploadingUsers ? (
-                <PulseMultiple className="h-5 w-5 animate-spin bg-white" />
+                <PulseMultiple
+                  className="h-5 w-5 animate-spin bg-white"
+                  color="white"
+                />
               ) : (
                 "Upload Xlsx"
               )}

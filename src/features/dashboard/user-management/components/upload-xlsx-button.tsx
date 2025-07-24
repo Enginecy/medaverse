@@ -10,7 +10,9 @@ export function UploadXlsxButton() {
   function handleUploading() {
     showDialog((resolve) => {
       return <UploadXLSXDialog />;
-    });
+    } 
+  
+  );
   }
   return (
     <Button className="w-35" variant="outline" onClick={handleUploading}>
