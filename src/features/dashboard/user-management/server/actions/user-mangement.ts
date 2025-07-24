@@ -292,23 +292,18 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
   const roles = await getRoles();
 
   if (!currentUser.data.user?.id) {
-    throw { message: "You are unauthenticated" };
+    throw new Error ("You are unauthenticated");
   }
 
   for (const singleUser of importedData) {
-    console.log("Processing user:", singleUser);
-    // Check if username already exists
 
-    if (!singleUser.username) {
-      throw { message: "Username is required for each user:" };
-    }
     const existingProfile = await db.admin
       .select()
       .from(profile)
       .where(eq(profile.username, singleUser.username ?? ""));
 
     if (existingProfile.length > 0) {
-      throw { message: "Username already exists" };
+      throw new Error ( "Username already exists");
     }
 
     const {
@@ -322,8 +317,7 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
 
     console.log("User <=========================================");
     if (userError || !user || !user.id) {
-      throw userError?.message! + " " + singleUser.email;
-      
+      throw new Error (userError?.message! + " " + singleUser.email);
     }
 
     const profileData = await db.rls(async (tx) => {
