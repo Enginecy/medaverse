@@ -15,15 +15,19 @@ export function UploadXLSXDialog() {
   const { mutate: uploadMutation, isPending: isUploadingUsers } = useMutation({
     mutationFn: readUsersFile,
     onError: (error: Error) => {
-
-      const e = JSON.parse(error.message);  
-      console.log(e);
-
       showSonnerToast({
         type: "error",
         message: "Error uploading file",
-        description: "a;sldjf;lakjdfl;kasjdfl;jsdf;l.,cmxnvkaljn kldjfnalksdjfnaslkdjfn",
+        description : "This an error occurred while uploading the file.",
       });
+    },
+    onSuccess: () => {
+      showSonnerToast({
+        type: "success",
+        message: "File uploaded successfully",
+        description: "Users have been added successfully.",
+      });
+      setXlsxFile(null);
     },
   });
 

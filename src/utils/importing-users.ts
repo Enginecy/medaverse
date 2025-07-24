@@ -71,8 +71,8 @@ export async function readUsersFile(file: File) {
       };
     }
   });
-  console.log("ADDING USERS TO THE DB");
 
-  return await addImportedUsers(users);
+   await addImportedUsers(users);
+   
 }
 
