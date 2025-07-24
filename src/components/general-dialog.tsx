@@ -63,7 +63,7 @@ export function GeneralDialog({
         {description}
       </DialogDescription>
       <p className="text-center text-sm font-light text-red-600"></p>
-      <div className="flex w-full flex-row justify-around py-3">
+      <div className="flex w-full flex-row py-3">
         <Button className="w-30" variant="outline" onClick={onClose}>
           Close
         </Button>

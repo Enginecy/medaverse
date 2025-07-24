@@ -292,18 +292,17 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
   const roles = await getRoles();
 
   if (!currentUser.data.user?.id) {
-    throw new Error ("You are unauthenticated");
+    throw new Error("You are unauthenticated");
   }
 
   for (const singleUser of importedData) {
-
     const existingProfile = await db.admin
       .select()
       .from(profile)
       .where(eq(profile.username, singleUser.username ?? ""));
 
     if (existingProfile.length > 0) {
-      throw new Error ( "Username already exists");
+      throw new Error("Username already exists");
     }
 
     const {
@@ -315,16 +314,16 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       password: env.AUTOMATIC_LOGIN_PASSWORD,
     });
 
-    
     if (userError || !user || !user.id) {
       // console.log( `Can not register with this email: ${singleUser.email}${userError?.message ?? ""}` )
       throw new Error(
-        `Can not register with this email: ${singleUser.email}                                ` +
-        `${userError?.message ?? ""}`
+        "Can not register with this email: " +
+          `${singleUser.email}` +
+          `${userError?.message ?? ""}`,
       );
     }
 
-    const profileData = await db.rls(async (tx) => {
+    const profileData = await db.admin.transaction(async (tx) => {
       await tx
         .insert(profile)
         .values({
@@ -347,7 +346,7 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       return await tx
         .insert(userRoles)
         .values({
-          roleId: singleUser.role?.id ?? "",
+          roleId: role?.id ?? "",
           userId: user?.id ?? "",
           assignedBy: currentUser.data.user?.id,
         })
