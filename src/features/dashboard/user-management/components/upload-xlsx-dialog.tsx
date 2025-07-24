@@ -5,7 +5,7 @@ import { UsersTemplateButton } from "@/features/dashboard/user-management/compon
 import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
 import { readUsersFile } from "@/utils/importing-users";
 import { useMutation } from "@tanstack/react-query";
-import { Upload } from "lucide-react";
+import { FileUp, Upload } from "lucide-react";
 import { resolve } from "path";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -96,7 +96,13 @@ export function UploadXLSXDialog() {
               (isDragActive ? " bg-blue-200" : "")
             }
           >
-            <span className="font-medium text-blue-700">Select Xlsx File</span>
+            <span className="font-medium text-blue-700">
+              
+              
+              {isDragActive
+                ? (<FileUp className="h-6 w-6 text-blue-500" />)
+                : ("Drag and drop or click to select a file")}
+            </span>
             <input
               type="file"
               accept=".xlsx"
