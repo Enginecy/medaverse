@@ -315,9 +315,13 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       password: env.AUTOMATIC_LOGIN_PASSWORD,
     });
 
-    console.log("User <=========================================");
+    
     if (userError || !user || !user.id) {
-      throw new Error (userError?.message! + " " + singleUser.email);
+      // console.log( `Can not register with this email: ${singleUser.email}${userError?.message ?? ""}` )
+      throw new Error(
+        `Can not register with this email: ${singleUser.email}                                ` +
+        `${userError?.message ?? ""}`
+      );
     }
 
     const profileData = await db.rls(async (tx) => {

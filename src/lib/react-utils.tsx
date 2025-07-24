@@ -1,8 +1,11 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertDialog, AlertDialogFooter, AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { useModals } from "@/hooks/modal";
-import { AlertDialogContent } from "@radix-ui/react-alert-dialog";
-import { AlertCircle, CheckCircle, Info, Triangle, TriangleAlert, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  Info,
+  X,
+} from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 
@@ -123,32 +126,4 @@ export function showSonnerToast({
       </Alert>
     );
   });
-}
-
-export function showAlertDialog(
-  title: string,
-  description: string,
-  onConfirm: () => void,
-  onCancel?: () => void,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  type: "info" | "warning" | "error" = "info",
-) {
-
-  return( 
-    <AlertDialog>
-      
-      <AlertDialogContent> 
-        <AlertDialogHeader className="flex flex-col gap-1">
-          {type === "error" && <TriangleAlert className="text-destructive h-6 w-6" />}
-          {type === "warning" && <TriangleAlert className="text-yellow-300 h-6 w-6" />}
-          {type === "info" && <Info className="text-blue-500 h-6 w-6" />}
-        {title}
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          {description}
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  )
 }

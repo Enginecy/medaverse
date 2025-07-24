@@ -1,7 +1,8 @@
+import { GeneralDialog } from "@/components/general-dialog";
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
-import { showSonnerToast } from "@/lib/react-utils";
+import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
 import { readUsersFile } from "@/utils/importing-users";
 import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
@@ -12,14 +13,19 @@ import { toast } from "sonner";
 export function UploadXLSXDialog() {
   const [xlsxFile, setXlsxFile] = useState<File | null>(null);
 
+  const showAlertDialog = useShowDialog();
   const { mutate: uploadMutation, isPending: isUploadingUsers } = useMutation({
     mutationFn: readUsersFile,
-    onError: (error: Error) => {
-      
-      showSonnerToast({
-        type: "error",
-        message: "Error uploading file",
-        description : error.message ,
+    onError: async (error: Error) => {
+      showAlertDialog((resolve) => {
+        return (
+          <GeneralDialog
+            type="error"
+            onClose={() => resolve(true)}
+            title="Error Uploading File"
+            description={error.message}
+          />
+        );
       });
     },
     onSuccess: () => {
