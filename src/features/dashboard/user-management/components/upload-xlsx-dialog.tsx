@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
 import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
-import { readUsersFile } from "@/utils/importing-users";
+import { readUsersFile } from "@/utils/extract-users-data";
 import { useMutation } from "@tanstack/react-query";
 import { FileUp, Upload } from "lucide-react";
 import { resolve } from "path";

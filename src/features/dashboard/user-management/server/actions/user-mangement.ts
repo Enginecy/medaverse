@@ -342,6 +342,9 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
         })
         .returning();
       const role = roles.find((role) => singleUser.role ?? "" === role.name);
+      if(!role) {
+        throw new Error(`Role not found: ${singleUser.role} try to follow the template`);
+      }
       //TODO: make sure this is right
       return await tx
         .insert(userRoles)

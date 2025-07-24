@@ -56,6 +56,22 @@ export async function readUsersFile(file: File) {
     const userData: Record<string, string> = {};
     headers.forEach((header, index) => {
       userData[header] = row[index + 1]?.toString().trim() || "";
+      if (header === "phoneNumber" && !userData[header]) {
+        throw {
+          message: "Make sure all required data is set (Phone Numbers).",
+        };
+      } else if (header === "email") {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!userData[header]) {
+          throw { message: "Make sure all required data is set (Email)." };
+        }
+        if (!emailRegex.test(userData[header])) {
+          throw { message: "Invalid email format." };
+        }
+      } else if (header === "dob" && (!userData[header] || userData[header] || userData[header] === "")) {
+        throw { message: "Make sure all required data is set (DOB)." };
+      } else { }
+      
     });
     users.push(userData);
   }
@@ -72,7 +88,5 @@ export async function readUsersFile(file: File) {
     }
   });
 
-   await addImportedUsers(users);
-   
+  await addImportedUsers(users);
 }
-
