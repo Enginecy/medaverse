@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
 import { resolve } from "path";
 import { useState } from "react";
+import { PulseMultiple } from "react-svg-spinners";
 import { toast } from "sonner";
 
 export function UploadXLSXDialog() {
@@ -109,10 +110,7 @@ export function UploadXLSXDialog() {
           >
             <label>
               {isUploadingUsers ? (
-                <>
-                  Uploading...
-                  <Upload className="mr-2 h-4 w-4 animate-spin" />
-                </>
+                <PulseMultiple className="h-5 w-5 animate-spin bg-white" />
               ) : (
                 "Upload Xlsx"
               )}
