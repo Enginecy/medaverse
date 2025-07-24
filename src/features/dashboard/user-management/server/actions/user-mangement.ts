@@ -283,84 +283,78 @@ export async function deleteAgent(id: string) {
 }
 
 export async function addImportedUsers(importedData: Partial<User>[]) {
-  try {
-    const { auth } = createAdminClient();
-    const db = await createDrizzleSupabaseClient();
-    const supabase = await createClient();
+  const { auth } = createAdminClient();
+  const db = await createDrizzleSupabaseClient();
+  const supabase = await createClient();
 
-    const currentUser = await supabase.auth.getUser();
+  const currentUser = await supabase.auth.getUser();
 
-    const roles = await getRoles();
+  const roles = await getRoles();
 
-    if (!currentUser.data.user?.id) {
-      throw { message: "You are unauthenticated" };
-    }
-
-    for (const singleUser of importedData) {
-      console.log("Processing user:", singleUser);
-      // Check if username already exists
-
-      if (!singleUser.username) {
-        throw { message: "Username is required for each user:" };
-      }
-      const existingProfile = await db.admin
-        .select()
-        .from(profile)
-        .where(eq(profile.username, singleUser.username ?? ""));
-
-      if (existingProfile.length > 0) {
-        throw { message: "Username already exists" };
-      }
-
-      const {
-        data: { user },
-        error: userError,
-      } = await auth.admin.createUser({
-        email: singleUser.email || "",
-        email_confirm: true,
-        password: env.AUTOMATIC_LOGIN_PASSWORD,
-      });
-
-      if (userError || !user) {
-        throw { message: "Failed to create user", error: userError };
-      }
-
-      console.log("Created user:", user);
-      console.log("User Error:", userError);
-
-      const profileData = await db.rls(async (tx) => {
-        await tx
-          .insert(profile)
-          .values({
-            name: singleUser.name ?? "",
-            username: singleUser.username ?? "",
-            address: singleUser.address ?? "",
-            dob: singleUser.dob
-              ? new Date(singleUser.dob)
-              : new Date("MM/DD/YYYY"),
-            phoneNumber: singleUser.phoneNumber ?? "",
-            regional: singleUser.regional ?? "",
-            upLine: singleUser.upLine ?? "",
-            npnNumber: singleUser.npnNumber ?? "",
-            status: "active",
-            userId: user?.id ?? "",
-          })
-          .returning();
-        const role = roles.find((role) => singleUser.role ?? "" === role.name);
-        //TODO: make sure this is right 
-        return await tx
-          .insert(userRoles)
-          .values({
-            roleId: singleUser.role?.id ?? "",
-            userId: user?.id ?? "",
-            assignedBy: currentUser.data.user?.id,
-          })
-          .returning({ id: userRoles.id });
-      });
-    }
-    return { success: true, message: "Users imported successfully" };
-  } catch (error) {
-    console.error("Error in addImportedUsers:", error);
-    throw new Error("Failed to import users");
+  if (!currentUser.data.user?.id) {
+    throw { message: "You are unauthenticated" };
   }
+
+  for (const singleUser of importedData) {
+    console.log("Processing user:", singleUser);
+    // Check if username already exists
+
+    if (!singleUser.username) {
+      throw { message: "Username is required for each user:" };
+    }
+    const existingProfile = await db.admin
+      .select()
+      .from(profile)
+      .where(eq(profile.username, singleUser.username ?? ""));
+
+    if (existingProfile.length > 0) {
+      throw { message: "Username already exists" };
+    }
+
+    const {
+      data: { user },
+      error: userError,
+    } = await auth.admin.createUser({
+      email: singleUser.email || "",
+      email_confirm: true,
+      password: env.AUTOMATIC_LOGIN_PASSWORD,
+    });
+
+    console.log("User <=========================================");
+    if (userError || !user || !user.id) {
+      throw userError?.message! + " " + singleUser.email;
+      
+    }
+
+    const profileData = await db.rls(async (tx) => {
+      await tx
+        .insert(profile)
+        .values({
+          name: singleUser.name ?? "",
+          username: singleUser.username ?? "",
+          address: singleUser.address ?? "",
+          dob: singleUser.dob
+            ? new Date(singleUser.dob)
+            : new Date("MM/DD/YYYY"),
+          phoneNumber: singleUser.phoneNumber ?? "",
+          regional: singleUser.regional ?? "",
+          upLine: singleUser.upLine ?? "",
+          npnNumber: singleUser.npnNumber ?? "",
+          status: "active",
+          userId: user?.id ?? "",
+        })
+        .returning();
+      const role = roles.find((role) => singleUser.role ?? "" === role.name);
+      //TODO: make sure this is right
+      return await tx
+        .insert(userRoles)
+        .values({
+          roleId: singleUser.role?.id ?? "",
+          userId: user?.id ?? "",
+          assignedBy: currentUser.data.user?.id,
+        })
+        .returning({ id: userRoles.id });
+    });
+  }
+  return { success: true, message: "Users imported successfully" };
 }
