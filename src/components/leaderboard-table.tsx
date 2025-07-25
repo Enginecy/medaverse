@@ -6,6 +6,7 @@ import {
   useReactTable,
   type ColumnDef,
 } from "@tanstack/react-table";
+import { ChevronRight } from "lucide-react";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 import {
   Table,
@@ -15,6 +16,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 type LeaderboardData = {
   rank: number;
@@ -24,6 +30,7 @@ type LeaderboardData = {
     avatar: string;
   };
   premium: string;
+  children?: Omit<LeaderboardData, "children">[];
 };
 
 const data: LeaderboardData[] = [
@@ -35,6 +42,26 @@ const data: LeaderboardData[] = [
       avatar: "https://placehold.co/60x60",
     },
     premium: "$4,806",
+    children: [
+      {
+        rank: 1,
+        agent: {
+          name: "Austin Woodruff",
+          email: "Senior Associate",
+          avatar: "https://placehold.co/60x60",
+        },
+        premium: "$4,806",
+      },
+      {
+        rank: 2,
+        agent: {
+          name: "Austin Woodruff",
+          email: "Senior Associate",
+          avatar: "https://placehold.co/60x60",
+        },
+        premium: "$4,806",
+      },
+    ],
   },
   {
     rank: 2,
@@ -84,6 +111,29 @@ const data: LeaderboardData[] = [
 ];
 
 const columns: ColumnDef<LeaderboardData>[] = [
+  {
+    id: "expand",
+    header: "",
+    cell: ({ row }) => {
+      const hasChildren =
+        row.original.children && row.original.children.length > 0;
+      if (!hasChildren) return <div className="w-6" />;
+
+      return (
+        <CollapsibleTrigger asChild>
+          <button
+            className="flex h-6 w-6 items-center justify-center text-neutral-400
+              hover:text-neutral-200"
+          >
+            <ChevronRight
+              className="h-4 w-4 transition-transform
+                group-data-[state=open]:rotate-90"
+            />
+          </button>
+        </CollapsibleTrigger>
+      );
+    },
+  },
   {
     accessorKey: "rank",
     header: "No",
@@ -148,18 +198,81 @@ export function LeaderboardTable({ title }: { title: string }) {
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className="border-neutral-800 hover:bg-neutral-800/50"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="py-4">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            table.getRowModel().rows.map((row) => {
+              const hasChildren =
+                row.original.children && row.original.children.length > 0;
+
+              if (hasChildren) {
+                return (
+                  <Collapsible key={row.id} asChild>
+                    <>
+                      <TableRow
+                        className="group border-neutral-800
+                          hover:bg-neutral-800/50"
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id} className="py-4">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                      <CollapsibleContent asChild>
+                        <>
+                          {row.original.children?.map((child, index) => (
+                            <TableRow
+                              key={`${row.id}-child-${index}`}
+                              className="bg-neutral-850/30 border-neutral-800
+                                hover:bg-neutral-800/30"
+                            >
+                              <TableCell className="py-3">
+                                <div className="w-6" />
+                              </TableCell>
+                              <TableCell className="py-3">
+                                <div className="pl-6 font-bold text-neutral-500">
+                                  #{child.rank}
+                                </div>
+                              </TableCell>
+                              <TableCell className="py-3">
+                                <div className="pl-6">
+                                  <UserChip user={child.agent} />
+                                </div>
+                              </TableCell>
+                              <TableCell className="py-3">
+                                <div
+                                  className="text-right font-semibold
+                                    text-neutral-400"
+                                >
+                                  {child.premium}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </>
+                      </CollapsibleContent>
+                    </>
+                  </Collapsible>
+                );
+              }
+
+              return (
+                <TableRow
+                  key={row.id}
+                  className="border-neutral-800 hover:bg-neutral-800/50"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-4">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

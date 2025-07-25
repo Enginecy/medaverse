@@ -1,3 +1,4 @@
+"use client";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useRef, useState } from "react";
 

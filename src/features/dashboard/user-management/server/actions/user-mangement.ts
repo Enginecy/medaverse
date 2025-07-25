@@ -5,8 +5,9 @@ import { profile, userRoles } from "@/db/schema";
 import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
 import { eq } from "drizzle-orm";
-import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { State } from "@/lib/data";
 
 export async function createAgent(data: AddUserFormData) {
