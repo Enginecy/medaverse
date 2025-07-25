@@ -150,7 +150,7 @@ export async function updateAgent(data: AddUserFormData, id: string) {
     
     const currentUser = await supabase.auth.getUser();
 
-  if (currentUser === null || currentUser.data.user === null) {
+  if (currentUser?.data?.user === null) {
       throw { message: "Not Authorized" };
     }
     if (userError || !user?.id) {

@@ -2,9 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -124,7 +123,7 @@ export function AddUserDrawer({
     queryKey: ["roles"],
     queryFn: getRoles,
   });
-  var selectedRole = roles?.find((role) => role.id === form.watch("role"));
+  let selectedRole = roles?.find((role) => role.id === form.watch("role"));
   const getSuperiorsQueryOptions = queryOptions({
     queryKey: ["superiors", selectedRole?.id],
     queryFn: () => getAboveSuperiors(selectedRole!),

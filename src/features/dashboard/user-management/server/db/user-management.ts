@@ -31,7 +31,7 @@ export type User = Awaited<ReturnType<typeof getUsers>>[number];
 
 export async function getAboveSuperiors(selectedRole: Role) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const user = (await supabase).auth.getUser();
 
     if (!user) {
@@ -79,7 +79,7 @@ export async function getRegionalDirectors() {
       .where(eq(roles.code, "regional_director"));
 
     return regionalDirectors;
-  } catch (e) {
+  } catch  {
     throw {
       message:
         "Failed to get regional directors" 

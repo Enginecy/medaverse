@@ -3,8 +3,7 @@ import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import { deleteCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
 import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { X } from "lucide-react";
+import {  useQueryClient } from "@tanstack/react-query";
 
 export function DeleteCarrierButton({ id }: { id: string }) {
   const queryClient = useQueryClient();
@@ -21,7 +20,7 @@ export function DeleteCarrierButton({ id }: { id: string }) {
         queryClient.invalidateQueries({ queryKey: ["carriers"] });
       };
 
-      const onError = (error: Error) => {
+      const onError = () => {
         resolve(false);
         showSonnerToast({
           message: "An error occurred while deleting the carrier.",
@@ -46,7 +45,7 @@ export function DeleteCarrierButton({ id }: { id: string }) {
     <Button
       type="button"
       className="w-30 bg-red-500 hover:bg-red-400"
-      onClick={(e) => {
+      onClick={() => {
         handleDeleteCarrier();
       }}
     >
