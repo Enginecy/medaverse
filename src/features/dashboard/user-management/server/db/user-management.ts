@@ -4,7 +4,7 @@ import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, roles, userRoles, users } from "@/db/schema";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { createClient } from "@/lib/supabase/server";
-import { desc, getTableColumns, eq, gt } from "drizzle-orm";
+import { desc, getTableColumns, eq, gt, sql } from "drizzle-orm";
 
 export async function getUsers() {
   const db = await createDrizzleSupabaseClient();
@@ -31,7 +31,7 @@ export type User = Awaited<ReturnType<typeof getUsers>>[number];
 
 export async function getAboveSuperiors(selectedRole: Role) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const user = (await supabase).auth.getUser();
 
     if (!user) {
@@ -79,10 +79,41 @@ export async function getRegionalDirectors() {
       .where(eq(roles.code, "regional_director"));
 
     return regionalDirectors;
-  } catch (e) {
+  } catch {
     throw {
       message:
         "Failed to get regional directors" 
     };
   }
 }
+
+
+export async function getExportUsers() {
+   const db = await createDrizzleSupabaseClient();
+
+  const exportUsers = await db.rls((tx) => {
+    return tx
+      .select({
+      name: profile.name,
+      username: profile.username,
+      phoneNumber: profile.phoneNumber,
+      email: users.email,
+      role: roles.name,
+      status: profile.status,
+      address: profile.address,
+      dob: sql`TO_CHAR(${profile.dob}, 'YYYY-MM-DD')`.as("dob"),
+      NpnNumber: profile.npnNumber,
+      })
+      .from(profile)
+      .leftJoin(users, eq(profile.userId, users.id))
+      .leftJoin(userRoles, eq(userRoles.userId, profile.userId))
+      .leftJoin(roles, eq(userRoles.roleId, roles.id))
+      .orderBy(desc(profile.createdAt));
+  });
+
+  return exportUsers;
+}
+
+
+export type ExportedUsers = Awaited<ReturnType<typeof getExportUsers>> [number]
+

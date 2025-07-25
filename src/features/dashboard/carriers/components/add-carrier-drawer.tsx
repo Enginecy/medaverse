@@ -15,7 +15,6 @@ import {
   addCarrierSchema,
   type AddCarrierFormData,
 } from "@/features/dashboard/carriers/schema/carrier-schema";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import React from "react";
@@ -26,7 +25,6 @@ import { showSonnerToast } from "@/lib/react-utils";
 import { PulseMultiple } from "react-svg-spinners";
 import {
   createCarrier,
-  deleteCarrier,
   updateCarrier,
 } from "@/features/dashboard/carriers/server/actions/carriers";
 import type { Carrier } from "@/features/dashboard/carriers/server/db/carriers";

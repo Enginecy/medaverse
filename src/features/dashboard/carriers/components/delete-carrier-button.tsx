@@ -3,8 +3,7 @@ import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import { deleteCarrier } from "@/features/dashboard/carriers/server/actions/carriers";
 import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { X } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function DeleteCarrierButton({ id }: { id: string }) {
   const queryClient = useQueryClient();
