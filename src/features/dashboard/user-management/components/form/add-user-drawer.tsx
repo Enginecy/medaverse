@@ -114,8 +114,8 @@ export function AddUserDrawer({
     defaultValues,
   });
 
-  const { data : regionalDirs, isLoading : isLoadingRegionalDirs  } = useQuery({
-    queryFn : getRegionalDirectors ,
+  const { data: regionalDirs, isLoading: isLoadingRegionalDirs } = useQuery({
+    queryFn: getRegionalDirectors,
     queryKey: ["regional_directors"],
     refetchOnWindowFocus: false,
   });
@@ -123,17 +123,16 @@ export function AddUserDrawer({
     queryKey: ["roles"],
     queryFn: getRoles,
   });
-  let selectedRole = roles?.find((role) => role.id === form.watch("role"));
+  const selectedRole = roles?.find((role) => role.id === form.watch("role"));
   const getSuperiorsQueryOptions = queryOptions({
     queryKey: ["superiors", selectedRole?.id],
     queryFn: () => getAboveSuperiors(selectedRole!),
     enabled: !!selectedRole,
     refetchOnWindowFocus: false,
   });
-  const {
-    data: aboveSuperiors,
-    isLoading: isLoadingSuperiors,
-  } = useQuery(getSuperiorsQueryOptions);
+  const { data: aboveSuperiors, isLoading: isLoadingSuperiors } = useQuery(
+    getSuperiorsQueryOptions,
+  );
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
     mutationFn: createAgent,
@@ -245,18 +244,15 @@ export function AddUserDrawer({
 
           {/* Role and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {
-              isLoadingRegionalDirs ? (
-                <div
-                  className="flex h-full w-full items-center justify-center pt-6"
-                >
-                  Loading...
-                </div>
-              ) : (
-
-                <RegionalField form={form}  regionalDirs={regionalDirs ?? []}/>
-              )
-            }
+            {isLoadingRegionalDirs ? (
+              <div
+                className="flex h-full w-full items-center justify-center pt-6"
+              >
+                Loading...
+              </div>
+            ) : (
+              <RegionalField form={form} regionalDirs={regionalDirs ?? []} />
+            )}
             {isLoadingRoles ? (
               <div
                 className="flex h-full w-full items-center justify-center pt-6"

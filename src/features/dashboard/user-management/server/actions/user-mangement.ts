@@ -42,8 +42,7 @@ export async function createAgent(data: AddUserFormData) {
       password: env.AUTOMATIC_LOGIN_PASSWORD,
     });
 
-    if (userError || !user?.id)
-      throw { message: "Failed to create user"};
+    if (userError || !user?.id) throw { message: "Failed to create user" };
     createdUser = user;
 
     // Step 2: Prepare file upload details
@@ -85,14 +84,14 @@ export async function createAgent(data: AddUserFormData) {
           userId: user.id,
         })
         .returning();
-    return    await tx
-              .insert(userRoles)
-              .values({
-                roleId: data.role,
-                userId: user.id,
-                assignedBy: currentUser.data.user?.id,
-              })
-              .returning({ id: userRoles.id });
+      return await tx
+        .insert(userRoles)
+        .values({
+          roleId: data.role,
+          userId: user.id,
+          assignedBy: currentUser.data.user?.id,
+        })
+        .returning({ id: userRoles.id });
     });
 
     return { success: true, profile: profileData };
@@ -147,14 +146,14 @@ export async function updateAgent(data: AddUserFormData, id: string) {
     } = await auth.admin.updateUserById(existingProfile!.userId!, {
       email: data.email,
     });
-    
+
     const currentUser = await supabase.auth.getUser();
 
-  if (currentUser?.data?.user === null) {
+    if (currentUser?.data.user === null) {
       throw { message: "Not Authorized" };
     }
     if (userError || !user?.id) {
-      throw { message: "Failed to update user"};
+      throw { message: "Failed to update user" };
     }
     createdUser = user;
 
@@ -176,15 +175,14 @@ export async function updateAgent(data: AddUserFormData, id: string) {
       } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
       const profileData = await db.rls((tx) => {
-         tx
-              .update(userRoles)
-              .set({
-                roleId: data.role,
-                userId: user.id,
-                assignedBy: currentUser!.data!.user?.id,
-              })
-              .returning({ id: userRoles.id });
-        
+        tx.update(userRoles)
+          .set({
+            roleId: data.role,
+            userId: user.id,
+            assignedBy: currentUser!.data!.user?.id,
+          })
+          .returning({ id: userRoles.id });
+
         return tx
           .update(profile)
           .set({
@@ -254,7 +252,7 @@ export async function deleteAgent(id: string) {
   } = await supabase.auth.getUser();
 
   if (currentUserError) {
-    throw { message: "Failed to get current user"};
+    throw { message: "Failed to get current user" };
   }
 
   if (currentUser?.id === existingProfile.userId) {

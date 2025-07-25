@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   title: "Medaverse",
 };
 
-const urbanist = Urbanist({
-  subsets: ["latin"],
-});
+// const urbanist = Urbanist({
+//   subsets: ["latin"],
+// });
 
 export default function RootLayout({
   children,
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <QueryProvider>
       <SupabaseClientProvider>
-        <html lang="en" className={`${urbanist.className}`}>
+        <html lang="en" >
           <body>
             <ModalProvider>
               {children}

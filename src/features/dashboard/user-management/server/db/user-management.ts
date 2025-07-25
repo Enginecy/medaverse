@@ -15,7 +15,6 @@ export async function getUsers() {
         ...getTableColumns(profile),
         email: users.email,
         role: roles,
-        
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
@@ -32,7 +31,7 @@ export type User = Awaited<ReturnType<typeof getUsers>>[number];
 export async function getAboveSuperiors(selectedRole: Role) {
   try {
     const supabase = await createClient();
-    const user = (supabase).auth.getUser();
+    const user = await supabase.auth.getUser();
 
     if (!user) {
       throw { message: "You are not authenticated`" };
@@ -79,10 +78,9 @@ export async function getRegionalDirectors() {
       .where(eq(roles.code, "regional_director"));
 
     return regionalDirectors;
-  } catch  {
+  } catch {
     throw {
-      message:
-        "Failed to get regional directors" 
+      message: "Failed to get regional directors",
     };
   }
 }

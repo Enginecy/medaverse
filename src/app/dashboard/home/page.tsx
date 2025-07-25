@@ -50,7 +50,7 @@ export default async function Home() {
             </CardAction>
           </CardHeader>
           <CardContent className="px-6">
-            <Suspense fallback={<DataTableSkeleton/>}>
+            <Suspense fallback={<DataTableSkeleton />}>
               <RecentSalesDataTable />
             </Suspense>
           </CardContent>
