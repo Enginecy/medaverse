@@ -32,7 +32,7 @@ export type User = Awaited<ReturnType<typeof getUsers>>[number];
 export async function getAboveSuperiors(selectedRole: Role) {
   try {
     const supabase = await createClient();
-    const user = (await supabase).auth.getUser();
+    const user = (supabase).auth.getUser();
 
     if (!user) {
       throw { message: "You are not authenticated`" };
