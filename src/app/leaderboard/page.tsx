@@ -4,14 +4,17 @@ import { Tabs, TabsTrigger, TabsList } from "@/components/ui/tabs";
 import { LeaderboardTable } from "@/components/leaderboard-table";
 import Link from "next/link";
 import { StockCard } from "@/features/leaderboard/components/stock-card";
+import { TotalCard } from "@/features/leaderboard/components/price-card";
+import { getTotalSalesAmount } from "@/features/leaderboard/server/db/leaderboard";
 
-export default function LeaderboardPage() {
+export default async function LeaderboardPage() {
+  const totalSales = await getTotalSalesAmount();
   return (
     <div className="bg-background flex h-screen flex-col items-center gap-4 p-6">
       <div className="grid w-full grid-cols-4 gap-6">
         <LogoCard />
-        <TotalCard week />
-        <TotalCard />
+        <TotalCard week amount={totalSales} />
+        <TotalCard amount={totalSales} />
 
         <Tabs defaultValue="option1" orientation="vertical">
           <TabsList
@@ -27,18 +30,32 @@ export default function LeaderboardPage() {
 
       <StockCard />
 
-      <div className="grid w-full grid-cols-4 gap-6">
-        <LeaderboardCard />
-        <LeaderboardCard />
-        <LeaderboardCard />
-        <LeaderboardCard />
-      </div>
-
-      <div className="grid w-full grid-cols-4 gap-6">
-        <LeaderboardTable title="Personal Production" />
-        <LeaderboardTable title="Associate Director" />
-        <LeaderboardTable title="Divisional Director" />
-        <LeaderboardTable title="Regional Director" />
+      <div className="relative flex flex-col gap-6">
+        <div
+          className="pointer-events-none grid w-full grid-cols-4 gap-6
+            opacity-20"
+        >
+          <LeaderboardCard />
+          <LeaderboardCard />
+          <LeaderboardCard />
+          <LeaderboardCard />
+        </div>
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          <div
+            className="border-primary-500 rounded-3xl border-2 bg-black/80 px-10
+              py-6 text-3xl font-bold text-white shadow-lg"
+          >
+            Waiting for data...
+          </div>
+        </div>
+        <div className="pointer-events-none grid w-full grid-cols-4 gap-6
+            opacity-20"
+        >
+          <LeaderboardTable title="Personal Production" />
+          <LeaderboardTable title="Associate Director" />
+          <LeaderboardTable title="Divisional Director" />
+          <LeaderboardTable title="Regional Director" />
+        </div>
       </div>
     </div>
   );
@@ -109,30 +126,3 @@ function LogoCard() {
     </Link>
   );
 }
-
-function TotalCard({ week }: { week?: boolean }) {
-  const title = week ? "This Week" : "Today";
-  const color = week ? "bg-sky-600/20" : "bg-emerald-500/20";
-  const textColor = week ? "text-blue-500" : "text-emerald-500";
-  const backgroundColor = week ? "bg-sky-600/20" : "bg-emerald-500/20";
-  return (
-    <div
-      className="flex flex-col items-center justify-between gap-3.5 rounded-3xl
-        bg-zinc-900 p-6 outline outline-offset-[-1px] outline-zinc-800"
-    >
-      <div
-        className={`flex items-center justify-center gap-1.5 rounded-4xl px-4
-          ${backgroundColor} py-2`}
-      >
-        <div className={`h-2.5 w-2.5 rounded-full ${color}`} />
-        <div className={`justify-start text-base font-semibold ${textColor}`}>
-          {title}
-        </div>
-      </div>
-      <div className={`text-center text-5xl font-bold ${textColor}`}>
-        $1,185,199
-      </div>
-    </div>
-  );
-}
-

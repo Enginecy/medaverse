@@ -53,7 +53,7 @@ export function StockCard() {
   }
 
   if (isError) {
-    return <div>Error loading last sale</div>;
+    return <div></div>;
   }
 
   return (

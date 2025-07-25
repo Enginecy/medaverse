@@ -1,7 +1,7 @@
 "use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, roles, sales, userRoles } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sum } from "drizzle-orm";
 
 export async function getLastSale() {
   const db = await createDrizzleSupabaseClient();
@@ -36,6 +36,19 @@ export async function getLastSale() {
       role: user.roles.name,
     },
   };
+}
+
+export async function getTotalSalesAmount() {
+  const db = await createDrizzleSupabaseClient();
+  const [totalSales] = await db.admin
+    .select({ total: sum(sales.totalSaleValue) })
+    .from(sales);
+
+  if (totalSales?.total === null) {
+    return "0$";
+  }
+
+  return totalSales!.total!.toLocaleString();
 }
 
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
