@@ -40,7 +40,7 @@ export function ExportUsersButton() {
           type: "error",
         });
       }
-    } catch (e) {
+    } catch {
       setIsLoading(false);
       showSonnerToast({
         message: "Failure",

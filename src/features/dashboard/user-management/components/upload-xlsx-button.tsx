@@ -8,7 +8,7 @@ import { UploadXLSXDialog } from "@/features/dashboard/user-management/component
 export function UploadXlsxButton() {
   const showDialog = useShowDialog();
   function handleUploading() {
-    showDialog((resolve) => {
+    showDialog(() => {
       return <UploadXLSXDialog />;
     } 
   

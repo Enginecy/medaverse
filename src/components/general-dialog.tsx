@@ -34,13 +34,11 @@ export function GeneralDialog({
   type,
   description,
   onClose = () => {},
-  onConfirm,
 }: {
   title: string;
   type: "error" | "warning" | "info" | "success";
   description: string;
   onClose?: () => void;
-  onConfirm?: () => void;
 }) {
   const config = typeConfig[type];
   return (

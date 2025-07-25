@@ -22,7 +22,7 @@ export function UploadXLSXDialog() {
     },
     maxFiles: 1,
     onDrop: (acceptedFiles) => {
-      setXlsxFile(acceptedFiles[0] || null);
+      setXlsxFile(acceptedFiles[0] ?? null);
     },
     noClick: true,
   });
@@ -108,7 +108,7 @@ export function UploadXLSXDialog() {
               accept=".xlsx"
               className="hidden"
               onChange={(event) => {
-                setXlsxFile(event.target.files?.[0] || null);
+                setXlsxFile(event.target.files?.[0] ?? null);
               }}
               {...getInputProps()}
             />

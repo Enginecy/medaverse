@@ -10,7 +10,6 @@ import { env } from "@/env";
 import type { State } from "@/lib/data";
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
-import { showSonnerToast } from "@/lib/react-utils";
 
 export async function createAgent(data: AddUserFormData) {
   const { auth } = createAdminClient();
@@ -152,7 +151,7 @@ export async function updateAgent(data: AddUserFormData, id: string) {
 
     const currentUser = await supabase.auth.getUser();
 
-    if (currentUser === null || currentUser.data.user === null) {
+    if (currentUser?.data?.user === null) {
       throw { message: "Not Authorized" };
     }
     if (userError || !user?.id) {
@@ -309,13 +308,12 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       data: { user },
       error: userError,
     } = await auth.admin.createUser({
-      email: singleUser.email || "",
+      email: singleUser.email ?? "",
       email_confirm: true,
       password: env.AUTOMATIC_LOGIN_PASSWORD,
     });
 
     if (userError || !user || !user.id) {
-      // console.log( `Can not register with this email: ${singleUser.email}${userError?.message ?? ""}` )
       throw new Error(
         "Can not register with this email: " +
           `${singleUser.email}` +
