@@ -77,7 +77,20 @@ export function RolesFormSheet<T>({
     defaultValues: defaultValues,
   });
   const { mutate: edit, isPending: isUpdating } = useMutation({
-    mutationFn: editRole,
+    mutationFn: async ( {
+      formData , 
+      
+    } :{
+      formData: RolesFormSchemaData & { id: string };
+      
+    }
+   ) => {
+      const result = await editRole(formData);
+      if (result.success) {
+        throw result.data;
+      }
+      return result.error;
+    },
 
     onSuccess: () => {
       showSonnerToast({
@@ -99,7 +112,13 @@ export function RolesFormSheet<T>({
   });
 
   const { mutate: add, isPending: isAdding } = useMutation({
-    mutationFn: addRole,
+    mutationFn: async (formData : RolesFormSchemaData ) => {
+      const result = await addRole(formData);
+      if (result.success) {
+        throw result.data;
+      }
+      return result.error;
+    },
 
     onSuccess: () => {
       showSonnerToast({
@@ -121,7 +140,12 @@ export function RolesFormSheet<T>({
 
   const onSubmit = (formData: RolesFormSchemaData) => {
     if (isEditing) {
-      edit({ ...formData, id: data.id! });
+      edit({
+        formData: {
+          ...formData,
+          id: data?.id ?? "",
+        },
+      });
     } else {
       add(formData);
     }

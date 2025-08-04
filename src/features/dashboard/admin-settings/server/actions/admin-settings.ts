@@ -18,7 +18,6 @@ export async function addRole({
   users,
   ...role
 }: RolesFormSchemaData): Promise<ActionResult<typeof result>> {
-  console.log({ permissions, users, role }, { depth: null });
 
   const db = await createDrizzleSupabaseClient();
   const result = await db.rls(async (tx) => {
