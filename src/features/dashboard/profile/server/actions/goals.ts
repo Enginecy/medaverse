@@ -61,12 +61,6 @@ export async function getUserGoalsAction() {
   }
 }
 
-const updateGoalProgressSchema = z.object({
-  goalId: z.string().uuid("Invalid goal ID"),
-  achieved: z.number().min(0, "Achieved amount must be non-negative"),
-});
-
-export type UpdateGoalProgressInput = z.infer<typeof updateGoalProgressSchema>;
 
 const deleteGoalSchema = z.object({
   goalId: z.string().uuid("Invalid goal ID"),

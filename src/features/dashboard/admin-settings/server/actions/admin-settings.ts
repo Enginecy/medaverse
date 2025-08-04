@@ -173,7 +173,7 @@ export async function deleteRole({
         .where(eq(userRoles.roleId, id));
     });
     return { success: true, data: result };
-  } catch (error) {
+  } catch  {
     return {
       success: false,
       error: {
@@ -312,7 +312,7 @@ export async function deleteUserRole({
     });
 
     return { success: true, data: result };
-  } catch (error) {
+  } catch  {
     return {
       success: false,
       error: {

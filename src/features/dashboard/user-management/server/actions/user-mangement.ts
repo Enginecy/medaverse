@@ -19,7 +19,7 @@ export async function createAgent(
   const db = await createDrizzleSupabaseClient();
   const currentUser = await supabase.auth.getUser();
 
-  if (!currentUser || !currentUser.data.user?.id) {
+  if (currentUser?.data.user?.id) {
     return {
       success: false,
       error: {
@@ -67,7 +67,7 @@ export async function createAgent(
           message: "Failed to create user",
           statusCode: 400,
           details:
-            userError?.message || "An error occurred while creating the user.",
+            userError?.message ?? "An error occurred while creating the user.",
         },
       };
     }
@@ -104,7 +104,7 @@ export async function createAgent(
     } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
     // Step 5: Database operations in transaction
-    const profileData = await db.rls(async (tx) => {
+     await db.rls(async (tx) => {
       await tx
         .insert(profile)
         .values({
@@ -140,7 +140,7 @@ export async function createAgent(
         await supabase.storage
           .from("profile-images")
           .remove([uploadedFileName]);
-      } catch (cleanupError) {
+      } catch  {
         return {
           success: false,
           error: {
@@ -216,7 +216,7 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
           message: "Failed to update user",
           statusCode: 400,
           details:
-            userError?.message || "An error occurred while updating the user.",
+            userError?.message ?? "An error occurred while updating the user.",
         },
       };
     }
@@ -294,7 +294,7 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
         await supabase.storage
           .from("profile-images")
           .remove([uploadedFileName]);
-      } catch (cleanupError) {
+      } catch {
         return{
           success: false,
           error: {
@@ -310,7 +310,7 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
     if (createdUser?.id) {
       try {
         await auth.admin.deleteUser(createdUser.id);
-      } catch (cleanupError) {
+      } catch {
         return { 
           success: false , 
           error: { 
