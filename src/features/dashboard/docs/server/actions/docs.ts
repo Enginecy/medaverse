@@ -88,7 +88,7 @@ export async function renameFileAction({
 }: {
   id: string;
   name: string;
-}) {
+}) : Promise<ActionResult<void>>{
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
 
@@ -98,9 +98,14 @@ export async function renameFileAction({
   });
 
   if (!currentDoc) {
-    throw {
+  return {
+    success:false , 
+    error: {
       message: "File not found",
-    };
+      statusCode: 404,
+      details: "The specified file does not exist.",
+    },
+  }
   }
 
   // Generate new file name with the updated name
@@ -114,9 +119,14 @@ export async function renameFileAction({
   // Move the file to the new path
   const { error: moveError } = await bucket.move(oldPath, newPath);
   if (moveError) {
-    throw {
-      message: "Failed to rename file",
-    };
+    return  {
+      success: false,
+      error: {
+        message: "Failed to rename file in storage",
+        statusCode: 400,
+        details: moveError.message,
+      },
+    }
   }
 
   // Update database with new file information
@@ -132,11 +142,12 @@ export async function renameFileAction({
   });
 
   return {
-    message: "File renamed successfully",
+    success: true,
+    data: undefined,
   };
 }
 
-export async function deleteFileAction({ id }: { id: string }) {
+export async function deleteFileAction({ id }: { id: string }) : Promise<ActionResult<void>> {
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
 
@@ -146,17 +157,28 @@ export async function deleteFileAction({ id }: { id: string }) {
   });
 
   if (!currentDoc) {
-    throw {
-      message: "File not found",
+    return {
+      success: false,
+      error: {
+        message: "File not found",
+        statusCode: 404,
+        details: "The specified file does not exist.",
+      },
     };
   }
 
   // Delete the file from storage
   const bucket = supabase.storage.from("documents");
   const { error: deleteError } = await bucket.remove([currentDoc.filePath]);
+  
   if (deleteError) {
-    throw {
-      message: "Failed to delete file from storage",
+    return {
+      success: false,
+      error: {
+        message: "Failed to delete file from storage",
+        statusCode: 400,
+        details: deleteError.message,
+      },
     };
   }
 
@@ -166,6 +188,7 @@ export async function deleteFileAction({ id }: { id: string }) {
   });
 
   return {
-    message: "File deleted successfully",
+    success: true,
+    data: undefined,
   };
 }
