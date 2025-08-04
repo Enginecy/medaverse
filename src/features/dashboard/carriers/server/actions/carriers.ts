@@ -81,8 +81,8 @@ export async function deleteCarrier(id: string): Promise<ActionResult<void>> {
 export async function updateCarrier(
   data: AddCarrierFormData,
   carrierId: string,
-) {
-  try {
+) : Promise<ActionResult<typeof carrier>> {
+  
     const drizzle = await createDrizzleSupabaseClient();
     const supabase = await createClient();
 
@@ -109,9 +109,18 @@ export async function updateCarrier(
         .where(eq(insuranceCompanies.id, carrierId))
         .returning();
     });
-    return { success: true, carrier: carrier };
-  } catch (error) {
-    console.error("Error creating carrier:", error);
-    throw { success: false, message: "Failed to create carrier" };
-  }
+
+    if (!carrier) {
+      return {
+        success: false,
+        error: {
+          message: "Failed to update carrier",
+          statusCode: 400,
+          details:
+            "Something went wrong updating this carrier, please try again later.",
+        },
+      };
+    }
+    
+    return { success: true,data: carrier }; 
 }
