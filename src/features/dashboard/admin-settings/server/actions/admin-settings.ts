@@ -197,8 +197,16 @@ export async function assignRole({
   } = await (await createClient()).auth.getUser();
 
   if (!currentUser?.id) {
-    throw { message: "Unauthorized" };
+    return {
+      success: false,
+      error: {
+        message: "Unauthorized",
+        statusCode: 400,
+        details: "You are not authorized to perform this action.",
+      },
+    };
   }
+
   const result = await db.rls(async (tx) => {
     const [resultingUserRole] = await tx
       .insert(userRoles)
@@ -267,7 +275,15 @@ export async function updateAssignedRole({
       .returning({ id: userRoles.id });
 
     if (!resultingUserRole) {
-      throw { message: "Failed to update role" };
+      return {
+        success: false,
+        error: {
+          message: "Failed to update role",
+          statusCode: 400,
+          details:
+            "Something went wrong updating this role, please try again later.",
+        },
+      };
     }
 
     return {
