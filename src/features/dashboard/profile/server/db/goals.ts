@@ -124,10 +124,10 @@ export async function updateGoalProgress(goalId: string, achieved: number) : Pro
 }
 
 
-export async function deleteGoal(goalId: string) {
+export async function deleteGoal(goalId: string) : Promise<ActionResult<void>>  {
   const db = await createDrizzleSupabaseClient();
 
-  return await db.rls(async (tx) => {
+  const result = await db.rls(async (tx) => {
     // Get user's profile - RLS will ensure we only get the current user's profile
     const userProfile = await tx
       .select({ id: profile.id })
@@ -157,6 +157,19 @@ export async function deleteGoal(goalId: string) {
 
     return deletedGoal;
   });
+
+  if(!result) {
+    return { 
+      success: false, 
+      error: {
+        message: "Goal not found to delete it.",
+        statusCode: 400, 
+        details: "Ensure the goal exists to your profile.",
+      }
+    }
+  }
+  
+  return { success: true, data: undefined };
 }
 
 export type Goal = Awaited<ReturnType<typeof getUserGoals>>[number];
