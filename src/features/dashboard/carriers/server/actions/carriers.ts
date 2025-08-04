@@ -20,7 +20,16 @@ export async function createCarrier(
     .from("company-images")
     .upload(fileName, file, { upsert: true });
   if (uploadError)
-    throw { message: "Failed to upload file", error: uploadError };
+   {
+    return {
+      success: false,
+      error: {
+        message: "Failed to upload file",
+        statusCode: 400,
+        details: uploadError.message,
+      },
+    };
+   }
 
   const {
     data: { publicUrl },
@@ -93,7 +102,16 @@ export async function updateCarrier(
         .from("company-images")
         .upload(fileName, file, { upsert: true });
       if (uploadError)
-        throw { message: "Failed to upload file", error: uploadError };
+      {
+        return {
+          success: false,
+          error: {
+            message: "Failed to upload file",
+            statusCode: 400,
+            details: uploadError.message,
+          },
+        };
+      }
     }
 
     const carrier = await drizzle.rls(async (tx) => {
