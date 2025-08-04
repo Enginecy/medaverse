@@ -87,9 +87,9 @@ export function RolesFormSheet<T>({
    ) => {
       const result = await editRole(formData);
       if (result.success) {
-        throw result.data;
+        return  result.data;
       }
-      return result.error;
+      throw result.error;
     },
 
     onSuccess: () => {
@@ -115,9 +115,9 @@ export function RolesFormSheet<T>({
     mutationFn: async (formData : RolesFormSchemaData ) => {
       const result = await addRole(formData);
       if (result.success) {
-        throw result.data;
+        return  result.data;
       }
-      return result.error;
+      throw result.error;
     },
 
     onSuccess: () => {

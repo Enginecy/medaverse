@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
+import type { ActionResult } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2, Trash2 } from "lucide-react"; // Import Loader2 for loading spinner
 
@@ -15,14 +16,20 @@ export function DeleteDialog<TVars, TData>({
 }: {
   title: string;
   content: string;
-  onSubmit: (variables: TVars) => Promise<TData>;
+  onSubmit: (variables: TVars) => Promise<ActionResult<TData>>;
   onSuccess?: (result: TData) => void;
   onError?: (error: Error) => void;
   onCancel: () => void;
   variables: TVars;
 }) {
   const { mutate, isPending } = useMutation({
-    mutationFn: onSubmit,
+    mutationFn: async (variables: TVars) => {
+      const result = await onSubmit(variables);
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onSuccess,
     onError,
   });
@@ -56,7 +63,7 @@ export function DeleteDialog<TVars, TData>({
           </Button>
           <Button
             className="w-30 bg-red-600"
-            onClick={() => mutate (variables) }
+            onClick={() => mutate(variables)}
             disabled={isPending} // Disable button when loading
           >
             {isPending ? (
