@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type z from "zod";
 import { env } from "@/env";
+import { showSonnerToast } from "@/lib/react-utils";
+import type { ActionError } from "@/lib/utils";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin">("email");
@@ -31,30 +33,60 @@ export default function Home() {
   });
 
   const { mutate: sendOtp, isPending: isSendingOtp } = useMutation({
-    mutationFn: sendEmailOTP,
+    mutationFn: async (data: string) => {
+      const result = await sendEmailOTP(data);
+      if (!result.success) {
+        throw result.error;
+      }
+      return result.data;
+    },
     onSuccess: () => {
       toast.success("OTP sent to email");
       setStep("pin");
       form.trigger();
     },
-    onError: (error) => {
-      toast.error(error.message);
+    onError: (error: ActionError) => {
+      showSonnerToast({
+        message: error.message,
+        description: error.details,
+        type: "error",
+      });
     },
   });
 
   const { mutate: verifyOtp, isPending: isVerifyingOtp } = useMutation({
-    mutationFn: verifyEmailOtp,
+    mutationFn: async (data: { email: string; code: string }) => {
+      const result = await verifyEmailOtp(data);
+      if (!result.success) {
+        throw result.error;
+      }
+      return result.data;
+    },
     onSuccess: router.refresh,
-    onError: (error) => {
-      toast.error(error.message);
+    onError: (error: ActionError) => {
+      showSonnerToast({
+        message: error.message,
+        description: error.details,
+        type: "error",
+      });
     },
   });
 
   const { mutate: debugLogin, isPending: isLoggingIn } = useMutation({
-    mutationFn: debugLoginWithPassword,
+    mutationFn: async (data: { email: string }) => {
+      const result = await debugLoginWithPassword(data);
+      if (!result.success) {
+        throw result.error;
+      }
+      return result.data;
+    },
     onSuccess: router.refresh,
-    onError: (error) => {
-      toast.error(error.message);
+    onError: (error: ActionError) => {
+      showSonnerToast({
+        message: error.message,
+        description: error.details,
+        type: "error",
+      });
     },
   });
 

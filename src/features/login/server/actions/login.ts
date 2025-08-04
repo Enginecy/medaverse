@@ -1,16 +1,43 @@
 "use server";
 import { env } from "@/env";
 import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "@/lib/utils";
 
-export async function sendEmailOTP(email: string) {
+export async function sendEmailOTP(
+  email: string,
+): Promise<ActionResult<typeof data>> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOtp({
     options: { shouldCreateUser: false },
     email,
   });
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    if (error.code === "over_email_send_rate_limit") {
+      return {
+        success: false,
+        error: {
+          message: error.message,
+          code: "EMAIL_SEND_RATE_LIMIT_EXCEEDED",
+          statusCode: 400,
+          details: "Email send rate limit exceeded",
+        },
+      };
+    }
+    return {
+      success: false,
+      error: {
+        message: "Email not found",
+        code: "EMAIL_NOT_FOUND",
+        statusCode: 400,
+        details: "Please check your email and try again",
+      },
+    };
+  }
+  return {
+    success: true,
+    data,
+  };
 }
 
 export async function verifyEmailOtp({
@@ -19,7 +46,7 @@ export async function verifyEmailOtp({
 }: {
   email: string;
   code: string;
-}) {
+}): Promise<ActionResult<typeof data>> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.verifyOtp({
     email,
@@ -27,17 +54,47 @@ export async function verifyEmailOtp({
     type: "email",
   });
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        code: error.code?.toString() ?? "UNKNOWN_ERROR",
+        statusCode: 400,
+        details: error.cause?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return {
+    success: true,
+    data,
+  };
 }
 
-export async function debugLoginWithPassword({ email }: { email: string }) {
+export async function debugLoginWithPassword({
+  email,
+}: {
+  email: string;
+}): Promise<ActionResult<typeof data>> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password: env.AUTOMATIC_LOGIN_PASSWORD,
   });
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        code: error.code?.toString() ?? "UNKNOWN_ERROR",
+        statusCode: 400,
+        details: error.cause?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return {
+    success: true,
+    data,
+  };
 }
