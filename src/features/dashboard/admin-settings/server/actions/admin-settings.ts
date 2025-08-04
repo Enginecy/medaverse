@@ -85,7 +85,7 @@ export async function editRole({
   users,
   id,
   ...role
-}: RolesFormSchemaData & { id: string }) {
+}: RolesFormSchemaData & { id: string }): Promise<ActionResult<typeof result>> {
   const db = await createDrizzleSupabaseClient();
   const result = await db.rls(async (tx) => {
     const [resultingRole] = await tx
@@ -95,7 +95,15 @@ export async function editRole({
       .returning({ id: roles.id });
 
     if (!resultingRole) {
-      throw { message: "Failed to update role" };
+      return {
+        success: false,
+        error: {
+          message: "Failed to update role",
+          statusCode: 400,
+          details:
+            "Something went wrong updating this role, please try again later.",
+        },
+      };
     }
 
     if (permissions.length > 0) {
@@ -114,7 +122,14 @@ export async function editRole({
       } = await (await createClient()).auth.getUser();
 
       if (!currentUser?.id) {
-        throw { message: "Unauthorized" };
+        return {
+          success: false,
+          error: {
+            message: "Unauthorized",
+            statusCode: 400,
+            details: "You are not authorized to perform this action.",
+          },
+        };
       }
 
       const payload = users.map((user) => ({
@@ -133,34 +148,49 @@ export async function editRole({
     };
   });
 
-  return result;
+  return { success: true, data: result };
 }
 
-export async function deleteRole({ id }: { id: string }) {
-  const db = await createDrizzleSupabaseClient();
-  const result = await db.rls(async (tx) => {
-    await tx
-      .update(roles)
-      .set({
-        status: "disabled",
-      })
-      .where(eq(roles.id, id));
-    await tx
-      .update(userRoles)
-      .set({
-        status: "disabled",
-      })
-      .where(eq(userRoles.roleId, id));
-  });
-
-  return result;
+export async function deleteRole({
+  id,
+}: {
+  id: string;
+}): Promise<ActionResult<void>> {
+  try {
+    const db = await createDrizzleSupabaseClient();
+    const result = await db.rls(async (tx) => {
+      await tx
+        .update(roles)
+        .set({
+          status: "disabled",
+        })
+        .where(eq(roles.id, id));
+      await tx
+        .update(userRoles)
+        .set({
+          status: "disabled",
+        })
+        .where(eq(userRoles.roleId, id));
+    });
+    return { success: true, data: result };
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        message: "Failed to delete role",
+        statusCode: 400,
+        details:
+          "Something went wrong deleting this role, please try again later.",
+      },
+    };
+  }
 }
 
 export async function assignRole({
   role,
   user,
   expiresAt,
-}: UserRoleFormSchemaData) {
+}: UserRoleFormSchemaData): Promise<ActionResult<typeof result>> {
   const db = await createDrizzleSupabaseClient();
   const {
     data: { user: currentUser },
@@ -181,7 +211,15 @@ export async function assignRole({
       .returning({ id: userRoles.id });
 
     if (!resultingUserRole) {
-      throw { message: "Failed to assign role" };
+      return {
+        success: false,
+        error: {
+          message: "Failed to assign role",
+          statusCode: 400,
+          details:
+            "Something went wrong assigning this role, please try again later.",
+        },
+      };
     }
 
     return {
@@ -190,21 +228,30 @@ export async function assignRole({
     };
   });
 
-  return result;
+  return { success: true, data: result };
 }
 export async function updateAssignedRole({
   role,
   user,
   expiresAt,
   id,
-}: UserRoleFormSchemaData & { id: string }) {
+}: UserRoleFormSchemaData & { id: string }): Promise<
+  ActionResult<typeof result>
+> {
   const db = await createDrizzleSupabaseClient();
   const {
     data: { user: currentUser },
   } = await (await createClient()).auth.getUser();
 
   if (!currentUser?.id) {
-    throw { message: "Unauthorized" };
+    return {
+      success: false,
+      error: {
+        message: "Unauthorized",
+        statusCode: 400,
+        details: "You are not authorized to perform this action.",
+      },
+    };
   }
   const result = await db.rls(async (tx) => {
     const [resultingUserRole] = await tx
@@ -229,34 +276,58 @@ export async function updateAssignedRole({
     };
   });
 
-  return result;
+  return { success: true, data: result };
 }
 
-export async function deleteUserRole({ id }: { id: string }) {
-  const db = await createDrizzleSupabaseClient();
-  const result = await db.rls(async (tx) => {
-    await tx
-      .update(userRoles)
-      .set({
-        status: "disabled",
-      })
-      .where(eq(userRoles.id, id));
-  });
+export async function deleteUserRole({
+  id,
+}: {
+  id: string;
+}): Promise<ActionResult<void>> {
+  try {
+    const db = await createDrizzleSupabaseClient();
+    const result = await db.rls(async (tx) => {
+      await tx
+        .update(userRoles)
+        .set({
+          status: "disabled",
+        })
+        .where(eq(userRoles.id, id));
+    });
 
-  return result;
+    return { success: true, data: result };
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        message: "Failed to delete this user role",
+        statusCode: 400,
+        details:
+          "Something went wrong deleting this user role, please try again later.",
+      },
+    };
+  }
 }
+
 export async function assignPermission({
   permission,
   user,
   expiresAt,
-}: UserPermissionFormSchemaData) {
+}: UserPermissionFormSchemaData): Promise<ActionResult<typeof result>> {
   const db = await createDrizzleSupabaseClient();
   const {
     data: { user: currentUser },
   } = await (await createClient()).auth.getUser();
 
   if (!currentUser?.id) {
-    throw { message: "Unauthorized" };
+    return {
+      success: false,
+      error: {
+        message: "Unauthorized",
+        statusCode: 400,
+        details: "You are not authorized to perform this action.",
+      },
+    };
   }
 
   const result = await db.rls(async (tx) => {
@@ -271,7 +342,15 @@ export async function assignPermission({
       .returning({ id: userPermissionsEnhanced.id });
 
     if (!resultingUserPermission) {
-      throw { message: "Failed to assign permission" };
+      return {
+        success: false,
+        error: {
+          message: "Failed to assign permission",
+          statusCode: 400,
+          details:
+            "Something went wrong assign this permission, please try again later.",
+        },
+      };
     }
 
     return {
@@ -280,7 +359,7 @@ export async function assignPermission({
     };
   });
 
-  return result;
+  return { success: true, data: result };
 }
 
 export async function updateAssignedPermission({
@@ -288,14 +367,23 @@ export async function updateAssignedPermission({
   user,
   expiresAt,
   id,
-}: UserPermissionFormSchemaData & { id: string }) {
+}: UserPermissionFormSchemaData & { id: string }): Promise<
+  ActionResult<typeof result>
+> {
   const db = await createDrizzleSupabaseClient();
   const {
     data: { user: currentUser },
   } = await (await createClient()).auth.getUser();
 
   if (!currentUser?.id) {
-    throw { message: "Unauthorized" };
+    return {
+      success: false,
+      error: {
+        message: "Unauthorized",
+        statusCode: 400,
+        details: "You are not authorized to perform this action.",
+      },
+    };
   }
   const result = await db.rls(async (tx) => {
     const [resultingUserPermission] = await tx
@@ -310,23 +398,30 @@ export async function updateAssignedPermission({
       .where(eq(userPermissionsEnhanced.id, id))
       .returning({ id: userPermissionsEnhanced.id });
 
-    if (!resultingUserPermission) {
-      throw { message: "Failed to update permission" };
-    }
-
-    return {
-      message: "Permission updated successfully",
-      userPermission: resultingUserPermission,
-    };
+    return resultingUserPermission;
   });
-
-  return result;
+  if (!result) {
+    return {
+      success: false,
+      error: {
+        message: "Failed to update permission",
+        statusCode: 400,
+        details:
+          "Something went wrong updating this permission, please try again later.",
+      },
+    };
+  }
+  return { success: true, data: result };
 }
 
-export async function deleteUserPermission({ id }: { id: string }) {
+export async function deleteUserPermission({
+  id,
+}: {
+  id: string;
+}): Promise<ActionResult<typeof result>> {
   const db = await createDrizzleSupabaseClient();
   const result = await db.rls(async (tx) => {
-    await tx
+    return await tx
       .update(userPermissionsEnhanced)
       .set({
         status: "disabled",
@@ -334,5 +429,17 @@ export async function deleteUserPermission({ id }: { id: string }) {
       .where(eq(userPermissionsEnhanced.id, id));
   });
 
-  return result;
+  if (!result) {
+    return {
+      success: false,
+      error: {
+        message: "Failed to delete this user permission",
+        statusCode: 400,
+        details:
+          "Something went wrong deleting this user permission, please try again later.",
+      },
+    };
+  }
+
+  return { success: true, data: result };
 }
