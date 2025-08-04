@@ -99,7 +99,14 @@ export function AddSaleDrawer({
   const { user } = useAuth();
 
   const { mutate: submitNewSale, isPending } = useMutation({
-    mutationFn: (data: AddSaleFormData) => addSale(user!.user.id, data),
+    mutationFn: async (data: AddSaleFormData) => {
+      const result = await addSale(user!.user.id, data);
+        if(result.success) {
+          return result.data;
+        }
+        throw result.error;
+        
+    },
     onSuccess: () => {
       toast.success("Sale added successfully");
       closeDrawer(null);

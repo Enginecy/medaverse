@@ -80,9 +80,17 @@ export function CarrierDrawer({
   const { mutate: submitCarrierData, isPending: isLoading } = useMutation({
     mutationFn: async (data: AddCarrierFormData) => {
       if (isEditing) {
-        await updateCarrier(data, fieldValues!.id!);
+        const result = await updateCarrier(data, fieldValues!.id!);
+        if (result.success) {
+          return result.data;
+        }
+        throw result.error;
       } else {
-        await createCarrier(data);
+        const result = await createCarrier(data);
+        if (result.success) {
+          return result.data;
+        }
+        throw result.error;
       }
     },
     onSuccess: () => {
