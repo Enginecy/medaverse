@@ -5,8 +5,6 @@ import { z } from "zod";
 import {
   createGoal,
   getUserGoals,
-  updateGoalProgress,
-  deleteGoal,
 } from "../db/goals";
 import type { ActionResult } from "@/lib/utils";
 
@@ -70,56 +68,9 @@ const updateGoalProgressSchema = z.object({
 
 export type UpdateGoalProgressInput = z.infer<typeof updateGoalProgressSchema>;
 
-export async function updateGoalProgressAction(input: UpdateGoalProgressInput) {
-  try {
-    const validatedInput = updateGoalProgressSchema.parse(input);
-
-    const goal = await updateGoalProgress(
-      validatedInput.goalId,
-      validatedInput.achieved,
-    );
-
-    revalidatePath("/dashboard/profile");
-
-    return {
-      success: true,
-      data: goal,
-    };
-  } catch (error) {
-    console.error("Error updating goal progress:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to update goal progress",
-    };
-  }
-}
-
 const deleteGoalSchema = z.object({
   goalId: z.string().uuid("Invalid goal ID"),
 });
 
 export type DeleteGoalInput = z.infer<typeof deleteGoalSchema>;
 
-export async function deleteGoalAction(input: DeleteGoalInput) {
-  try {
-    const validatedInput = deleteGoalSchema.parse(input);
-
-    const goal = await deleteGoal(validatedInput.goalId);
-
-    revalidatePath("/dashboard/profile");
-
-    return {
-      success: true,
-      data: goal,
-    };
-  } catch (error) {
-    console.error("Error deleting goal:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to delete goal",
-    };
-  }
-}
