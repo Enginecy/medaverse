@@ -10,13 +10,14 @@ import type { RolesFormSchemaData } from "@/features/dashboard/admin-settings/sc
 import type { UserPermissionFormSchemaData } from "@/features/dashboard/admin-settings/schemas/user-permission";
 import type { UserRoleFormSchemaData } from "@/features/dashboard/admin-settings/schemas/user-role";
 import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 
 export async function addRole({
   permissions,
   users,
   ...role
-}: RolesFormSchemaData) {
+}: RolesFormSchemaData): Promise<ActionResult<typeof result>> {
   console.log({ permissions, users, role }, { depth: null });
 
   const db = await createDrizzleSupabaseClient();
@@ -27,7 +28,15 @@ export async function addRole({
       .returning({ id: roles.id });
 
     if (!resultingRole) {
-      throw { message: "Failed to create role" };
+      return {
+        success: false,
+        error: {
+          message: "Something went wrong adding this role",
+          statusCode: 400,
+          details:
+            "Something went wrong adding this role, please try again later.",
+        },
+      };
     }
 
     if (permissions.length > 0) {
@@ -45,7 +54,14 @@ export async function addRole({
       } = await (await createClient()).auth.getUser();
 
       if (!currentUser?.id) {
-        throw { message: "Unauthorized" };
+        return {
+          success: false,
+          error: {
+            message: "Unauthorized",
+            statusCode: 400,
+            details: "You are not authorized to perform this action.",
+          },
+        };
       }
 
       const payload = users.map((user) => ({
@@ -61,7 +77,7 @@ export async function addRole({
       role: resultingRole,
     };
   });
-  return result;
+  return { success: true, data: result };
 }
 
 export async function editRole({
