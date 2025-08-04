@@ -105,7 +105,6 @@ export function AddSaleDrawer({
           return result.data;
         }
         throw result.error;
-        
     },
     onSuccess: () => {
       toast.success("Sale added successfully");
