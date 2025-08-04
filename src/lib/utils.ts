@@ -18,6 +18,23 @@ type Failure<E> = {
 
 type Result<T, E = Error> = Success<T> | Failure<E>;
 
+export type ActionError = {
+  message: string;
+  code: string;
+  statusCode: number;
+  details: string;
+};
+
+export type ActionResult<T, E = ActionError> =
+  | {
+      data: T;
+      success: true;
+    }
+  | {
+      success: false;
+      error: E;
+    };
+
 // Main wrapper function
 export async function tryCatch<T, E = Error>(
   promise: Promise<T>,
