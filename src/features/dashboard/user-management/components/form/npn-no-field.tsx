@@ -20,7 +20,7 @@ export function NpnNumberForm({
         render={({ field }) => (
           <FormItem>
             <FormLabel>NPN Number</FormLabel>
-            <Input placeholder="Enter NPN Number" {...field} />
+            <Input placeholder="Enter NPN Number" {...field} value={field.value ?? ""} />
             <FormMessage />
           </FormItem>
         )}

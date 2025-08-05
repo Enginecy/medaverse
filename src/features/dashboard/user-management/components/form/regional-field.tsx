@@ -28,7 +28,7 @@ export function RegionalField ({form  , regionalDirs } : {form : UseFormReturn<A
         render={({ field }) => (
           <FormItem>
             <FormLabel>Regional</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} defaultValue={field.value ?? ""}>
               <FormControl>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Regional Director" />

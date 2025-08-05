@@ -46,14 +46,14 @@ export function StatesField({
                     role="combobox"
                     className={cn(
                       "w-1/2 justify-between",
-                      field.value.length === 0 && "text-muted-foreground",
+                      field.value?.length === 0 && "text-muted-foreground",
                     )}
                   >
-                    {field.value.length === 0
+                    {field.value?.length === 0
                       ? "Select states"
-                      : field.value.length === 1
+                      : field.value?.length === 1
                         ? `${field.value[0]?.name}`
-                        : `${field.value.length} states selected`}
+                        : `${field.value?.length} states selected`}
                     <ChevronsUpDown className="opacity-50" />
                   </Button>
                 </FormControl>
@@ -71,7 +71,7 @@ export function StatesField({
                         key={"select-all"}
                         className="text-primary-600 hover:bg-primary-100"
                         onSelect={() => {
-                          if (field.value.length === states.length) {
+                          if (field.value?.length === states.length) {
                             form.setValue("states", []);
                           } else {
                             form.setValue("states", states);
@@ -79,7 +79,7 @@ export function StatesField({
                           }
                         }}
                       >
-                        {field.value.length === states.length
+                        {field.value?.length === states.length
                           ? "Deselect all "
                           : "Select all "}
                       </CommandItem>
@@ -89,16 +89,16 @@ export function StatesField({
                           key={state.code}
                           onSelect={() => {
                             if (
-                              field.value.some((s) => s.code === state.code)
+                              field.value?.some((s) => s.code === state.code)
                             ) {
                               form.setValue(
                                 "states",
-                                field.value.filter(
+                                field.value?.filter(
                                   (s) => s.code !== state.code,
                                 ),
                               );
                             } else {
-                              form.setValue("states", [...field.value, state]);
+                              form.setValue("states", [...(field.value ?? []), state]);
                             }
                             form.trigger("states");
                           }}
@@ -107,7 +107,7 @@ export function StatesField({
                           <Check
                             className={cn(
                               "ml-auto",
-                              field.value.some((s) => s.code === state.code)
+                              field.value?.some((s) => s.code === state.code)
                                 ? "opacity-100"
                                 : "opacity-0",
                             )}
@@ -121,7 +121,7 @@ export function StatesField({
             </Popover>
             <FormDescription className="flex flex-wrap gap-2">
               {/* build chip for each state */}
-              {field.value.map((state) => (
+              {field.value?.map((state) => (
                 <div
                   key={state.code}
                   className="bg-primary-100 text-primary-600 flex items-start
@@ -138,7 +138,7 @@ export function StatesField({
                       onClick={() => {
                         form.setValue(
                           "states",
-                          field.value.filter((s) => s.code !== state.code),
+                          field.value?.filter((s) => s.code !== state.code),
                         );
                       }}
                     >
