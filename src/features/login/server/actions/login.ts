@@ -18,7 +18,6 @@ export async function sendEmailOTP(
         success: false,
         error: {
           message: error.message,
-          code: "EMAIL_SEND_RATE_LIMIT_EXCEEDED",
           statusCode: 400,
           details: "Email send rate limit exceeded",
         },
@@ -28,7 +27,6 @@ export async function sendEmailOTP(
       success: false,
       error: {
         message: "Email not found",
-        code: "EMAIL_NOT_FOUND",
         statusCode: 400,
         details: "Please check your email and try again",
       },
@@ -59,7 +57,6 @@ export async function verifyEmailOtp({
       success: false,
       error: {
         message: error.message,
-        code: error.code?.toString() ?? "UNKNOWN_ERROR",
         statusCode: 400,
         details: error.cause?.toString() ?? "Unknown error",
       },
@@ -87,7 +84,6 @@ export async function debugLoginWithPassword({
       success: false,
       error: {
         message: error.message,
-        code: error.code?.toString() ?? "UNKNOWN_ERROR",
         statusCode: 400,
         details: error.cause?.toString() ?? "Unknown error",
       },

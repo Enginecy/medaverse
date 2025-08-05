@@ -135,7 +135,13 @@ export function AddUserDrawer({
   );
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
-    mutationFn: createAgent,
+    mutationFn: async (data: AddUserFormData) => {
+      const result = await createAgent(data);
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onSuccess: () => {
       showSonnerToast({
         message: "New agent added successfully",
@@ -158,7 +164,13 @@ export function AddUserDrawer({
   });
 
   const { mutate: submitUpdateAgent, isPending: isUpdating } = useMutation({
-    mutationFn: (data: AddUserFormData) => updateAgent(data, user!.id!),
+    mutationFn: async (data: AddUserFormData) => {
+      const result = await updateAgent(data, user!.id!);
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onSuccess: () => {
       showSonnerToast({
         message: "Agent updated successfully",

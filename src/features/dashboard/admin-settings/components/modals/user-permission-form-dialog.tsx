@@ -82,7 +82,13 @@ export function UserPermissionFormDialog<T>({
   const isEditing = !!data;
 
   const { mutate: mutatePermission, isPending: isAssigning } = useMutation({
-    mutationFn: assignPermission,
+    mutationFn: async (data: UserPermissionFormSchemaData) => {
+      const result = await assignPermission(data);
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onError: (error) => {
       showSonnerToast({
         message: "Error assigning permission",
@@ -102,7 +108,13 @@ export function UserPermissionFormDialog<T>({
 
   const { mutate: mutateAssignedPermission, isPending: isUpdating } =
     useMutation({
-      mutationFn: updateAssignedPermission,
+      mutationFn: async (data: UserPermissionFormSchemaData & { id: string }) => { 
+        const result = await updateAssignedPermission(data);
+        if (result.success) {
+          return result.data;
+        }
+        throw result.error;
+      },
       onError: (error) => {
         showSonnerToast({
           message: "Error assigning permission",

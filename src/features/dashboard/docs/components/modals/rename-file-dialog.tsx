@@ -46,7 +46,13 @@ export function RenameFileDialog({
   });
 
   const { mutate: renameFile, isPending } = useMutation({
-    mutationFn: renameFileAction,
+    mutationFn: async ({ id, name }: { id: string; name: string }) => {
+      const result = await renameFileAction({ id, name });
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onSuccess: () => {
       toast.success("File renamed successfully");
       resolve(true);

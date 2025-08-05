@@ -2,14 +2,15 @@
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { saleItems, sales } from "@/db/schema";
 import type { AddSaleFormData } from "@/features/dashboard/sales/schemas/add-sale-schema";
+import type { ActionResult } from "@/lib/utils";
 
 export async function addSale(
   userId: string,
   { clientName, date, products }: AddSaleFormData,
-) {
+): Promise<ActionResult<void>> {
   const db = await createDrizzleSupabaseClient();
 
-  await db.rls(async (tx) => {
+  const result = await db.rls(async (tx) => {
     const [sale] = await tx
       .insert(sales)
       .values({
@@ -46,6 +47,19 @@ export async function addSale(
       }),
     );
 
-    await tx.insert(saleItems).values(payload);
+    return await tx.insert(saleItems).values(payload);
   });
+
+  if (!result) {
+    return {
+      success: false,
+      error: {
+        message: "Failed to create sale",
+        statusCode: 400,
+        details:
+          "An error occurred while creating the sale. Please try again later.",
+      },
+    };
+  }
+  return { success: true, data: undefined };
 }

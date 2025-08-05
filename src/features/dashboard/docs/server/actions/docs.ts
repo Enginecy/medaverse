@@ -4,15 +4,24 @@ import { createDrizzleSupabaseClient } from "@/db/db";
 import { documents, type fileType } from "@/db/schema";
 import type { UploadFileForm } from "@/features/dashboard/docs/schemas/upload-document-schema";
 import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 
-export async function uploadFileAction({ file, name }: UploadFileForm) {
+export async function uploadFileAction({
+  file,
+  name,
+}: UploadFileForm): Promise<ActionResult<void>> {
   const supabase = await createClient();
   const { data: user } = await supabase.auth.getUser();
 
   if (!user.user) {
-    throw {
-      message: "User not found",
+    return {
+      success: false,
+      error: {
+        message: "User not authenticated",
+        statusCode: 400,
+        details: "Please log in to upload files.",
+      },
     };
   }
 
@@ -23,38 +32,53 @@ export async function uploadFileAction({ file, name }: UploadFileForm) {
   const { error } = await bucket.upload(path, file);
 
   if (error) {
-    throw {
-      message: "Failed to upload file",
+    return {
+      success: false,
+      error: {
+        message: "Failed to upload file",
+        statusCode: 400,
+        details: error.message,
+      },
     };
   }
 
   const db = await createDrizzleSupabaseClient();
 
-  try {
-    await db.rls(async (tx) => {
-      const type = file.name.split(
-        ".",
-      )[1] as (typeof fileType.enumValues)[number];
-      await tx.insert(documents).values({
-        category: "news",
-        fileName: fileName,
-        originalFileName: file.name,
-        fileType: type,
-        filePath: path,
-        fileSize: BigInt(file.size),
-        uploadedBy: user.user.id,
-        title: name,
-      });
+  const result = await db.rls(async (tx) => {
+    const type = file.name.split(
+      ".",
+    )[1] as (typeof fileType.enumValues)[number];
+
+    //return insert the file information into the database to check on it below
+
+    return await tx.insert(documents).values({
+      category: "news",
+      fileName: fileName,
+      originalFileName: file.name,
+      fileType: type,
+      filePath: path,
+      fileSize: BigInt(file.size),
+      uploadedBy: user.user.id,
+      title: name,
     });
-  } catch {
+  });
+
+  if (!result) {
     await bucket.remove([path]);
-    throw {
-      message: "Failed to upload file to database",
+    return {
+      success: false,
+      error: {
+        message: "Failed to save file",
+        statusCode: 400,
+        details:
+          "Could not save file information to the database. Please try again.",
+      },
     };
   }
 
   return {
-    message: "File uploaded successfully",
+    success: true,
+    data: undefined,
   };
 }
 
@@ -64,7 +88,7 @@ export async function renameFileAction({
 }: {
   id: string;
   name: string;
-}) {
+}) : Promise<ActionResult<void>>{
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
 
@@ -74,9 +98,14 @@ export async function renameFileAction({
   });
 
   if (!currentDoc) {
-    throw {
+  return {
+    success:false , 
+    error: {
       message: "File not found",
-    };
+      statusCode: 404,
+      details: "The specified file does not exist.",
+    },
+  }
   }
 
   // Generate new file name with the updated name
@@ -90,9 +119,14 @@ export async function renameFileAction({
   // Move the file to the new path
   const { error: moveError } = await bucket.move(oldPath, newPath);
   if (moveError) {
-    throw {
-      message: "Failed to rename file",
-    };
+    return  {
+      success: false,
+      error: {
+        message: "Failed to rename file in storage",
+        statusCode: 400,
+        details: moveError.message,
+      },
+    }
   }
 
   // Update database with new file information
@@ -108,11 +142,12 @@ export async function renameFileAction({
   });
 
   return {
-    message: "File renamed successfully",
+    success: true,
+    data: undefined,
   };
 }
 
-export async function deleteFileAction({ id }: { id: string }) {
+export async function deleteFileAction({ id }: { id: string }) : Promise<ActionResult<void>> {
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
 
@@ -122,17 +157,28 @@ export async function deleteFileAction({ id }: { id: string }) {
   });
 
   if (!currentDoc) {
-    throw {
-      message: "File not found",
+    return {
+      success: false,
+      error: {
+        message: "File not found",
+        statusCode: 404,
+        details: "The specified file does not exist.",
+      },
     };
   }
 
   // Delete the file from storage
   const bucket = supabase.storage.from("documents");
   const { error: deleteError } = await bucket.remove([currentDoc.filePath]);
+  
   if (deleteError) {
-    throw {
-      message: "Failed to delete file from storage",
+    return {
+      success: false,
+      error: {
+        message: "Failed to delete file from storage",
+        statusCode: 400,
+        details: deleteError.message,
+      },
     };
   }
 
@@ -142,6 +188,7 @@ export async function deleteFileAction({ id }: { id: string }) {
   });
 
   return {
-    message: "File deleted successfully",
+    success: true,
+    data: undefined,
   };
 }

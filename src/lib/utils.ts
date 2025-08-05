@@ -20,7 +20,7 @@ type Result<T, E = Error> = Success<T> | Failure<E>;
 
 export type ActionError = {
   message: string;
-  code: string;
+
   statusCode: number;
   details: string;
 };

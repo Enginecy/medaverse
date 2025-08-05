@@ -54,7 +54,13 @@ export function UploadFileDialog({
   });
 
   const { mutate: uploadFile, isPending } = useMutation({
-    mutationFn: uploadFileAction,
+    mutationFn: async (data: UploadFileForm) => {
+      const result = await uploadFileAction(data);
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onSuccess: () => {
       toast.success("File uploaded successfully");
       resolve(true);
