@@ -85,16 +85,17 @@ export async function createAgent(
       .from("profile-images")
       .upload(fileName, file, { upsert: true });
 
-    if (uploadError){
-
-      return { 
+    if (uploadError) {
+      return {
         success: false,
-        error: { 
+        error: {
           message: "Failed to upload file",
           statusCode: 400,
-          details: uploadError.message || "An error occurred while uploading the file.",
-        }
-      }
+          details:
+            uploadError.message ||
+            "An error occurred while uploading the file.",
+        },
+      };
     }
     uploadedFileName = fileName;
 
@@ -104,7 +105,7 @@ export async function createAgent(
     } = supabase.storage.from("profile-images").getPublicUrl(fileName);
 
     // Step 5: Database operations in transaction
-     await db.rls(async (tx) => {
+    await db.rls(async (tx) => {
       await tx
         .insert(profile)
         .values({
@@ -116,7 +117,7 @@ export async function createAgent(
           regional: data.regional,
           upLine: data.upLine,
           npnNumber: data.npnNumber,
-          states: data.states as State[],
+          states: data.states ?? ([] as State[]),
           status: "active",
           avatarUrl: publicUrl,
           userId: user.id,
@@ -140,7 +141,7 @@ export async function createAgent(
         await supabase.storage
           .from("profile-images")
           .remove([uploadedFileName]);
-      } catch  {
+      } catch {
         return {
           success: false,
           error: {
@@ -148,7 +149,7 @@ export async function createAgent(
             statusCode: 400,
             details: "An error occurred while cleaning up the uploaded file.",
           },
-        }
+        };
       }
     }
 
@@ -159,13 +160,16 @@ export async function createAgent(
       } catch (cleanupError) {
         console.error("Failed to cleanup created user:", cleanupError);
       }
-    } 
+    }
 
     throw error;
   }
 }
 
-export async function updateAgent(data: AddUserFormData, id: string) : Promise<ActionResult<void>> {
+export async function updateAgent(
+  data: AddUserFormData,
+  id: string,
+): Promise<ActionResult<void>> {
   const { auth } = createAdminClient();
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
@@ -175,15 +179,15 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
     .where(eq(profile.id, id));
 
   if (!existingProfile) {
-      return {
-        success: false,
-        error: {
-          message: "Failed to update user",
-          statusCode: 400,
-          details:
-            "Something went wrong updating this user, please try again later.",
-        },
-      };
+    return {
+      success: false,
+      error: {
+        message: "Failed to update user",
+        statusCode: 400,
+        details:
+          "Something went wrong updating this user, please try again later.",
+      },
+    };
   }
 
   let createdUser: { id: string } | null = null;
@@ -200,14 +204,14 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
     const currentUser = await supabase.auth.getUser();
 
     if (currentUser?.data.user === null) {
-      return { 
+      return {
         success: false,
-        error: { 
+        error: {
           message: "Not Authorized",
           statusCode: 401,
           details: "You must be authorized to perform this action.",
-        }
-      }
+        },
+      };
     }
     if (userError || !user?.id) {
       return {
@@ -231,16 +235,17 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
         .from("profile-images")
         .upload(fileName, file, { upsert: true });
 
-      if (uploadError)
-      {
-        return { 
+      if (uploadError) {
+        return {
           success: false,
-          error: { 
+          error: {
             message: "Failed to upload file",
             statusCode: 400,
-            details: uploadError.message || "An error occurred while uploading the file.",
-          }
-        } 
+            details:
+              uploadError.message ||
+              "An error occurred while uploading the file.",
+          },
+        };
       }
       uploadedFileName = fileName;
 
@@ -269,7 +274,7 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
             regional: data.regional,
             upLine: data.upLine,
             npnNumber: data.npnNumber,
-            states: data.states as State[],
+            states: data.states ?? ([] as State[]),
           })
           .where(eq(profile.id, id))
           .returning();
@@ -287,7 +292,6 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
       return { success: true, data: undefined };
     }
   } catch (error) {
-    
     // Clean up uploaded file if it exists
     if (uploadedFileName) {
       try {
@@ -295,14 +299,14 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
           .from("profile-images")
           .remove([uploadedFileName]);
       } catch {
-        return{
+        return {
           success: false,
           error: {
             message: "Failed to upload file",
             statusCode: 400,
             details: "An error occurred uploading the image.",
           },
-        }
+        };
       }
     }
 
@@ -311,23 +315,23 @@ export async function updateAgent(data: AddUserFormData, id: string) : Promise<A
       try {
         await auth.admin.deleteUser(createdUser.id);
       } catch {
-        return { 
-          success: false , 
-          error: { 
+        return {
+          success: false,
+          error: {
             message: "Failed to update user",
             statusCode: 400,
             details: "An error occurred while updating the user.",
-          }
-        }
+          },
+        };
       }
     }
 
     throw error;
   }
-  return { success: true, data: undefined} ;
+  return { success: true, data: undefined };
 }
 
-export async function deleteAgent(id: string) : Promise<ActionResult<void>> {
+export async function deleteAgent(id: string): Promise<ActionResult<void>> {
   const { auth } = createAdminClient();
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
@@ -338,44 +342,43 @@ export async function deleteAgent(id: string) : Promise<ActionResult<void>> {
     .from(profile)
     .where(eq(profile.id, id));
 
-    const {
+  const {
     data: { user: currentUser },
     error: currentUserError,
   } = await supabase.auth.getUser();
 
   if (currentUserError) {
-    return { 
-      success: false, 
-      error: { 
+    return {
+      success: false,
+      error: {
         message: "Not Authorized",
         statusCode: 401,
         details: "You must be authorized to perform this action.",
-      }
+      },
     };
   }
 
   if (!existingProfile) {
-    return { 
-      success: false , 
-      error: { 
-        message : "User not found",
+    return {
+      success: false,
+      error: {
+        message: "User not found",
         statusCode: 404,
         details: "The user you are trying to delete does not exist.",
-      }
-    }
+      },
+    };
   }
 
   if (currentUser?.id === existingProfile.userId) {
-    return { 
-      success: false, 
-      error: { 
+    return {
+      success: false,
+      error: {
         message: "Cannot delete current user",
         statusCode: 400,
         details: "You cannot delete your own account.",
-      }
+      },
     };
   }
-  
 
   const banUntil = new Date();
   banUntil.setFullYear(banUntil.getFullYear() + 100);
@@ -394,5 +397,5 @@ export async function deleteAgent(id: string) : Promise<ActionResult<void>> {
       .where(eq(profile.id, id));
   });
 
-  return { success: true ,data: undefined };
+  return { success: true, data: undefined };
 }

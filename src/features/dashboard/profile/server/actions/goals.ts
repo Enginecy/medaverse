@@ -60,11 +60,3 @@ export async function getUserGoalsAction() {
     };
   }
 }
-
-
-const deleteGoalSchema = z.object({
-  goalId: z.string().uuid("Invalid goal ID"),
-});
-
-export type DeleteGoalInput = z.infer<typeof deleteGoalSchema>;
-
