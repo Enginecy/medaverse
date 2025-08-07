@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <QueryProvider>
       <SupabaseClientProvider>
-        <html lang="en" className={`${urbanist.className}`}>
+        <html lang="en" className={`${urbanist.className}`} suppressHydrationWarning>
           <body>
             <ModalProvider>
               {children}

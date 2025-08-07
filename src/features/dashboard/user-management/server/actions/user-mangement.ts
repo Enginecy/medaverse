@@ -19,7 +19,7 @@ export async function createAgent(
   const db = await createDrizzleSupabaseClient();
   const currentUser = await supabase.auth.getUser();
 
-  if (currentUser?.data.user?.id) {
+  if (!currentUser?.data.user?.id) {
     return {
       success: false,
       error: {
@@ -37,6 +37,7 @@ export async function createAgent(
     .where(eq(profile.username, data.username));
 
   if (existingProfile.length > 0) {
+    console.log("Username already exists: ==================>", data.username);
     return {
       success: false,
       error: {
@@ -61,6 +62,7 @@ export async function createAgent(
     });
 
     if (userError || !user?.id) {
+      console.log("User creation error: ==================>", userError);
       return {
         success: false,
         error: {
@@ -81,11 +83,21 @@ export async function createAgent(
     const fileName = `${userId}/avatar.${fileExt}`;
 
     // Step 3: Upload to Supabase Storage
+
     const { error: uploadError } = await supabase.storage
       .from("profile-images")
       .upload(fileName, file, { upsert: true });
 
     if (uploadError) {
+      console.log("Upload error: ==================>", uploadError);
+      // Clean up created user if upload fails
+      if (createdUser?.id) {
+        try {
+          await auth.admin.deleteUser(createdUser.id);
+        } catch (cleanupError) {
+          console.error("Failed to cleanup created user:", cleanupError);
+        }
+      }
       return {
         success: false,
         error: {
@@ -142,6 +154,7 @@ export async function createAgent(
           .from("profile-images")
           .remove([uploadedFileName]);
       } catch {
+
         return {
           success: false,
           error: {
