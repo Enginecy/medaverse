@@ -49,7 +49,8 @@ export async function createAgent(
   }
   let createdUser: { id: string } | null = null;
   let uploadedFileName: string | null = null;
-
+  let avatarUrl : string | null = null;
+  
   try {
     // Step 1: Create user in Supabase Auth
     const {
@@ -83,67 +84,73 @@ export async function createAgent(
     const fileName = `${userId}/avatar.${fileExt}`;
 
     // Step 3: Upload to Supabase Storage
+    if (file !== null && file.size > 0 && file) {
+      const { error: uploadError } = await supabase.storage
+        .from("profile-images")
+        .upload(fileName, file, { upsert: true });
 
-    const { error: uploadError } = await supabase.storage
-      .from("profile-images")
-      .upload(fileName, file, { upsert: true });
-
-    if (uploadError) {
-      console.log("Upload error: ==================>", uploadError);
-      // Clean up created user if upload fails
-      if (createdUser?.id) {
-        try {
-          await auth.admin.deleteUser(createdUser.id);
-        } catch (cleanupError) {
-          console.error("Failed to cleanup created user:", cleanupError);
+      if (uploadError) {
+        if (createdUser?.id) {
+          try {
+            await auth.admin.deleteUser(createdUser.id);
+          } catch (cleanupError) {
+            console.error("Failed to cleanup created user:", cleanupError);
+          }
         }
+        return {
+          success: false,
+          error: {
+            message: "Failed to upload file",
+            statusCode: 400,
+            details:
+              uploadError.message ||
+              "An error occurred while uploading the file.",
+          },
+        };
       }
-      return {
-        success: false,
-        error: {
-          message: "Failed to upload file",
-          statusCode: 400,
-          details:
-            uploadError.message ||
-            "An error occurred while uploading the file.",
-        },
-      };
+      uploadedFileName = fileName;
+
     }
-    uploadedFileName = fileName;
-
+    
     // Step 4: Get public URL
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("profile-images").getPublicUrl(fileName);
+    if (uploadedFileName) {
+      const {
+        data: { publicUrl },
+      } = supabase.storage
+        .from("profile-images")
+        .getPublicUrl(uploadedFileName!);
 
-    // Step 5: Database operations in transaction
-    await db.rls(async (tx) => {
-      await tx
-        .insert(profile)
-        .values({
-          name: data.fullName,
-          username: data.username,
-          address: data.address ?? null,
-          dob: data.dateOfBirth,
-          phoneNumber: data.phoneNumber,
-          regional: data.regional,
-          upLine: data.upLine,
-          npnNumber: data.npnNumber,
-          states: data.states ?? ([] as State[]),
-          status: "active",
-          avatarUrl: publicUrl,
-          userId: user.id,
-        })
-        .returning();
-      return await tx
-        .insert(userRoles)
-        .values({
-          roleId: data.role,
-          userId: user.id,
-          assignedBy: currentUser.data.user?.id,
-        })
-        .returning({ id: userRoles.id });
-    });
+      avatarUrl = publicUrl;
+    }
+      await db.rls(async (tx) => {
+        await tx
+          .insert(profile)
+          .values({
+            name: data.fullName,
+            username: data.username,
+            address: data.address ?? null,
+            dob: data.dateOfBirth,
+            phoneNumber: data.phoneNumber,
+            regional: data.regional, 
+            upLine: data.upLine,
+            npnNumber: data.npnNumber,
+            states: data.states ?? ([] as State[]),
+            status: "active",
+            ...(avatarUrl ? { avatarUrl } : {}) ,
+            userId: user.id,
+          })
+          .returning();
+        return await tx
+          .insert(userRoles)
+          .values({
+            roleId: data.role,
+            userId: user.id,
+            assignedBy: currentUser.data.user?.id,
+          })
+          .returning({ id: userRoles.id });
+      });
+    
+   
 
     return { success: true, data: undefined };
   } catch (error) {
@@ -154,7 +161,6 @@ export async function createAgent(
           .from("profile-images")
           .remove([uploadedFileName]);
       } catch {
-
         return {
           success: false,
           error: {
