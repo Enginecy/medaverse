@@ -11,24 +11,29 @@ import {
   debugLoginWithPassword,
   sendEmailOTP,
   verifyEmailOtp,
+  loginWithPassword,
 } from "@/features/login/server/actions/login";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type z from "zod";
 import { env } from "@/env";
 import { showSonnerToast } from "@/lib/react-utils";
 import type { ActionError } from "@/lib/utils";
 
 export default function Home() {
-  const [step, setStep] = useState<"email" | "pin">("email");
+  const [step, setStep] = useState<"email" | "pin" | "password">("email");
+  const [mode, setMode] = useState<"OTP" | "Password">("OTP");
   const router = useRouter();
 
+  const schema = useMemo(() => createFormSchema(step), [step]);
+
   const form = useForm<z.infer<ReturnType<typeof createFormSchema>>>({
-    resolver: zodResolver(createFormSchema(step)),
+    resolver: zodResolver(schema),
     defaultValues: {
       email: "",
       code: "",
+      password: "",
     },
   });
 
@@ -90,12 +95,37 @@ export default function Home() {
     },
   });
 
+  const { mutate: passwordLogin, isPending: isPasswordLoggingIn } = useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      const result = await loginWithPassword(data);
+      if (!result.success) {
+        throw result.error;
+      }
+      return result.data;
+    },
+    onSuccess: router.refresh,
+    onError: (error: ActionError) => {
+      showSonnerToast({
+        message: error.message,
+        description: error.details,
+        type: "error",
+      });
+    },
+  });
+
   // Unified form submission handler
   const onSubmit = (values: z.infer<ReturnType<typeof createFormSchema>>) => {
     if (env.NODE_ENV === "development") {
       debugLogin({ email: values.email });
       return;
     }
+
+    if (mode === "Password") {
+      setStep("password");
+      passwordLogin({ email: values.email, password: values.password! });
+      return;
+    }
+
     if (step === "email") {
       sendOtp(values.email);
     } else {
@@ -118,11 +148,21 @@ export default function Home() {
       >
         <LoginForm
           form={form}
-          isLoading={isSendingOtp || isVerifyingOtp || isLoggingIn}
+          isLoading={isSendingOtp || isVerifyingOtp || isLoggingIn || isPasswordLoggingIn}
           onSubmit={onSubmit}
           step={step}
+          mode={mode}
+          onModeChange={(next) => {
+            setMode(next);
+            if (next === "Password") {
+              setStep("password");
+            } else {
+              setStep("email");
+            }
+            form.clearErrors();
+          }}
         />
-        {step === "pin" && (
+        {step === "pin" && mode === "OTP" && (
           <Button
             type="button"
             variant="ghost"

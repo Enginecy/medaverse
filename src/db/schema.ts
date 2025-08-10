@@ -130,8 +130,9 @@ export const profile = pgTable(
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "date" }),
     avatarUrl: text("avatar_url")
+      .notNull()
       .default(
-        "https://axdfmmwtobzrqbdcikrt.supabase.co/storage/v1/object/public/profile-images//default.jpg",
+        sql`'https://axdfmmwtobzrqbdcikrt.supabase.co/storage/v1/object/public/profile-images//default.jpg'`,
       ),
   },
   (table) => [

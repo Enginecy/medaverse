@@ -94,3 +94,71 @@ export async function debugLoginWithPassword({
     data,
   };
 }
+
+export async function loginWithPassword({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}): Promise<ActionResult<typeof data>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        statusCode: 400,
+        details: error.code?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return {
+    success: true,
+    data,
+  };
+}
+
+export async function updatePasswordAndClearFlag({
+  newPassword,
+}: {
+  newPassword: string;
+}): Promise<ActionResult<void>> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: getUserError,
+  } = await supabase.auth.getUser();
+  if (getUserError || !user) {
+    return {
+      success: false,
+      error: {
+        message: getUserError?.message ?? "Not authenticated",
+        statusCode: 401,
+        details: "You must be logged in to update your password.",
+      },
+    };
+  }
+
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: newPassword,
+    data: { must_update_password: false },
+  });
+  if (updateError) {
+    return {
+      success: false,
+      error: {
+        message: updateError.message,
+        statusCode: 400,
+        details: updateError.cause?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return { success: true, data: undefined };
+}

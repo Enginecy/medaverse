@@ -5,18 +5,21 @@ import { AgentGoals } from "@/features/dashboard/profile/components/agent-goals"
 import { RecentSales } from "@/features/dashboard/profile/components/recent-sales";
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
 import type { Metadata } from "next";
+import { getUser } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Profile",
-  description: "View and manage your profile information, goals, and recent sales.",
+  description:
+    "View and manage your profile information, goals, and recent sales.",
 };
 export default async function Profile() {
+  const states = await getUser().then((user) => user.profile?.states ?? []);
   const sales = await getSales().then((sales) => sales.slice(0, 5));
 
   return (
     <div className="flex h-auto w-full flex-col gap-4 p-4">
       <div className="flex gap-2">
         <ProfilePersonalInfoCard />
-        <StatesCard />
+        <StatesCard states={states} />
       </div>
       <div className="flex gap-4">
         <AgentGoals />

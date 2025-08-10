@@ -4,7 +4,7 @@ import type { UseFormReturn } from "react-hook-form";
 
  export function OTPFormField({step , form}:{
     step: "email" | "pin",
-    form: UseFormReturn<{email : string , code?: string}>
+    form: UseFormReturn<{email : string , code?: string, password?: string}>
   }) {
     if (step !== "pin") return null;
 

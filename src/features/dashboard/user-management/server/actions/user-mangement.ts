@@ -19,7 +19,7 @@ export async function createAgent(
   const db = await createDrizzleSupabaseClient();
   const currentUser = await supabase.auth.getUser();
 
-  if (!!currentUser?.data.user?.id) {
+  if (!currentUser?.data.user?.id) {
     return {
       success: false,
       error: {
@@ -37,7 +37,6 @@ export async function createAgent(
     .where(eq(profile.username, data.username));
 
   if (existingProfile.length > 0) {
-    console.log("Username already exists: ==================>", data.username);
     return {
       success: false,
       error: {
@@ -60,10 +59,10 @@ export async function createAgent(
       email: data.email,
       email_confirm: true,
       password: env.AUTOMATIC_LOGIN_PASSWORD,
+      user_metadata: { must_update_password: true },
     });
 
     if (userError || !user?.id) {
-      console.log("User creation error: ==================>", userError);
       return {
         success: false,
         error: {
@@ -121,31 +120,6 @@ export async function createAgent(
 
       avatarUrl = publicUrl;
     }
-    await db.rls(async (tx) => {
-      await tx
-        .insert(profile)
-        .values({
-          name: data.fullName,
-          username: data.username,
-          office: data.office,
-          dob: data.dateOfBirth,
-          phoneNumber: data.phoneNumber,
-          npnNumber: data.npnNumber,
-          states: data.states ?? ([] as State[]),
-          status: "active",
-          ...(avatarUrl ? { avatarUrl } : {}),
-          userId: user.id,
-        })
-        .returning();
-      return await tx
-        .insert(userRoles)
-        .values({
-          roleId: data.role,
-          userId: user.id,
-          assignedBy: currentUser.data.user?.id,
-        })
-        .returning({ id: userRoles.id });
-    });
 
     // Step 5: Database operations in transaction
     await db.rls(async (tx) => {
