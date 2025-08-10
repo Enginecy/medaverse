@@ -20,7 +20,7 @@ import {
 import { relations } from "drizzle-orm/relations";
 import { sql } from "drizzle-orm";
 import { authUsers } from "drizzle-orm/supabase";
-import type { State } from "@/lib/data";
+import type { Office, State } from "@/lib/data";
 
 export const users = authUsers;
 
@@ -121,11 +121,9 @@ export const profile = pgTable(
     username: varchar().notNull(),
     status: status().notNull(),
     name: varchar().notNull(),
-    address: varchar().notNull(),
-    upLine: varchar("upline"),
+    office: text().$type<Office>(),
     dob: date("dob", { mode: "date" }).notNull(),
     phoneNumber: varchar("phone_number"), //TODO: Add notNull before deploying
-    regional: varchar("regional"), //TODO: Add notNull before deploying
     npnNumber: varchar("npn_number"), //TODO: Add notNull before deploying
     states: jsonb("states").array().$type<State[]>(), //TODO: Add notNull before deploying
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),

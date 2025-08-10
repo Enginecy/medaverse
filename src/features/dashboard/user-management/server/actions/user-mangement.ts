@@ -19,7 +19,7 @@ export async function createAgent(
   const db = await createDrizzleSupabaseClient();
   const currentUser = await supabase.auth.getUser();
 
-  if (currentUser?.data.user?.id) {
+  if (!currentUser?.data.user?.id) {
     return {
       success: false,
       error: {
@@ -111,11 +111,9 @@ export async function createAgent(
         .values({
           name: data.fullName,
           username: data.username,
-          address: data.address ?? null,
+          office: data.office,
           dob: data.dateOfBirth,
           phoneNumber: data.phoneNumber,
-          regional: data.regional,
-          upLine: data.upLine,
           npnNumber: data.npnNumber,
           states: data.states ?? ([] as State[]),
           status: "active",
@@ -267,12 +265,10 @@ export async function updateAgent(
           .set({
             name: data.fullName,
             username: data.username,
-            address: data.address ?? null,
+            office: data.office,
             dob: data.dateOfBirth,
             avatarUrl: publicUrl,
             phoneNumber: data.phoneNumber,
-            regional: data.regional,
-            upLine: data.upLine,
             npnNumber: data.npnNumber,
             states: data.states ?? ([] as State[]),
           })

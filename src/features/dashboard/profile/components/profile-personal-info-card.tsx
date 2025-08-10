@@ -62,11 +62,11 @@ export async function ProfilePersonalInfoCard() {
                 content={user?.user.phone}
               />
             )}
-            {user?.profile?.address && (
+            {user?.profile?.office && (
               <InfoTile
                 icon={<MapPin />}
-                title="Address"
-                content={user?.profile?.address}
+                title="Office"
+                content={user?.profile?.office}
               />
             )}
             {user?.user.email && (

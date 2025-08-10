@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type DefaultValues } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -54,7 +54,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { NpnNumberForm } from "@/features/dashboard/user-management/components/form/npn-no-field";
-import { RegionalField } from "@/features/dashboard/user-management/components/form/regional-field";
 import { AddressField } from "@/features/dashboard/user-management/components/form/address-field";
 import { DobField } from "@/features/dashboard/user-management/components/form/dob-field";
 import { EmailField } from "@/features/dashboard/user-management/components/form/email-field";
@@ -63,7 +62,6 @@ import { UsernameField } from "@/features/dashboard/user-management/components/f
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
 import {
   getAboveSuperiors,
-  getRegionalDirectors,
   type User,
 } from "@/features/dashboard/user-management/server/db/user-management";
 import { RoleField } from "@/features/dashboard/user-management/components/form/role-field";
@@ -79,17 +77,15 @@ export function AddUserDrawer({
 }) {
   const isEditing = !!user;
 
-  const defaultValues = isEditing
+  const defaultValues: DefaultValues<AddUserFormData> = isEditing
     ? {
         fullName: user!.name!,
         username: user!.username!,
         email: user!.email!,
         phoneNumber: user!.phoneNumber!,
-        address: user!.address!,
-        upLine: user!.upLine ?? "",
+        office: user!.office!,
         npnNumber: user!.npnNumber!,
         states: user!.states! || [],
-        regional: user!.regional! ?? "",
         role: user!.role!.id ?? "",
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
@@ -99,9 +95,7 @@ export function AddUserDrawer({
         username: "",
         email: "",
         phoneNumber: "",
-        address: "",
-        regional: "",
-        upLine: "",
+        office: null,
         npnNumber: "",
         states: [],
         profileImage: new File([], ""),
@@ -114,11 +108,6 @@ export function AddUserDrawer({
     defaultValues,
   });
 
-  const { data: regionalDirs, isLoading: isLoadingRegionalDirs } = useQuery({
-    queryFn: getRegionalDirectors,
-    queryKey: ["regional_directors"],
-    refetchOnWindowFocus: false,
-  });
   const { data: roles, isPending: isLoadingRoles } = useQuery({
     queryKey: ["roles"],
     queryFn: getRoles,
@@ -256,15 +245,6 @@ export function AddUserDrawer({
 
           {/* Role and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {isLoadingRegionalDirs ? (
-              <div
-                className="flex h-full w-full items-center justify-center pt-6"
-              >
-                Loading...
-              </div>
-            ) : (
-              <RegionalField form={form} regionalDirs={regionalDirs ?? []} />
-            )}
             {isLoadingRoles ? (
               <div
                 className="flex h-full w-full items-center justify-center pt-6"
@@ -311,7 +291,8 @@ export function AddUserDrawer({
                           role="combobox"
                           className={cn(
                             "w-1/2 justify-between",
-                            field.value?.length === 0 && "text-muted-foreground",
+                            field.value?.length === 0 &&
+                              "text-muted-foreground",
                           )}
                         >
                           {field.value?.length === 0

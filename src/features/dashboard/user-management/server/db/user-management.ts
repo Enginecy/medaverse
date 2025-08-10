@@ -15,6 +15,7 @@ export async function getUsers() {
         ...getTableColumns(profile),
         email: users.email,
         role: roles,
+
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
@@ -26,7 +27,8 @@ export async function getUsers() {
   return profiles;
 }
 
-export type User = Awaited<ReturnType<typeof getUsers>>[number];
+export type User = Awaited<ReturnType<typeof getUsers>>[number]
+
 
 export async function getAboveSuperiors(selectedRole: Role) {
   try {
