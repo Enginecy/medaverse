@@ -132,8 +132,7 @@ export const profile = pgTable(
     avatarUrl: text("avatar_url")
       .default(
         "https://axdfmmwtobzrqbdcikrt.supabase.co/storage/v1/object/public/profile-images//default.jpg",
-      )
-      .notNull(),
+      ),
   },
   (table) => [
     index("idx_profile_role_status")

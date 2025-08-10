@@ -102,15 +102,16 @@ export function CarrierDrawer({
       });
       queryClient.invalidateQueries({ queryKey: ["carriers"] });
       resolve({ success: true });
-    },
-    onError: () => {
+        },
+        onError: (actionError) => {
+      
       showSonnerToast({
         message: isEditing
           ? "Failed to update carrier"
-          : "Failed to add carrier",
+          : actionError.message ,
         type: "error",
+        description: actionError.details,
       });
-      resolve({ success: false });
     },
   });
   const onSubmit = (data: AddCarrierFormData) => {

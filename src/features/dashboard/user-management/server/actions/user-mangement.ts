@@ -19,7 +19,7 @@ export async function createAgent(
   const db = await createDrizzleSupabaseClient();
   const currentUser = await supabase.auth.getUser();
 
-  if (!currentUser?.data.user?.id) {
+  if (!!currentUser?.data.user?.id) {
     return {
       success: false,
       error: {
@@ -37,6 +37,7 @@ export async function createAgent(
     .where(eq(profile.username, data.username));
 
   if (existingProfile.length > 0) {
+    console.log("Username already exists: ==================>", data.username);
     return {
       success: false,
       error: {
@@ -48,6 +49,7 @@ export async function createAgent(
   }
   let createdUser: { id: string } | null = null;
   let uploadedFileName: string | null = null;
+  let avatarUrl: string | null = null;
 
   try {
     // Step 1: Create user in Supabase Auth
@@ -61,6 +63,7 @@ export async function createAgent(
     });
 
     if (userError || !user?.id) {
+      console.log("User creation error: ==================>", userError);
       return {
         success: false,
         error: {
@@ -81,28 +84,68 @@ export async function createAgent(
     const fileName = `${userId}/avatar.${fileExt}`;
 
     // Step 3: Upload to Supabase Storage
-    const { error: uploadError } = await supabase.storage
-      .from("profile-images")
-      .upload(fileName, file, { upsert: true });
+    if (file !== null && file.size > 0 && file) {
+      const { error: uploadError } = await supabase.storage
+        .from("profile-images")
+        .upload(fileName, file, { upsert: true });
 
-    if (uploadError) {
-      return {
-        success: false,
-        error: {
-          message: "Failed to upload file",
-          statusCode: 400,
-          details:
-            uploadError.message ||
-            "An error occurred while uploading the file.",
-        },
-      };
+      if (uploadError) {
+        if (createdUser?.id) {
+          try {
+            await auth.admin.deleteUser(createdUser.id);
+          } catch (cleanupError) {
+            console.error("Failed to cleanup created user:", cleanupError);
+          }
+        }
+        return {
+          success: false,
+          error: {
+            message: "Failed to upload file",
+            statusCode: 400,
+            details:
+              uploadError.message ||
+              "An error occurred while uploading the file.",
+          },
+        };
+      }
+      uploadedFileName = fileName;
     }
-    uploadedFileName = fileName;
 
     // Step 4: Get public URL
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("profile-images").getPublicUrl(fileName);
+    if (uploadedFileName) {
+      const {
+        data: { publicUrl },
+      } = supabase.storage
+        .from("profile-images")
+        .getPublicUrl(uploadedFileName!);
+
+      avatarUrl = publicUrl;
+    }
+    await db.rls(async (tx) => {
+      await tx
+        .insert(profile)
+        .values({
+          name: data.fullName,
+          username: data.username,
+          office: data.office,
+          dob: data.dateOfBirth,
+          phoneNumber: data.phoneNumber,
+          npnNumber: data.npnNumber,
+          states: data.states ?? ([] as State[]),
+          status: "active",
+          ...(avatarUrl ? { avatarUrl } : {}),
+          userId: user.id,
+        })
+        .returning();
+      return await tx
+        .insert(userRoles)
+        .values({
+          roleId: data.role,
+          userId: user.id,
+          assignedBy: currentUser.data.user?.id,
+        })
+        .returning({ id: userRoles.id });
+    });
 
     // Step 5: Database operations in transaction
     await db.rls(async (tx) => {
@@ -117,7 +160,7 @@ export async function createAgent(
           npnNumber: data.npnNumber,
           states: data.states ?? ([] as State[]),
           status: "active",
-          avatarUrl: publicUrl,
+          ...(avatarUrl ? { avatarUrl } : {}),
           userId: user.id,
         })
         .returning();

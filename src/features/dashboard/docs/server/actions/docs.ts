@@ -32,6 +32,7 @@ export async function uploadFileAction({
   const { error } = await bucket.upload(path, file);
 
   if (error) {
+    console.error("File upload error:", error);
     return {
       success: false,
       error: {

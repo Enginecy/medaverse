@@ -37,7 +37,7 @@ export const userManagementColumns: ColumnDef<User>[] = [
       return (
         <div className="flex items-center gap-2">
           <Image
-            src={row.original.avatarUrl!}
+            src={row.original.avatarUrl ?? "http://127.0.0.1:54321/storage/v1/object/public/profile-images//default.jpg"}
             alt={row.original.name!}
             width={40}
             height={40}

@@ -23,7 +23,6 @@ export async function getUsers() {
       .leftJoin(roles, eq(userRoles.roleId, roles.id))
       .orderBy(desc(profile.createdAt));
   });
-
   return profiles;
 }
 

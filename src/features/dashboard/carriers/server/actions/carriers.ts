@@ -49,6 +49,7 @@ export async function createCarrier(
       })
       .returning();
   });
+  console.log("Created carrier: ============>", carrier);
   if (!carrier) {
     return {
       success: false,
