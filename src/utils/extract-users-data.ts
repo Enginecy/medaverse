@@ -50,12 +50,12 @@ export async function readUsersFile(file: File) {
       };
     }
   });
-  var users: {}[] = [];
+  const users: Record<string, string>[] = [];
   for (const row of rows.slice(2)) {
     if (!Array.isArray(row) || row.length < headers.length + 1) continue;
     const userData: Record<string, string> = {};
     headers.forEach((header, index) => {
-      userData[header] = row[index + 1]?.toString().trim() || "";
+      userData[header] = row[index + 1]?.toString().trim() ?? "";
       if (header === "phoneNumber" && !userData[header]) {
         throw {
           message: "Make sure all required data is set (Phone Numbers).",
@@ -68,10 +68,13 @@ export async function readUsersFile(file: File) {
         if (!emailRegex.test(userData[header])) {
           throw { message: "Invalid email format." };
         }
-      } else if (header === "dob" && (!userData[header] || userData[header] || userData[header] === "")) {
+      } else if (
+        header === "dob" &&
+        (!userData[header] || userData[header] || userData[header] === "")
+      ) {
         throw { message: "Make sure all required data is set (DOB)." };
-      } else { }
-      
+      } else {
+      }
     });
     users.push(userData);
   }
@@ -81,7 +84,8 @@ export async function readUsersFile(file: File) {
   }
 
   Object.keys(user).forEach((key) => {
-    if ((user as any)[key] === undefined || (user as any)[key] === null) {
+    const obj = user as Record<string, unknown>;
+    if (obj[key] === undefined || obj[key] === null) {
       throw {
         message: `The file does not contain the required column: ${key}`,
       };

@@ -64,7 +64,7 @@ export async function generalExport(data: Record<string, unknown>[], name: strin
     const normalized = normalizeRow(row, columnsKeys);
     const addedRow = workSheet.addRow(normalized);
     addedRow.height = 20;
-    addedRow.eachCell((cell) => {
+    addedRow.eachCell((cell: ExcelJS.Cell) => {
       cell.font = { name: "Calibri", size: 12 };
       cell.alignment = { horizontal: "center", vertical: "middle" };
       cell.fill = {
@@ -90,23 +90,23 @@ export async function generalExport(data: Record<string, unknown>[], name: strin
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
   //   saveAs(blob, "users.xlsx");
-  var csvURL = window.URL.createObjectURL(blob);
+  const csvURL = window.URL.createObjectURL(blob);
   const tempLink = document.createElement("a");
   tempLink.href = csvURL;
   tempLink.setAttribute("download", "filename.csv");
   tempLink.click();
 }
 
-function normalizeRow(row: Record<string, any>, allKeys: string[]) {
-  const normalized: Record<string, any> = {};
+function normalizeRow(row: Record<string, unknown>, allKeys: string[]) {
+  const normalized: Record<string, unknown> = {};
   for (const key of allKeys) {
     normalized[key] = row[key] ?? ""; // or "" if you prefer empty string
   }
   return normalized;
 }
 
-function maxWidth(data: Record<string, any>[], key: string) {
-  var maximum = key.length;
+function maxWidth(data: Record<string, unknown>[], key: string) {
+  let maximum = key.length;
   data.forEach((row) => {
     if (key in row) {
       const obj = row[key] != null ? String(row[key]) : "";

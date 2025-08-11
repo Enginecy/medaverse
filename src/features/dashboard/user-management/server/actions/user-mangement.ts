@@ -150,7 +150,7 @@ export async function createAgent(
     });
 
     return { success: true, data: undefined };
-  } catch (error) {
+  } catch {
     // Clean up uploaded file if it exists
     if (uploadedFileName) {
       try {
@@ -312,7 +312,7 @@ export async function updateAgent(
       }
       return { success: true, data: undefined };
     }
-  } catch (error) {
+  } catch {
     // Clean up uploaded file if it exists
     if (uploadedFileName) {
       try {
@@ -500,10 +500,8 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       console.log("Created user:", user);
       console.log("User Error:", userError);
 
-    const profileData = await db.admin.transaction(async (tx) => {
-      await tx
-        .insert(profile)
-        .values({
+      await db.admin.transaction(async (tx) => {
+        await tx.insert(profile).values({
           name: singleUser.name ?? "",
           username: singleUser.username ?? "",
           office: singleUser.office ?? null,
