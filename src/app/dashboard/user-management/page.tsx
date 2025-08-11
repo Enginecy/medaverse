@@ -2,7 +2,6 @@ import { UserManagementTable } from "@/features/dashboard/user-management/compon
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/data-table";
-import { UsersActions } from "@/features/dashboard/user-management/components/user-actions";
 export const metadata: Metadata = {
   title: "User Management ",
   description: "Manage users within your application.",

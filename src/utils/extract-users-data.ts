@@ -12,7 +12,7 @@ export async function readUsersFile(file: File) {
     npnNumber: "",
     dob: new Date("MM/DD/YYYY"),
   };
-  const buffer = await readFileAsync(file);
+  const buffer = await file.arrayBuffer();
   if (!(buffer instanceof ArrayBuffer)) return;
 
   const workbook = new ExcelJS.Workbook();
@@ -56,6 +56,22 @@ export async function readUsersFile(file: File) {
     const userData: Record<string, string> = {};
     headers.forEach((header, index) => {
       userData[header] = row[index + 1]?.toString().trim() || "";
+      if (header === "phoneNumber" && !userData[header]) {
+        throw {
+          message: "Make sure all required data is set (Phone Numbers).",
+        };
+      } else if (header === "email") {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!userData[header]) {
+          throw { message: "Make sure all required data is set (Email)." };
+        }
+        if (!emailRegex.test(userData[header])) {
+          throw { message: "Invalid email format." };
+        }
+      } else if (header === "dob" && (!userData[header] || userData[header] || userData[header] === "")) {
+        throw { message: "Make sure all required data is set (DOB)." };
+      } else { }
+      
     });
     users.push(userData);
   }
@@ -71,21 +87,6 @@ export async function readUsersFile(file: File) {
       };
     }
   });
-  console.log("ADDING USERS TO THE DB");
 
-  return await addImportedUsers(users);
-}
-
-function readFileAsync(file: File) {
-  return new Promise((resolve, reject) => {
-    let reader = new FileReader();
-
-    reader.onload = () => {
-      resolve(reader.result);
-    };
-
-    reader.onerror = reject;
-
-    reader.readAsArrayBuffer(file.bytes);
-  });
+  await addImportedUsers(users);
 }

@@ -500,8 +500,10 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       console.log("Created user:", user);
       console.log("User Error:", userError);
 
-      await db.rls(async (tx) => {
-        await tx.insert(profile).values({
+    const profileData = await db.admin.transaction(async (tx) => {
+      await tx
+        .insert(profile)
+        .values({
           name: singleUser.name ?? "",
           username: singleUser.username ?? "",
           office: singleUser.office ?? null,

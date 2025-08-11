@@ -1,6 +1,6 @@
 import ExcelJS from "exceljs";
 
-export async function generalExport(data: Record<string, any>[], name: string) {
+export async function generalExport(data: Record<string, unknown>[], name: string) {
   {
     /*
         create a new workbook and add a worksheet to it
@@ -31,12 +31,12 @@ export async function generalExport(data: Record<string, any>[], name: string) {
 
   const columns: Partial<ExcelJS.Column>[] = [];
 
-  for (var i = 0; i < columnsKeys.length; ++i) {
-    const width = maxWidth(data, columnsKeys[i]!);
+  for (const key of columnsKeys) {
+    const width = maxWidth(data, key);
     columns.push({
       header:
-        columnsKeys[i]?.charAt(0).toUpperCase() + columnsKeys[i]!.slice(1),
-      key: columnsKeys[i],
+        key?.charAt(0).toUpperCase() + key!.slice(1),
+      key: key,
       width: width,
       style: {
         border:{

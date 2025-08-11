@@ -1,6 +1,11 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useModals } from "@/hooks/modal";
-import { AlertCircle, CheckCircle, Info, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  Info,
+  X,
+} from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 

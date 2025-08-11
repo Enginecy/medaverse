@@ -1,25 +1,55 @@
+import { GeneralDialog } from "@/components/general-dialog";
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { UsersTemplateButton } from "@/features/dashboard/user-management/components/user-template-button";
-import { showSonnerToast } from "@/lib/react-utils";
-import { readUsersFile } from "@/utils/importing-users";
+import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
+import { readUsersFile } from "@/utils/extract-users-data";
 import { useMutation } from "@tanstack/react-query";
-import { Upload } from "lucide-react";
+import { FileUp, Upload } from "lucide-react";
 import { resolve } from "path";
 import { useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { PulseMultiple } from "react-svg-spinners";
 
 export function UploadXLSXDialog() {
   const [xlsxFile, setXlsxFile] = useState<File | null>(null);
 
+  const { getInputProps, getRootProps, isDragActive } = useDropzone({
+    accept: {
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        ".xlsx",
+      ],
+    },
+    maxFiles: 1,
+    onDrop: (acceptedFiles) => {
+      setXlsxFile(acceptedFiles[0] ?? null);
+    },
+    noClick: true,
+  });
+
+  const showAlertDialog = useShowDialog();
   const { mutate: uploadMutation, isPending: isUploadingUsers } = useMutation({
     mutationFn: readUsersFile,
-    onError: (error: Error) => {
-      showSonnerToast({
-        type: 'error',
-        message: 'Error uploading file',
-        description: error.message,
+    onError: async (error: Error) => {
+      showAlertDialog((resolve) => {
+        return (
+          <GeneralDialog
+            type="error"
+            onClose={() => resolve(true)}
+            title="Error Uploading File"
+            description={error.message}
+          />
+        );
       });
-    } 
+    },
+    onSuccess: () => {
+      showSonnerToast({
+        type: "success",
+        message: "File uploaded successfully",
+        description: "Users have been added successfully.",
+      });
+      setXlsxFile(null);
+    },
   });
 
   return (
@@ -58,18 +88,29 @@ export function UploadXLSXDialog() {
           </div>
         ) : (
           <label
-            className="flex h-20 w-85 cursor-pointer flex-col items-center
-              justify-center border-2 border-dotted border-blue-400 bg-blue-50
-              p-5 transition hover:bg-blue-100"
+            {...getRootProps()}
+            className={
+              `flex h-20 w-85 cursor-pointer flex-col items-center
+                justify-center rounded-2xl border-2 border-dashed
+                border-blue-400 bg-blue-50 p-5 transition hover:bg-blue-100` +
+              (isDragActive ? " bg-blue-200" : "")
+            }
           >
-            <span className="font-medium text-blue-700">Select Xlsx File</span>
+            <span className="font-medium text-blue-700">
+              
+              
+              {isDragActive
+                ? (<FileUp className="h-6 w-6 text-blue-500" />)
+                : ("Drag and drop or click to select a file")}
+            </span>
             <input
               type="file"
               accept=".xlsx"
               className="hidden"
               onChange={(event) => {
-                setXlsxFile(event.target.files?.[0] || null);
+                setXlsxFile(event.target.files?.[0] ?? null);
               }}
+              {...getInputProps()}
             />
           </label>
         )}
@@ -93,10 +134,10 @@ export function UploadXLSXDialog() {
           >
             <label>
               {isUploadingUsers ? (
-                <>
-                  Uploading...
-                  <Upload className="mr-2 h-4 w-4 animate-spin" />
-                </>
+                <PulseMultiple
+                  className="h-5 w-5 animate-spin bg-white"
+                  color="white"
+                />
               ) : (
                 "Upload Xlsx"
               )}
