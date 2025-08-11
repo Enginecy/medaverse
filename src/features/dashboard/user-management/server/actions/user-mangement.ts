@@ -178,7 +178,14 @@ export async function createAgent(
       }
     }
 
-    throw error;
+    return {
+      success: false,
+      error: {
+        message: "Failed to create user",
+        statusCode: 400,
+        details: "An error occurred while creating the user.",
+      },
+    };
   }
 }
 
@@ -340,7 +347,14 @@ export async function updateAgent(
       }
     }
 
-    throw error;
+    return {
+      success: false,
+      error: {
+        message: "Failed to update user",
+        statusCode: 400,
+        details: "An error occurred while updating the user.",
+      },
+    };
   }
   return { success: true, data: undefined };
 }
@@ -423,7 +437,14 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
     const currentUser = await supabase.auth.getUser();
 
     if (!currentUser.data.user?.id) {
-      throw { message: "You are unauthenticated" };
+      return {
+        success: false,
+        error: {
+          message: "You are unauthenticated",
+          statusCode: 401,
+          details: "You must be authorized to perform this action.",
+        },
+      };
     }
 
     for (const singleUser of importedData) {
@@ -431,7 +452,14 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       // Check if username already exists
 
       if (!singleUser.username) {
-        throw { message: "Username is required for each user:" };
+        return {
+          success: false,
+          error: {
+            message: "Username is required for each user:",
+            statusCode: 400,
+            details: "Username is required for each user.",
+          },
+        };
       }
       const existingProfile = await db.admin
         .select()
@@ -439,7 +467,14 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
         .where(eq(profile.username, singleUser.username ?? ""));
 
       if (existingProfile.length > 0) {
-        throw { message: "Username already exists" };
+        return {
+          success: false,
+          error: {
+            message: "Username already exists",
+            statusCode: 400,
+            details: "Username already exists.",
+          },
+        };
       }
 
       const {
@@ -452,7 +487,14 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       });
 
       if (userError || !user) {
-        throw { message: "Failed to create user", error: userError };
+        return {
+          success: false,
+          error: {
+            message: "Failed to create user",
+            statusCode: 400,
+            details: "An error occurred while creating the user.",
+          },
+        };
       }
 
       console.log("Created user:", user);
@@ -482,6 +524,13 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
     return { success: true, message: "Users imported successfully" };
   } catch (error) {
     console.error("Error in addImportedUsers:", error);
-    throw { message: "Failed to import users", error };
+    return {
+      success: false,
+      error: {
+        message: "Failed to import users",
+        statusCode: 400,
+        details: "An error occurred while importing the users.",
+      },
+    };
   }
 }
