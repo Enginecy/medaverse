@@ -2,7 +2,7 @@
 
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { insuranceCompanies } from "@/db/schema";
-import { eq, isNull } from "drizzle-orm";
+import { isNull } from "drizzle-orm";
 
 export async function getCarriers() {
   const db = await createDrizzleSupabaseClient();

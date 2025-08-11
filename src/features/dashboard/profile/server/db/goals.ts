@@ -2,6 +2,7 @@
 
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { goals, profile } from "@/db/schema";
+import type { ActionResult } from "@/lib/utils";
 import { eq, and, isNull } from "drizzle-orm";
 
 export async function createGoal(data: {
@@ -68,10 +69,10 @@ export async function getUserGoals() {
   });
 }
 
-export async function updateGoalProgress(goalId: string, achieved: number) {
+export async function updateGoalProgress(goalId: string, achieved: number) : Promise<ActionResult<typeof result>> {
   const db = await createDrizzleSupabaseClient();
 
-  return await db.rls(async (tx) => {
+  const result = await db.rls(async (tx) => {
     // Get user's profile - RLS will ensure we only get the current user's profile
     const userProfile = await tx
       .select({ id: profile.id })
@@ -79,7 +80,15 @@ export async function updateGoalProgress(goalId: string, achieved: number) {
       .limit(1);
 
     if (!userProfile.length) {
-      throw new Error("Profile not found");
+        return {
+        success: false,
+        error: {
+          message: "Profile not found",
+          statusCode: 400,
+          details:
+            "Ensure you have a profile created before updating goals.",
+        },
+      };
     }
 
     const profileId = userProfile[0]!.id;
@@ -101,12 +110,24 @@ export async function updateGoalProgress(goalId: string, achieved: number) {
 
     return updatedGoal;
   });
+  if (!result) {
+   return { 
+    success: false, 
+    error: {
+      message: "Goal not found to update it.",
+      statusCode: 400, 
+      details: "Ensure the goal exists to your profile.",
+    }
+   }
+  }
+  return { success: true, data: result };
 }
 
-export async function deleteGoal(goalId: string) {
+
+export async function deleteGoal(goalId: string) : Promise<ActionResult<void>>  {
   const db = await createDrizzleSupabaseClient();
 
-  return await db.rls(async (tx) => {
+  const result = await db.rls(async (tx) => {
     // Get user's profile - RLS will ensure we only get the current user's profile
     const userProfile = await tx
       .select({ id: profile.id })
@@ -136,6 +157,19 @@ export async function deleteGoal(goalId: string) {
 
     return deletedGoal;
   });
+
+  if(!result) {
+    return { 
+      success: false, 
+      error: {
+        message: "Goal not found to delete it.",
+        statusCode: 400, 
+        details: "Ensure the goal exists to your profile.",
+      }
+    }
+  }
+  
+  return { success: true, data: undefined };
 }
 
 export type Goal = Awaited<ReturnType<typeof getUserGoals>>[number];

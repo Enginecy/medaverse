@@ -26,7 +26,6 @@ import { showSonnerToast } from "@/lib/react-utils";
 import { PulseMultiple } from "react-svg-spinners";
 import {
   createCarrier,
-  deleteCarrier,
   updateCarrier,
 } from "@/features/dashboard/carriers/server/actions/carriers";
 import type { Carrier } from "@/features/dashboard/carriers/server/db/carriers";
@@ -47,7 +46,7 @@ export function CarrierDrawer({
           email: fieldValues.email,
           website: fieldValues.website,
           code: fieldValues.code,
-      }
+        }
       : {
           carrierImage: new File([], ""),
           companyName: "",
@@ -77,15 +76,21 @@ export function CarrierDrawer({
       : (form.getValues("carrierImage") as string);
 
   const queryClient = useQueryClient();
- 
-  
-  
+
   const { mutate: submitCarrierData, isPending: isLoading } = useMutation({
     mutationFn: async (data: AddCarrierFormData) => {
       if (isEditing) {
-        await updateCarrier(data , fieldValues!.id!);
+        const result = await updateCarrier(data, fieldValues!.id!);
+        if (result.success) {
+          return result.data;
+        }
+        throw result.error;
       } else {
-        await createCarrier(data);
+        const result = await createCarrier(data);
+        if (result.success) {
+          return result.data;
+        }
+        throw result.error;
       }
     },
     onSuccess: () => {
@@ -97,15 +102,16 @@ export function CarrierDrawer({
       });
       queryClient.invalidateQueries({ queryKey: ["carriers"] });
       resolve({ success: true });
-    },
-    onError: () => {
+        },
+        onError: (actionError) => {
+      
       showSonnerToast({
         message: isEditing
           ? "Failed to update carrier"
-          : "Failed to add carrier",
+          : actionError.message ,
         type: "error",
+        description: actionError.details,
       });
-      resolve({ success: false });
     },
   });
   const onSubmit = (data: AddCarrierFormData) => {
@@ -215,11 +221,11 @@ export function CarrierDrawer({
               </FormItem>
             )}
           />
-          <SheetFooter className=" flex flex-row justify-justify-end items-end p-0">
-            {isEditing ? (
-            <DeleteCarrierButton id={fieldValues.id}/>
-            ) : null}
-            <Button className="w-30 ml-auto" type="submit">
+          <SheetFooter
+            className="justify-justify-end flex flex-row items-end p-0"
+          >
+            {isEditing ? <DeleteCarrierButton id={fieldValues.id} /> : null}
+            <Button className="ml-auto w-30" type="submit">
               {isLoading ? (
                 <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
               ) : isEditing ? (

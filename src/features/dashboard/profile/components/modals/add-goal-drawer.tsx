@@ -76,7 +76,8 @@ export function AddGoalDrawer({ resolve }: AddGoalSheetProps) {
         // Refresh the page to update the goals list
         router.refresh();
       } else {
-        toast.error(result.error ?? "Failed to create goal");
+        toast.error( result.error.message );
+        throw result.error ;
       }
     } catch (error) {
       console.error("Error creating goal:", error);

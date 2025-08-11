@@ -2,9 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-
+import React from "react";
+import { useForm, type DefaultValues } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -55,7 +54,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { NpnNumberForm } from "@/features/dashboard/user-management/components/form/npn-no-field";
-import { RegionalField } from "@/features/dashboard/user-management/components/form/regional-field";
 import { AddressField } from "@/features/dashboard/user-management/components/form/address-field";
 import { DobField } from "@/features/dashboard/user-management/components/form/dob-field";
 import { EmailField } from "@/features/dashboard/user-management/components/form/email-field";
@@ -64,7 +62,6 @@ import { UsernameField } from "@/features/dashboard/user-management/components/f
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
 import {
   getAboveSuperiors,
-  getRegionalDirectors,
   type User,
 } from "@/features/dashboard/user-management/server/db/user-management";
 import { RoleField } from "@/features/dashboard/user-management/components/form/role-field";
@@ -80,18 +77,16 @@ export function AddUserDrawer({
 }) {
   const isEditing = !!user;
 
-  const defaultValues = isEditing
+  const defaultValues: DefaultValues<AddUserFormData> = isEditing
     ? {
         fullName: user!.name!,
         username: user!.username!,
         email: user!.email!,
         phoneNumber: user!.phoneNumber!,
-        address: user!.address!,
-        upLine: user!.upLine ?? "",
+        office: user!.office!,
         npnNumber: user!.npnNumber!,
-        regional: user!.regional! ?? "",
-        role: user!.role!.id ?? "",
-        states: user!.states! || [],
+        states: user!.states ?? [],
+        role: user!.role?.id ?? "",
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
       }
@@ -100,9 +95,7 @@ export function AddUserDrawer({
         username: "",
         email: "",
         phoneNumber: "",
-        address: "",
-        regional: "",
-        upLine: "",
+        office: null,
         npnNumber: "",
         role: "",
         states: [],
@@ -116,29 +109,29 @@ export function AddUserDrawer({
     defaultValues,
   });
 
-  const { data : regionalDirs, isLoading : isLoadingRegionalDirs  } = useQuery({
-    queryFn : getRegionalDirectors ,
-    queryKey: ["regional_directors"],
-    refetchOnWindowFocus: false,
-  });
   const { data: roles, isPending: isLoadingRoles } = useQuery({
     queryKey: ["roles"],
     queryFn: getRoles,
   });
-  var selectedRole = roles?.find((role) => role.id === form.watch("role"));
+  const selectedRole = roles?.find((role) => role.id === form.watch("role"));
   const getSuperiorsQueryOptions = queryOptions({
     queryKey: ["superiors", selectedRole?.id],
     queryFn: () => getAboveSuperiors(selectedRole!),
     enabled: !!selectedRole,
     refetchOnWindowFocus: false,
   });
-  const {
-    data: aboveSuperiors,
-    isLoading: isLoadingSuperiors,
-  } = useQuery(getSuperiorsQueryOptions);
+  const { data: aboveSuperiors, isLoading: isLoadingSuperiors } = useQuery(
+    getSuperiorsQueryOptions,
+  );
 
   const { mutate: submitCreateAgent, isPending: isCreating } = useMutation({
-    mutationFn: createAgent,
+    mutationFn: async (data: AddUserFormData) => {
+      const result = await createAgent(data);
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onSuccess: () => {
       showSonnerToast({
         message: "New agent added successfully",
@@ -161,7 +154,13 @@ export function AddUserDrawer({
   });
 
   const { mutate: submitUpdateAgent, isPending: isUpdating } = useMutation({
-    mutationFn: (data: AddUserFormData) => updateAgent(data, user!.id!),
+    mutationFn: async (data: AddUserFormData) => {
+      const result = await updateAgent(data, user!.id!);
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onSuccess: () => {
       showSonnerToast({
         message: "Agent updated successfully",
@@ -247,18 +246,6 @@ export function AddUserDrawer({
 
           {/* Role and Regional */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {
-              isLoadingRegionalDirs ? (
-                <div
-                  className="flex h-full w-full items-center justify-center pt-6"
-                >
-                  Loading...
-                </div>
-              ) : (
-
-                <RegionalField form={form}  regionalDirs={regionalDirs ?? []}/>
-              )
-            }
             {isLoadingRoles ? (
               <div
                 className="flex h-full w-full items-center justify-center pt-6"
@@ -305,14 +292,15 @@ export function AddUserDrawer({
                           role="combobox"
                           className={cn(
                             "w-1/2 justify-between",
-                            field.value.length === 0 && "text-muted-foreground",
+                            field.value?.length === 0 &&
+                              "text-muted-foreground",
                           )}
                         >
-                          {field.value.length === 0
+                          {field.value?.length === 0
                             ? "Select states"
-                            : field.value.length === 1
+                            : field.value?.length === 1
                               ? `${field.value[0]?.name}`
-                              : `${field.value.length} states selected`}
+                              : `${field.value?.length} states selected`}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </FormControl>
@@ -330,7 +318,7 @@ export function AddUserDrawer({
                               key={"select-all"}
                               className="text-primary-600 hover:bg-primary-100"
                               onSelect={() => {
-                                if (field.value.length === states.length) {
+                                if (field.value?.length === states.length) {
                                   form.setValue("states", []);
                                 } else {
                                   form.setValue("states", states);
@@ -338,7 +326,7 @@ export function AddUserDrawer({
                                 }
                               }}
                             >
-                              {field.value.length === states.length
+                              {field.value?.length === states.length
                                 ? "Deselect all "
                                 : "Select all "}
                             </CommandItem>
@@ -348,19 +336,19 @@ export function AddUserDrawer({
                                 key={state.code}
                                 onSelect={() => {
                                   if (
-                                    field.value.some(
+                                    field.value?.some(
                                       (s) => s.code === state.code,
                                     )
                                   ) {
                                     form.setValue(
                                       "states",
-                                      field.value.filter(
+                                      field.value?.filter(
                                         (s) => s.code !== state.code,
                                       ),
                                     );
                                   } else {
                                     form.setValue("states", [
-                                      ...field.value,
+                                      ...(field.value ?? []),
                                       state,
                                     ]);
                                   }
@@ -371,7 +359,7 @@ export function AddUserDrawer({
                                 <Check
                                   className={cn(
                                     "ml-auto",
-                                    field.value.some(
+                                    field.value?.some(
                                       (s) => s.code === state.code,
                                     )
                                       ? "opacity-100"
@@ -387,7 +375,7 @@ export function AddUserDrawer({
                   </Popover>
                   <FormDescription className="flex flex-wrap gap-2">
                     {/* build chip for each state */}
-                    {field.value.map((state) => (
+                    {field.value?.map((state) => (
                       <div
                         key={state.code}
                         className="bg-primary-100 text-primary-600 flex
@@ -404,7 +392,7 @@ export function AddUserDrawer({
                             onClick={() => {
                               form.setValue(
                                 "states",
-                                field.value.filter(
+                                field.value?.filter(
                                   (s) => s.code !== state.code,
                                 ),
                               );

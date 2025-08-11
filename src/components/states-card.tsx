@@ -1,14 +1,8 @@
-"use client";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { USAMapComponent } from "@/components/usa-map";
 import { type State } from "@/lib/data";
 
-export function StatesCard() {
-  const selectedStates: State[] = [
-    { code: "NY", name: "New York" },
-    { code: "FL", name: "Florida" },
-  ];
-
+export function StatesCard({ states }: { states: State[] }) {
   return (
     <Card className="min-w-[630px] flex-1 items-center justify-center">
       <CardContent className="flex h-full w-full gap-4">
@@ -23,7 +17,7 @@ export function StatesCard() {
           </CardTitle>
           {/* chips for selected states */}
           <div className="flex max-h-[300px] flex-wrap gap-2 overflow-y-auto">
-            {selectedStates
+            {states
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((state) => (
                 <div
@@ -38,7 +32,7 @@ export function StatesCard() {
           </div>
         </div>
         <div className="rounded-2xl bg-[#084D851A]">
-          <USAMapComponent selectedStates={selectedStates} />
+          <USAMapComponent selectedStates={states} />
         </div>
       </CardContent>
     </Card>

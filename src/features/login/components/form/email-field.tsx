@@ -13,8 +13,8 @@ export function EmailFormField({
   step,
   form,
 }: {
-  step: "email" | "pin";
-  form: UseFormReturn<{ email: string; code?: string }>;
+  step: "email" | "pin" | "password";
+  form: UseFormReturn<{ email: string; code?: string; password?: string }>;
 }) {
   return (
     <FormField

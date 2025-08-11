@@ -18,7 +18,7 @@ import logo from "public/meda_health_logo.png";
           className="text-light-blue-500 text-5xl"
           style={{ fontFamily: "Druk Wide Bold Bold" }}
         >
-          Your Universe of Medical Insurance Solutions.
+          Unlock financial freedom in the MedaVerse
         </p>
       </div>
       <div className="relative h-full w-full">

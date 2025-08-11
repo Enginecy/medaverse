@@ -6,27 +6,42 @@ import { type UseFormReturn } from "react-hook-form";
 import type { createFormSchema } from "@/features/login/schemas/login-form-schema";
 import type z from "zod";
 import { env } from "@/env";
+import { SegmentedButton } from "@/components/ui/segmented-button";
+import { PasswordFormField } from "./password-field";
 export function LoginForm({
   step,
   form,
   onSubmit,
   isLoading,
+  onModeChange,
+  mode,
 }: {
-  step: "email" | "pin";
+  step: "email" | "pin" | "password";
+  mode: "OTP" | "Password";
+  onModeChange: (mode: "OTP" | "Password") => void;
   form: UseFormReturn<z.infer<ReturnType<typeof createFormSchema>>>;
   onSubmit: (values: z.infer<ReturnType<typeof createFormSchema>>) => void;
   isLoading: boolean;
 }) {
+  const isOtp = mode === "OTP";
   return (
     <div className="flex w-[45%] flex-col items-center gap-2">
       <p className="rounded-2xl border px-4 py-1">Login</p>
       <p className="text-text-heading-primary text-2xl font-semibold">
         Sign in to your account
       </p>
+      <SegmentedButton
+        className="w-full"
+        options={["OTP", "Password"]}
+        value={mode}
+        onChange={(v) => onModeChange(v as "OTP" | "Password")}
+      />
       <p className="text-center text-neutral-500">
-        {step === "email"
-          ? "Please enter your email address below to receive an OTP code."
-          : "Enter the OTP code sent to your email to complete login."}
+        {isOtp
+          ? step === "email"
+            ? "Please enter your email address below to receive an OTP code."
+            : "Enter the OTP code sent to your email to complete login."
+          : "Enter your email and password to continue."}
       </p>
 
       <Form {...form}>
@@ -44,15 +59,20 @@ export function LoginForm({
                   </span>
                 </p>
               </div>
-              <EmailFormField step={step} form={form} />
+              <EmailFormField step={isOtp ? step : "password"} form={form} />
+              {!isOtp && <PasswordFormField form={form} />}
             </div>
           ) : (
             <div className="flex w-full flex-col gap-4">
-              <EmailFormField step={step} form={form} />
-              <OTPFormField step={step} form={form} />
+              <EmailFormField step={isOtp ? step : "password"} form={form} />
+              {isOtp ? (
+                <OTPFormField step={step as "email" | "pin"} form={form} />
+              ) : (
+                <PasswordFormField form={form} />
+              )}
             </div>
           )}
-          <SubmitButton step={step} isLoading={isLoading} />
+          <SubmitButton step={isOtp ? step : "password"} isLoading={isLoading} />
         </form>
       </Form>
     </div>

@@ -1,23 +1,4 @@
-
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  type SortingState,
-  useReactTable,
-} from "@tanstack/react-table";
-import * as React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useState } from "react";
+import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 
 export function NewsDataTable<TData, TValue>({
@@ -44,4 +25,3 @@ export function NewsDataTable<TData, TValue>({
   );
 }
 //TODO: make the date filter key
-

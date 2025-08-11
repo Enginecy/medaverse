@@ -1,16 +1,41 @@
 "use server";
 import { env } from "@/env";
 import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "@/lib/utils";
 
-export async function sendEmailOTP(email: string) {
+export async function sendEmailOTP(
+  email: string,
+): Promise<ActionResult<typeof data>> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOtp({
     options: { shouldCreateUser: false },
     email,
   });
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    if (error.code === "over_email_send_rate_limit") {
+      return {
+        success: false,
+        error: {
+          message: error.message,
+          statusCode: 400,
+          details: "Email send rate limit exceeded",
+        },
+      };
+    }
+    return {
+      success: false,
+      error: {
+        message: "Email not found",
+        statusCode: 400,
+        details: "Please check your email and try again",
+      },
+    };
+  }
+  return {
+    success: true,
+    data,
+  };
 }
 
 export async function verifyEmailOtp({
@@ -19,7 +44,7 @@ export async function verifyEmailOtp({
 }: {
   email: string;
   code: string;
-}) {
+}): Promise<ActionResult<typeof data>> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.verifyOtp({
     email,
@@ -27,17 +52,113 @@ export async function verifyEmailOtp({
     type: "email",
   });
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        statusCode: 400,
+        details: error.cause?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return {
+    success: true,
+    data,
+  };
 }
 
-export async function debugLoginWithPassword({ email }: { email: string }) {
+export async function debugLoginWithPassword({
+  email,
+}: {
+  email: string;
+}): Promise<ActionResult<typeof data>> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password: env.AUTOMATIC_LOGIN_PASSWORD,
   });
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        statusCode: 400,
+        details: error.cause?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return {
+    success: true,
+    data,
+  };
+}
+
+export async function loginWithPassword({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}): Promise<ActionResult<typeof data>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        statusCode: 400,
+        details: error.code?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return {
+    success: true,
+    data,
+  };
+}
+
+export async function updatePasswordAndClearFlag({
+  newPassword,
+}: {
+  newPassword: string;
+}): Promise<ActionResult<void>> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: getUserError,
+  } = await supabase.auth.getUser();
+  if (getUserError || !user) {
+    return {
+      success: false,
+      error: {
+        message: getUserError?.message ?? "Not authenticated",
+        statusCode: 401,
+        details: "You must be logged in to update your password.",
+      },
+    };
+  }
+
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: newPassword,
+    data: { must_update_password: false },
+  });
+  if (updateError) {
+    return {
+      success: false,
+      error: {
+        message: updateError.message,
+        statusCode: 400,
+        details: updateError.cause?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return { success: true, data: undefined };
 }

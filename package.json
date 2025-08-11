@@ -13,7 +13,9 @@
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "supabase": "supabase",
+    "supabase:pull": "supabase db pull --schema auth,storage,public"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -25,6 +27,7 @@
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-checkbox": "^1.3.2",
+    "@radix-ui/react-collapsible": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-label": "^2.1.7",
@@ -82,6 +85,7 @@
     "prettier-plugin-classnames": "^0.7.8",
     "prettier-plugin-merge": "^0.7.4",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "supabase": "^2.33.9",
     "tailwindcss": "^4.0.15",
     "tsx": "^4.20.3",
     "tw-animate-css": "^1.3.3",

@@ -10,10 +10,8 @@ import {
 } from "@/components/ui/card";
 
 import { BirthdayTable } from "@/features/dashboard/home/components/birthday-table";
-import { recentSalesColumns } from "@/features/dashboard/home/components/columns";
 import { RecentSalesDataTable } from "@/features/dashboard/home/components/data-table";
 import { PersonalInfoCard } from "@/features/dashboard/home/components/home-personal-info-card";
-import { getSales } from "@/features/dashboard/sales/server/db/sales";
 import { getUserGoalsAction } from "@/features/dashboard/profile/server/actions/goals";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -52,7 +50,7 @@ export default async function Home() {
             </CardAction>
           </CardHeader>
           <CardContent className="px-6">
-            <Suspense fallback={<DataTableSkeleton/>}>
+            <Suspense fallback={<DataTableSkeleton />}>
               <RecentSalesDataTable />
             </Suspense>
           </CardContent>
