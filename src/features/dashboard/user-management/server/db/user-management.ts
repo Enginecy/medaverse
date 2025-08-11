@@ -15,7 +15,6 @@ export async function getUsers() {
         ...getTableColumns(profile),
         email: users.email,
         role: roles,
-
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
@@ -99,7 +98,7 @@ export async function getExportUsers() {
       email: users.email,
       role: roles.name,
       status: profile.status,
-      address: profile.address,
+      office: profile.office,
       dob: sql`TO_CHAR(${profile.dob}, 'YYYY-MM-DD')`.as("dob"),
       NpnNumber: profile.npnNumber,
       })
