@@ -4,7 +4,7 @@ import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, userRoles } from "@/db/schema";
 import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -429,8 +429,10 @@ export async function deleteAgent(id: string): Promise<ActionResult<void>> {
 }
 
 export async function addImportedUsers(importedData: Partial<User>[]) {
+  const createdUsers: { id: string }[] = [];
+
   try {
-    const { auth } = createAdminClient();
+    // const { auth } = createAdminClient();
     const db = await createDrizzleSupabaseClient();
     const supabase = await createClient();
 
@@ -447,83 +449,113 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       };
     }
 
-    for (const singleUser of importedData) {
-      console.log("Processing user:", singleUser);
-      // Check if username already exists
+    // for (const singleUser of importedData) {
+    //   console.log("Processing user:", singleUser);
+    //   // Check if username already exists
 
-      if (!singleUser.username) {
-        return {
-          success: false,
-          error: {
-            message: "Username is required for each user:",
-            statusCode: 400,
-            details: "Username is required for each user.",
-          },
-        };
-      }
-      const existingProfile = await db.admin
-        .select()
-        .from(profile)
-        .where(eq(profile.username, singleUser.username ?? ""));
+    //   if (!singleUser.username) {
+    //     return {
+    //       success: false,
+    //       error: {
+    //         message: "Username is required for each user:",
+    //         statusCode: 400,
+    //         details: "Username is required for each user.",
+    //       },
+    //     };
+    //   }
+    //   const existingProfile = await db.admin
+    //     .select()
+    //     .from(profile)
+    //     .where(eq(profile.username, singleUser.username ?? ""));
 
-      if (existingProfile.length > 0) {
-        return {
-          success: false,
-          error: {
-            message: "Username already exists",
-            statusCode: 400,
-            details: "Username already exists.",
-          },
-        };
-      }
+    //   if (existingProfile.length > 0) {
+    //     return {
+    //       success: false,
+    //       error: {
+    //         message: "Username already exists",
+    //         statusCode: 400,
+    //         details: "Username already exists.",
+    //       },
+    //     };
+    //   }
 
-      const {
-        data: { user },
-        error: userError,
-      } = await auth.admin.createUser({
-        email: singleUser.email ?? "",
-        email_confirm: true,
+    //   const {
+    //     data: { user },
+    //     error: userError,
+    //   } = await auth.admin.createUser({
+    //     email: singleUser.email ?? "",
+    //     email_confirm: true,
+    //     password: env.AUTOMATIC_LOGIN_PASSWORD,
+    //   });
+
+    //   if (userError || !user) {
+    //     return {
+    //       success: false,
+    //       error: {
+    //         message: "Failed to create user",
+    //         statusCode: 400,
+    //         details: "An error occurred while creating the user.",
+    //       },
+    //     };
+    //   }
+
+    //   createdUsers.push(user);
+    // }
+
+    const ids = await createUsersBulk(
+      importedData.map((user) => ({
+        email: user.email!,
         password: env.AUTOMATIC_LOGIN_PASSWORD,
+        user_meta_data: { must_update_password: true },
+      })),
+    );
+
+    createdUsers.push(...ids.map((id) => ({ id })));
+
+    console.log("createdUsers", createdUsers);
+
+   const result = await db.admin.transaction(async (tx) => {
+      const profileValues = importedData.map((singleUser, index) => ({
+        name: singleUser.name ?? "",
+        username: singleUser.username ?? "",
+        office: singleUser.office ?? null,
+        dob: singleUser.dob ? new Date(singleUser.dob) : new Date("MM/DD/YYYY"),
+        phoneNumber: singleUser.phoneNumber ?? "",
+        npnNumber: singleUser.npnNumber ?? "",
+        states: singleUser.states ?? ([] as State[]),
+        userId: createdUsers[index]?.id ?? "",
+        status: "active" as const,
+      }));
+
+      console.log("profileValues", profileValues);
+
+      const userRoleValues = importedData.map((singleUser, index) => ({
+        roleId: singleUser.role?.id ?? "",
+        userId: createdUsers[index]?.id ?? "",
+        assignedBy: currentUser.data.user?.id,
+      }));
+
+      console.log("userRoleValues", userRoleValues);
+
+      await tx.transaction(async (tx) => {
+        await tx.insert(profile).values(profileValues);
+        await tx.insert(userRoles).values(userRoleValues);
       });
+      return 1
+    });
 
-      if (userError || !user) {
-        return {
-          success: false,
-          error: {
-            message: "Failed to create user",
-            statusCode: 400,
-            details: "An error occurred while creating the user.",
-          },
-        };
-      }
-
-      console.log("Created user:", user);
-      console.log("User Error:", userError);
-
-      await db.admin.transaction(async (tx) => {
-        await tx.insert(profile).values({
-          name: singleUser.name ?? "",
-          username: singleUser.username ?? "",
-          office: singleUser.office ?? null,
-          dob: singleUser.dob
-            ? new Date(singleUser.dob)
-            : new Date("MM/DD/YYYY"),
-          phoneNumber: singleUser.phoneNumber ?? "",
-          npnNumber: singleUser.npnNumber ?? "",
-          states: singleUser.states ?? ([] as State[]),
-          status: "active",
-          userId: user?.id ?? "",
-        });
-        await tx.insert(userRoles).values({
-          roleId: singleUser.role?.id ?? "",
-          userId: user?.id ?? "",
-          assignedBy: currentUser.data.user?.id,
-        });
-      });
+    if (result !== 1) {
+      throw new Error("Failed to import users");
     }
+
     return { success: true, message: "Users imported successfully" };
   } catch (error) {
     console.error("Error in addImportedUsers:", error);
+    // delete all created users
+    const { auth } = createAdminClient();
+    for (const user of createdUsers) {
+      await auth.admin.deleteUser(user.id);
+    }
     return {
       success: false,
       error: {
@@ -533,4 +565,38 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
       },
     };
   }
+}
+
+async function createUsersBulk(
+  users: Array<{
+    email: string;
+    password: string;
+    user_meta_data?: Record<string, unknown>;
+  }>,
+) {
+  // Convert users array to JSONB array format
+  const userJsonArray = users.map((user) =>
+    JSON.stringify({
+      email: user.email,
+      password: user.password,
+      user_meta_data: user.user_meta_data ?? {},
+    }),
+  );
+
+  const db = await createDrizzleSupabaseClient();
+
+  const ids = await db.admin.execute(
+    sql`SELECT create_users_bulk_optimized(ARRAY[${sql.join(
+      userJsonArray.map((userJson) => sql`${userJson}::jsonb`),
+      sql`, `,
+    )}])`,
+  );
+  console.log("ids", ids);
+  const firstRow = ids[0];
+  if (firstRow?.create_users_bulk_optimized) {
+    const results = firstRow.create_users_bulk_optimized as string[];
+    return results;
+  }
+
+  return [];
 }

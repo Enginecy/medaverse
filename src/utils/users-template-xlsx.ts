@@ -1,5 +1,6 @@
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
+import { Offices } from "@/lib/data";
 import ExcelJS from "exceljs";
 
 export async function usersTemplateXLSX() {
@@ -65,6 +66,17 @@ export async function usersTemplateXLSX() {
         formulae: [`"${list}"`],
       };
     }
+  }
+
+  // add dropdown to the "office" column
+  const officeColIdx = keys.indexOf("office") + 1;
+  for (let i = 2; i < NUM_ROWS; i++) {
+    const cell = workSheet.getCell(i, officeColIdx);
+    cell.dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [`"${Offices.join(",")}"`],
+    };
   }
 
   for (let i = 2; i < NUM_ROWS; i++) {

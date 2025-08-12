@@ -8,7 +8,7 @@ export async function readUsersFile(file: File) {
     phoneNumber: "",
     email: "",
     role: "",
-    address: "",
+    office: "",
     npnNumber: "",
     dob: new Date("MM/DD/YYYY"),
   };
@@ -55,25 +55,44 @@ export async function readUsersFile(file: File) {
     if (!Array.isArray(row) || row.length < headers.length + 1) continue;
     const userData: Record<string, string> = {};
     headers.forEach((header, index) => {
-      userData[header] = row[index + 1]?.toString().trim() ?? "";
-      if (header === "phoneNumber" && !userData[header]) {
-        throw {
-          message: "Make sure all required data is set (Phone Numbers).",
-        };
-      } else if (header === "email") {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!userData[header]) {
-          throw { message: "Make sure all required data is set (Email)." };
-        }
-        if (!emailRegex.test(userData[header])) {
-          throw { message: "Invalid email format." };
-        }
-      } else if (
-        header === "dob" &&
-        (!userData[header] || userData[header] || userData[header] === "")
-      ) {
-        throw { message: "Make sure all required data is set (DOB)." };
-      } else {
+      const cellValue = row[index + 1]?.toString().trim() ?? "";
+      userData[header] = cellValue;
+
+      // Validate required fields
+      switch (header) {
+        case "phoneNumber":
+          if (!cellValue) {
+            throw {
+              message: "Phone number is required for all users.",
+            };
+          }
+          break;
+
+        case "email":
+          if (!cellValue) {
+            throw {
+              message: "Email address is required for all users.",
+            };
+          }
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(cellValue)) {
+            throw {
+              message: "Invalid email format provided.",
+            };
+          }
+          break;
+
+        case "dob":
+          if (!cellValue) break;
+
+          const parsedDate = new Date(cellValue);
+          if (isNaN(parsedDate.getTime())) {
+            throw {
+              message: "Invalid date of birth provided.",
+            };
+          }
+          break;
       }
     });
     users.push(userData);
