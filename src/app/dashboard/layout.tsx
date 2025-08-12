@@ -22,7 +22,7 @@ const navItems = [
   {
     title: "MedaMail",
     icon: MailIcon,
-    href: "/dashboard/medamail",
+    href: "https://outlook.office.com/mail",
   },
   {
     title: "Carriers",
