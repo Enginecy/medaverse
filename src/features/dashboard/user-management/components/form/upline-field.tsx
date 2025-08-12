@@ -34,7 +34,7 @@ export function UpLineField({
           <FormLabel>UpLine</FormLabel>
           <Select
             onValueChange={field.onChange}
-            defaultValue={field.value}
+            defaultValue={field.value ?? ""}
             disabled={
               roleField == null ||
               roleField == undefined ||

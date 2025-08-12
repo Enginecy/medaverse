@@ -15,7 +15,6 @@ export async function getUsers() {
         ...getTableColumns(profile),
         email: users.email,
         role: roles,
-        
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
@@ -23,7 +22,6 @@ export async function getUsers() {
       .leftJoin(roles, eq(userRoles.roleId, roles.id))
       .orderBy(desc(profile.createdAt));
   });
-
   return profiles;
 }
 
@@ -32,7 +30,7 @@ export type User = Awaited<ReturnType<typeof getUsers>>[number];
 export async function getAboveSuperiors(selectedRole: Role) {
   try {
     const supabase = await createClient();
-    const user = (await supabase).auth.getUser();
+    const user = await supabase.auth.getUser();
 
     if (!user) {
       throw { message: "You are not authenticated`" };
@@ -81,28 +79,26 @@ export async function getRegionalDirectors() {
     return regionalDirectors;
   } catch {
     throw {
-      message:
-        "Failed to get regional directors" 
+      message: "Failed to get regional directors",
     };
   }
 }
 
-
 export async function getExportUsers() {
-   const db = await createDrizzleSupabaseClient();
+  const db = await createDrizzleSupabaseClient();
 
   const exportUsers = await db.rls((tx) => {
     return tx
       .select({
-      name: profile.name,
-      username: profile.username,
-      phoneNumber: profile.phoneNumber,
-      email: users.email,
-      role: roles.name,
-      status: profile.status,
-      address: profile.address,
-      dob: sql`TO_CHAR(${profile.dob}, 'YYYY-MM-DD')`.as("dob"),
-      NpnNumber: profile.npnNumber,
+        name: profile.name,
+        username: profile.username,
+        phoneNumber: profile.phoneNumber,
+        email: users.email,
+        role: roles.name,
+        status: profile.status,
+        office: profile.office,
+        dob: sql`TO_CHAR(${profile.dob}, 'YYYY-MM-DD')`.as("dob"),
+        NpnNumber: profile.npnNumber,
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
@@ -114,6 +110,4 @@ export async function getExportUsers() {
   return exportUsers;
 }
 
-
-export type ExportedUsers = Awaited<ReturnType<typeof getExportUsers>> [number]
-
+export type ExportedUsers = Awaited<ReturnType<typeof getExportUsers>>[number];

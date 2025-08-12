@@ -4,7 +4,7 @@ import { DialogDescription } from "@radix-ui/react-dialog";
 import { Check, TriangleAlert } from "lucide-react";
 const typeConfig = {
   error: {
-    icon: <TriangleAlert className="text-red-500 h-5 w-5" />,
+    icon: <TriangleAlert className="h-5 w-5 text-red-500" />,
     color: "text-red-600",
     bg: "bg-red-200",
     bg2: "bg-red-100",
@@ -33,7 +33,7 @@ export function GeneralDialog({
   title,
   type,
   description,
-  onClose = () => {},
+  onClose,
 }: {
   title: string;
   type: "error" | "warning" | "info" | "success";
@@ -42,27 +42,32 @@ export function GeneralDialog({
 }) {
   const config = typeConfig[type];
   return (
-    <DialogContent className="justify-center flex flex-col items-center w-150">
-    <div className={`rounded-full w-15 h-15 flex items-center justify-center ${config.bg2}`}>
-    <div className={`rounded-full w-10 h-10 flex items-center justify-center ${config.bg}`}>
-      {config.icon}
-    </div>
-    </div>
+    <DialogContent className="flex w-150 flex-col items-center justify-center">
+      <div
+        className={`flex h-15 w-15 items-center justify-center rounded-full
+          ${config.bg2}`}
+      >
+        <div
+          className={`flex h-10 w-10 items-center justify-center rounded-full
+            ${config.bg}`}
+        >
+          {config.icon}
+        </div>
+      </div>
 
       <DialogTitle className="text-center text-base font-semibold text-red-800">
-        <span className="whitespace-pre-line ">
-
-              {title} 
-            </span>
+        <span className="whitespace-pre-line">{title}</span>
       </DialogTitle>
-      <DialogDescription
-        className="text-center text-l font-bold text-red-500 "
-      >
+      <DialogDescription className="text-l text-center font-bold text-red-500">
         {description}
       </DialogDescription>
       <p className="text-center text-sm font-light text-red-600"></p>
-      <div className="flex w-full flex-row py-3 justify-end">
-        <Button className="w-30 border-2 border-red-200 " variant="outline" onClick={onClose}>
+      <div className="flex w-full flex-row justify-end py-3">
+        <Button
+          className="w-30 border-2 border-red-200"
+          variant="outline"
+          onClick={onClose}
+        >
           Okay
         </Button>
       </div>

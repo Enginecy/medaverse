@@ -8,14 +8,14 @@ export function SubmitButton({
   step,
 }: {
   isLoading: boolean;
-  step: "email" | "pin";
+  step: "email" | "pin" | "password";
 }) {
   const isDebug = env.NODE_ENV === "development";
   let label: string;
   if (isDebug) {
     label = "Login";
   } else {
-    label = step === "email" ? "Send OTP" : "Verify";
+    label = step === "email" ? "Send OTP" : step === "pin" ? "Verify" : "Login";
   }
 
   return (

@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { userManagementColumns } from "@/features/dashboard/user-management/components/columns";
 import { getUsers } from "@/features/dashboard/user-management/server/db/user-management";
 import { DataTable } from "@/components/data-table";

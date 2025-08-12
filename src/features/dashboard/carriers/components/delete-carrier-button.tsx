@@ -20,7 +20,7 @@ export function DeleteCarrierButton({ id }: { id: string }) {
         queryClient.invalidateQueries({ queryKey: ["carriers"] });
       };
 
-      const onError = (error: Error) => {
+      const onError = () => {
         resolve(false);
         showSonnerToast({
           message: "An error occurred while deleting the carrier.",
@@ -45,9 +45,7 @@ export function DeleteCarrierButton({ id }: { id: string }) {
     <Button
       type="button"
       className="w-30 bg-red-500 hover:bg-red-400"
-      onClick={(e) => {
-        handleDeleteCarrier();
-      }}
+      onClick={handleDeleteCarrier}
     >
       Delete Carrier
     </Button>

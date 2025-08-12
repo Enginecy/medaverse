@@ -75,3 +75,12 @@ export const resources = [
 ] as const;
 
 export type ResourceName = (typeof resources)[number]["name"];
+
+export const Offices = [
+  "Downtown Tampa",
+  "Downtown St.Pete",
+  "Orlando",
+  "East Tampa",
+] as const;
+
+export type Office = (typeof Offices)[number];

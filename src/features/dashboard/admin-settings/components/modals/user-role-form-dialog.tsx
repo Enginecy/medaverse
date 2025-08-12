@@ -79,7 +79,13 @@ export function UserRoleFormDialog<T>({
   const isEditing = !!data;
 
   const { mutate: assignRoleMutation, isPending: isAssigning } = useMutation({
-    mutationFn: assignRole,
+    mutationFn: async (data: UserRoleFormSchemaData) =>{
+      const result = await assignRole(data);
+      if(result.success){
+        return result.data;
+      }
+      throw result.error;
+    },
     onError: (error) => {
       showSonnerToast({
         message: "Error assigning role",
@@ -99,7 +105,13 @@ export function UserRoleFormDialog<T>({
 
   const { mutate: updateAssignedRoleMutation, isPending: isUpdating } =
     useMutation({
-      mutationFn: updateAssignedRole,
+      mutationFn: async (data: UserRoleFormSchemaData & { id: string }) => {
+        const result = await updateAssignedRole(data);
+        if(result.success){
+          return result.data;
+        }
+        throw result.error;
+      },
       onError: (error) => {
         showSonnerToast({
           message: "Error assigning role",

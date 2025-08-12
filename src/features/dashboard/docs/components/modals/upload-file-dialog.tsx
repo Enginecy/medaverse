@@ -30,8 +30,8 @@ import {
 } from "@/features/dashboard/docs/schemas/upload-document-schema";
 import { useMutation } from "@tanstack/react-query";
 import { uploadFileAction } from "@/features/dashboard/docs/server/actions/docs";
-import { toast } from "sonner";
 import { PulseMultiple } from "react-svg-spinners";
+import { showSonnerToast } from "@/lib/react-utils";
 
 type ThumbnailData = {
   data?: string;
@@ -54,13 +54,27 @@ export function UploadFileDialog({
   });
 
   const { mutate: uploadFile, isPending } = useMutation({
-    mutationFn: uploadFileAction,
+    mutationFn: async (data: UploadFileForm) => {
+      const result = await uploadFileAction(data);
+      if (result.success) {
+        return result.data;
+      }
+      throw result.error;
+    },
     onSuccess: () => {
-      toast.success("File uploaded successfully");
+      showSonnerToast({
+        message: "File uploaded successfully",
+        type: "success",
+        description: "Your file has been uploaded successfully.",
+      });
       resolve(true);
     },
     onError: (error) => {
-      toast.error(error.message);
+      showSonnerToast({
+        message: "Failed to upload file",
+        type: "error",
+        description: error.message ?? "Something went wrong, please try again.",
+      })
     },
   });
 

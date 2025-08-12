@@ -1,8 +1,4 @@
-
-import {
-  type ColumnDef,
-} from "@tanstack/react-table";
-import * as React from "react";
+import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 
 export function NewsDataTable<TData, TValue>({
@@ -29,4 +25,3 @@ export function NewsDataTable<TData, TValue>({
   );
 }
 //TODO: make the date filter key
-

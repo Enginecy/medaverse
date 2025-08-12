@@ -6,6 +6,7 @@ import { MailIcon, Newspaper, TrophyIcon, TruckIcon } from "lucide-react";
 import { ThemeProvider } from "@/providers/theme";
 
 import Link from "next/link";
+import { ClientPasswordGate } from "@/features/login/components/modals/password-gate";
 
 const navItems = [
   {
@@ -54,6 +55,7 @@ export default function RootLayout({
               <ProfileButton />
             </nav>
             <main className="bg-background flex-1 overflow-auto">
+              <ClientPasswordGate />
               {children}
             </main>
           </div>

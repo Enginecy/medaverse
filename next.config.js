@@ -12,7 +12,7 @@ const config = {
     },
   },
   images: {
-    domains: ["images.unsplash.com", "axdfmmwtobzrqbdcikrt.supabase.co" ,"127.0.0.1"],
+    domains: ["images.unsplash.com", "axdfmmwtobzrqbdcikrt.supabase.co","127.0.0.1"],
   },
 };
 
