@@ -1,3 +1,4 @@
+import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { addImportedUsers } from "@/features/dashboard/user-management/server/actions/user-mangement";
 import ExcelJS from "exceljs";
 
@@ -50,7 +51,7 @@ export async function readUsersFile(file: File) {
       };
     }
   });
-  const users: Record<string, string>[] = [];
+  const users: Record<string, unknown>[] = [];
   for (const row of rows.slice(2)) {
     if (!Array.isArray(row) || row.length < headers.length + 1) continue;
     const userData: Record<string, string> = {};
@@ -110,6 +111,13 @@ export async function readUsersFile(file: File) {
       };
     }
   });
+  // update role object to use id instead of name
+  const roles = await getRoles();
 
+  users.forEach((user) => {
+    user.role = roles.find((role) => role.name === user.role);
+  });
+
+  console.log(users, "<======== Users");
   await addImportedUsers(users);
 }

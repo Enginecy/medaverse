@@ -522,7 +522,7 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
         dob: singleUser.dob ? new Date(singleUser.dob) : new Date("MM/DD/YYYY"),
         phoneNumber: singleUser.phoneNumber ?? "",
         npnNumber: singleUser.npnNumber ?? "",
-        states: singleUser.states ?? ([] as State[]),
+        states: [],
         userId: createdUsers[index]?.id ?? "",
         status: "active" as const,
       }));
@@ -551,6 +551,8 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
     return { success: true, message: "Users imported successfully" };
   } catch (error) {
     console.error("Error in addImportedUsers:", error);
+    // print stack trace
+    console.error(error instanceof Error ? error.stack : "Unknown error");
     // delete all created users
     const { auth } = createAdminClient();
     for (const user of createdUsers) {
