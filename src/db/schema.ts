@@ -78,9 +78,9 @@ export const insuranceCompanies = pgTable(
   {
     id: uuid().primaryKey().notNull().defaultRandom(),
     name: varchar({ length: 255 }).notNull(),
-    code: varchar({ length: 10 }).notNull(),
-    email: varchar({ length: 255 }).notNull(),
-    phone: varchar({ length: 20 }).notNull(),
+    code: varchar({ length: 10 }),
+    email: varchar({ length: 255 }),
+    phone: varchar({ length: 20 }),
     website: varchar({ length: 255 }).notNull(),
     imageUrl: varchar({ length: 255 }).notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),

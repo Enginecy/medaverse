@@ -41,10 +41,10 @@ export function CarrierDrawer({
       ? {
           carrierImage: fieldValues.imageUrl,
           companyName: fieldValues.name,
-          phoneNumber: fieldValues.phoneNumber,
-          email: fieldValues.email,
+          phoneNumber: fieldValues.phoneNumber ?? undefined,
+          email: fieldValues.email ?? undefined,
           website: fieldValues.website,
-          code: fieldValues.code,
+          code: fieldValues.code ?? undefined,
         }
       : {
           carrierImage: new File([], ""),
