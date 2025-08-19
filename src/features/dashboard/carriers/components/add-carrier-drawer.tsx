@@ -102,7 +102,7 @@ export function CarrierDrawer({
       });
       queryClient.invalidateQueries({ queryKey: ["carriers"] });  
       form.reset();
-      resolve({ success: true });
+      resolve({success: false});
     },
     onError: (actionError) => {
       showSonnerToast({

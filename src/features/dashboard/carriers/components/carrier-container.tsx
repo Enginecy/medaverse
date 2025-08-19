@@ -12,13 +12,14 @@ export function CarrierContainer({ carrier }: { carrier: Carrier }) {
   const handelClick = () => {
     showDrawer((resolve) => (
       <CarrierDrawer resolve={resolve} fieldValues={carrier}></CarrierDrawer>
+
     ));
     // window.open(link, "_blank")
   };
   return (
     <Button
       variant="outline"
-      className="h-40 w-60 rounded-2xl border-4 border-gray-100 bg-white
+      className="h-40 w-70 rounded-2xl border-4 border-gray-100 bg-white
         hover:cursor-pointer"
       onClick={handelClick}
     >
