@@ -101,14 +101,12 @@ export function CarrierDrawer({
         type: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["carriers"] });
+      form.reset();
       resolve({ success: true });
-        },
-        onError: (actionError) => {
-      
+    },
+    onError: (actionError) => {
       showSonnerToast({
-        message: isEditing
-          ? "Failed to update carrier"
-          : actionError.message ,
+        message: isEditing ? "Failed to update carrier" : actionError.message,
         type: "error",
         description: actionError.details,
       });
