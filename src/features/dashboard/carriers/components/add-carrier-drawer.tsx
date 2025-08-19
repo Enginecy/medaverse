@@ -100,7 +100,7 @@ export function CarrierDrawer({
           : "Carrier added successfully!",
         type: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["carriers"] });
+      queryClient.invalidateQueries({ queryKey: ["carriers"] });  
       form.reset();
       resolve({ success: true });
     },
