@@ -138,13 +138,13 @@ export default function Home() {
 
   return (
     <div
-      className="fixed inset-0 flex h-screen w-full items-center justify-center
-        bg-white p-4"
+      className="fixed inset-0 flex h-screen w-full max-w-full items-center justify-center
+        bg-white p-2 md:p-4 overflow-hidden"
     >
       <LoginGraphics />
       <div
         className="flex h-full w-full md:w-1/2 flex-col items-center justify-center gap-4 md:gap-6
-          bg-white px-4 md:px-0"
+          bg-white px-4 md:px-6 min-w-0 overflow-y-auto"
       >
         <LoginForm
           form={form}
@@ -171,7 +171,7 @@ export default function Home() {
               form.setValue("code", "");
               form.trigger();
             }}
-            className="text-sm text-gray-600 min-h-[44px] px-4"
+            className="text-sm text-gray-600 min-h-[44px] px-4 w-full max-w-md"
           >
             Back to email
           </Button>

@@ -12,10 +12,10 @@ export function PasswordFormField({
       control={form.control}
       name="password"
       render={({ field }) => (
-        <FormItem className="w-full">
+        <FormItem className="w-full min-w-0">
           <FormLabel className="text-sm">Password</FormLabel>
           <FormControl>
-            <Input type="password" placeholder="••••••••" {...field} />
+            <Input type="password" placeholder="••••••••" {...field} className="w-full min-w-0" />
           </FormControl>
           <FormMessage className="text-[0.625rem]" />
         </FormItem>

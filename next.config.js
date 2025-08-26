@@ -8,6 +8,8 @@ import "./src/env.js";
 const config = {
   experimental: {
     serverActions: {
+      allowedForwardedHosts: ["pds8w8w2-3000.euw.devtunnels.ms"],
+      allowedOrigins: ["*"],
       bodySizeLimit: "10mb",
     },
   },
