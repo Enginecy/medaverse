@@ -26,7 +26,7 @@ export async function PersonalInfoCard() {
   }
 
   return (
-    <Card className="w-1/2 flex-shrink-0">
+    <Card className="w-full sm:w-1/2 md:w-1/3">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
@@ -115,7 +115,7 @@ export async function PersonalInfoCard() {
               </div>
             }
           >
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-col gap-2 md:flex-row">
               <CommissionCard
                 title="Commission"
                 range={{ min: 4200, max: 12000 }}

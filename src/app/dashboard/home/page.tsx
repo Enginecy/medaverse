@@ -31,23 +31,30 @@ export const metadata: Metadata = {
 export default async function Home() {
   return (
     <div className="flex w-full flex-col items-start gap-4 md:gap-6">
-      <div className="flex w-full flex-col lg:flex-row lg:items-stretch gap-4 md:gap-6">
-        <div className="w-full lg:w-auto lg:flex-shrink-0">
-          <PersonalInfoCard />
-        </div>
-        <div className="grid w-full lg:w-1/2 grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div
+        className="flex w-full flex-col gap-4 md:gap-6 lg:flex-row
+          lg:items-stretch"
+      >
+        <PersonalInfoCard />
+
+        <div
+          className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 md:gap-6
+            lg:w-1/2"
+        >
           <Suspense fallback={<PersonalGoalsGridSkeleton />}>
             <PersonalGoalsGrid />
           </Suspense>
         </div>
       </div>
-      <div className="flex w-full flex-col xl:flex-row gap-4 md:gap-6">
+      <div className="flex w-full flex-col gap-4 md:gap-6 xl:flex-row">
         <Card className="flex-1">
           <CardHeader>
             <CardTitle>Recent Sales</CardTitle>
             <CardAction>
               <Link href="/dashboard/sales">
-                <Button variant="outline" size="sm" className="min-h-[44px]">View All</Button>
+                <Button variant="outline" size="sm" className="min-h-[44px]">
+                  View All
+                </Button>
               </Link>
             </CardAction>
           </CardHeader>
@@ -182,28 +189,30 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 
   return (
     <div
-      className="flex h-auto md:h-[180px] w-full flex-col items-center justify-between
-        gap-4 rounded-2xl border border-[#E5ECF6] bg-white p-4 md:p-6 shadow-sm
-        md:flex-row"
+      className="flex h-auto w-full flex-col items-center justify-between gap-4
+        rounded-2xl border border-[#E5ECF6] bg-white p-4 shadow-sm md:h-[180px]
+        md:flex-row md:p-6"
     >
-      <div className="flex flex-1 flex-col items-start gap-1 w-full md:w-auto">
-        <div className="mb-1 flex flex-col sm:flex-row sm:items-center gap-2">
-          <span className="text-sm md:text-md font-medium text-gray-500">
+      <div className="flex w-full flex-1 flex-col items-start gap-1 md:w-auto">
+        <div className="mb-1 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <span className="md:text-md text-sm font-medium text-gray-500">
             {goal.label}
           </span>
-          <Badge className={`text-xs self-start ${getGoalTypeColor(goal.goalType)}`}>
+          <Badge
+            className={`self-start text-xs ${getGoalTypeColor(goal.goalType)}`}
+          >
             {goal.goalType?.toUpperCase()}
           </Badge>
         </div>
-        <span className="text-2xl md:text-3xl font-bold text-gray-900">
+        <span className="text-2xl font-bold text-gray-900 md:text-3xl">
           {achieved.toLocaleString()}
         </span>
-        <span className="text-xs md:text-sm font-normal text-gray-700">
+        <span className="text-xs font-normal text-gray-700 md:text-sm">
           of target ${target.toLocaleString()}
         </span>
         <span className="text-xs text-gray-500">{getGoalPeriod()}</span>
       </div>
-      <div className="flex items-center justify-center w-full md:w-auto">
+      <div className="flex w-full items-center justify-center md:w-auto">
         <ChartRadialText title={`${percent}%`} value={percent} />
       </div>
     </div>
@@ -213,17 +222,17 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 function HomeGoalCardSkeleton() {
   return (
     <div
-      className="flex h-auto md:h-[180px] w-full flex-col items-center justify-between
-        gap-4 rounded-2xl border border-[#E5ECF6] bg-white p-4 md:p-6 shadow-sm
-        md:flex-row"
+      className="flex h-auto w-full flex-col items-center justify-between gap-4
+        rounded-2xl border border-[#E5ECF6] bg-white p-4 shadow-sm md:h-[180px]
+        md:flex-row md:p-6"
     >
-      <div className="flex flex-1 flex-col items-start gap-1 w-full md:w-auto">
+      <div className="flex w-full flex-1 flex-col items-start gap-1 md:w-auto">
         <Skeleton className="h-4 w-20" />
         <Skeleton className="h-8 w-24" />
         <Skeleton className="h-3 w-32" />
         <Skeleton className="h-3 w-28" />
       </div>
-      <div className="flex items-center justify-center w-full md:w-auto">
+      <div className="flex w-full items-center justify-center md:w-auto">
         <Skeleton className="h-16 w-16 rounded-full" />
       </div>
     </div>

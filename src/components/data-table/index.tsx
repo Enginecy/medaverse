@@ -277,7 +277,7 @@ export function DataTable<TData, TValue>({
               className="pl-9 min-h-[44px] w-full"
             />
           </div>
-          <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0  md:flex-row flex-wrap">
             {enableColumnFilter && <ColumnFilter table={table} />}
             {enableDateFilter && (
               <DateRangePicker
@@ -298,12 +298,12 @@ export function DataTable<TData, TValue>({
       )}
 
       <div className="rounded-md border w-full overflow-x-auto">
-        <Table className="min-w-full w-full">
+        <Table className="min-w-full w-full text-xs md:text-sm">
           <TableHeader className="bg-secondary text-secondary-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {hasSelectionEnabled && (
-                  <TableHead className="w-[50px] sticky left-0 bg-secondary">
+                  <TableHead className="w-[50px] sticky left-0 bg-secondary h-8 md:h-10 px-1 md:px-2">
                     <Checkbox
                       aria-label="Select all"
                       checked={table.getIsAllPageRowsSelected()}
@@ -328,18 +328,18 @@ export function DataTable<TData, TValue>({
 
                   let sortIcon = null;
                   if (!isSorted) {
-                    sortIcon = <ArrowDownUp className="h-4 w-4" />;
+                    sortIcon = <ArrowDownUp className="h-3 w-3 md:h-4 md:w-4" />;
                   } else if (isSorted === "asc") {
-                    sortIcon = <ArrowUpNarrowWide className="h-4 w-4" />;
+                    sortIcon = <ArrowUpNarrowWide className="h-3 w-3 md:h-4 md:w-4" />;
                   } else if (isSorted === "desc") {
-                    sortIcon = <ArrowDownWideNarrow className="h-4 w-4" />;
+                    sortIcon = <ArrowDownWideNarrow className="h-3 w-3 md:h-4 md:w-4" />;
                   } else if (!canSort) {
                     sortIcon = null;
                   }
 
                   return (
-                    <TableHead key={header.id} onClick={handleSort} className="whitespace-nowrap">
-                      <span className="flex items-center gap-2">
+                    <TableHead key={header.id} onClick={handleSort} className="whitespace-nowrap h-8 md:h-10 px-1 md:px-2 text-xs md:text-sm">
+                      <span className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
                         {headerComponent}
                         {sortIcon}
                       </span>
@@ -358,7 +358,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {hasSelectionEnabled && (
-                    <TableCell className="w-[50px] sticky left-0 bg-background">
+                    <TableCell className="w-[50px] sticky left-0 bg-background p-1 md:p-2 text-xs md:text-sm">
                       <Checkbox
                         aria-label="Select row"
                         checked={row.getIsSelected()}
@@ -367,7 +367,7 @@ export function DataTable<TData, TValue>({
                     </TableCell>
                   )}
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="whitespace-nowrap">
+                    <TableCell key={cell.id} className="whitespace-nowrap p-1 md:p-2 text-xs md:text-sm">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -380,7 +380,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-16 md:h-24 text-center p-1 md:p-2 text-xs md:text-sm"
                 >
                   No results.
                 </TableCell>
