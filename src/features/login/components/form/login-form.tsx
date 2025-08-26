@@ -25,9 +25,9 @@ export function LoginForm({
 }) {
   const isOtp = mode === "OTP";
   return (
-    <div className="flex w-[45%] flex-col items-center gap-2">
+    <div className="flex w-full max-w-md flex-col items-center gap-2 px-4">
       <p className="rounded-2xl border px-4 py-1">Login</p>
-      <p className="text-text-heading-primary text-2xl font-semibold">
+      <p className="text-text-heading-primary text-xl md:text-2xl font-semibold text-center">
         Sign in to your account
       </p>
       <SegmentedButton
@@ -36,7 +36,7 @@ export function LoginForm({
         value={mode}
         onChange={(v) => onModeChange(v as "OTP" | "Password")}
       />
-      <p className="text-center text-neutral-500">
+      <p className="text-center text-neutral-500 text-sm md:text-base px-2">
         {isOtp
           ? step === "email"
             ? "Please enter your email address below to receive an OTP code."

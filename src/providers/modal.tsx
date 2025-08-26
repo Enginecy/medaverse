@@ -3,6 +3,8 @@
 import { Sheet } from "@/components/ui/sheet";
 import { createContext, useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Drawer } from "@/components/ui/drawer";
 
 export const ModalContext = createContext<{
   openDrawer: (drawer: React.ReactNode, onClose?: () => void) => void;
@@ -49,7 +51,8 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
       setDrawer(null);
     }
   };
-
+  const isMobile = useIsMobile();
+  console.log(isMobile, '<<<<<<<<<<<<<');
   return (
     <ModalContext.Provider
       value={{
@@ -68,9 +71,15 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-      <Sheet open={openDrawer} onOpenChange={handleOpenDrawerChange}>
-        {drawer}
-      </Sheet>
+      {isMobile ? (
+        <Sheet open={openDrawer} onOpenChange={handleOpenDrawerChange}>
+          {drawer}
+        </Sheet>
+      ) : (
+        <Drawer open={openDrawer} onOpenChange={handleOpenDrawerChange}>
+          {drawer}
+        </Drawer>
+      )}
       <Dialog open={openDialog} onOpenChange={handleOpenDialogChange} >
         {dialog}
       </Dialog>

@@ -116,7 +116,7 @@ export function CarrierDrawer({
     submitCarrierData(data);
   };
   return (
-    <SheetContent className="w-1/3 overflow-auto p-6">
+    <SheetContent className="w-1/3 overflow-auto p-6 ">
       <SheetTitle className="text-2xl font-semibold">Add Carrier</SheetTitle>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <Form {...form}>

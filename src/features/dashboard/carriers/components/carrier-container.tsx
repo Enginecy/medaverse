@@ -26,11 +26,11 @@ export function CarrierContainer({ carrier }: { carrier: Carrier }) {
         <TooltipTrigger asChild>
           <Button
             variant="outline"
-            className="h-40 w-70 rounded-2xl border-4 border-gray-100 bg-white
+            className="h-32 md:h-40 w-full min-h-[128px] md:min-h-[160px] rounded-2xl border-4 border-gray-100 bg-white
               hover:cursor-pointer hover:bg-blue-100"
             onClick={handelClick}
           >
-            <div className="relative h-full max-h-[120px] w-full max-w-[190px]">
+            <div className="relative h-full max-h-[80px] md:max-h-[120px] w-full max-w-[120px] md:max-w-[190px]">
               <Image
                 src={carrier.imageUrl}
                 alt="Carrier"

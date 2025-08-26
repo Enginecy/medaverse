@@ -143,8 +143,8 @@ export default function Home() {
     >
       <LoginGraphics />
       <div
-        className="flex h-full w-1/2 flex-col items-center justify-center gap-6
-          bg-white"
+        className="flex h-full w-full md:w-1/2 flex-col items-center justify-center gap-4 md:gap-6
+          bg-white px-4 md:px-0"
       >
         <LoginForm
           form={form}
@@ -171,7 +171,7 @@ export default function Home() {
               form.setValue("code", "");
               form.trigger();
             }}
-            className="text-sm text-gray-600"
+            className="text-sm text-gray-600 min-h-[44px] px-4"
           >
             Back to email
           </Button>

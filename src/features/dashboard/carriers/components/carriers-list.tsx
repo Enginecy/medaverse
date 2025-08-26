@@ -39,7 +39,7 @@ export function CarriersList() {
     );
   }
   return (
-    <div className="flex flex-wrap gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
       {carriers!.map((carrier) => (
         <CarrierContainer key={carrier.id} carrier={carrier} />
       ))}
@@ -49,11 +49,11 @@ export function CarriersList() {
 
 function CarriersListSkeleton() {
   return (
-    <div className="flex flex-wrap gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
       {Array.from({ length: 6 }).map((_, idx) => (
         <div
           key={idx}
-          className="flex h-40 w-70 items-center justify-center rounded-2xl
+          className="flex h-32 md:h-40 w-full items-center justify-center rounded-2xl
             border-4 border-gray-100 bg-white"
         >
           <Skeleton className="h-full w-full rounded-md bg-gray-200" />

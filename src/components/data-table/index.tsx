@@ -264,7 +264,7 @@ export function DataTable<TData, TValue>({
       )}
 
       {hasActions && (
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="relative max-w-sm flex-1">
             <Search
               className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4
@@ -274,10 +274,10 @@ export function DataTable<TData, TValue>({
               placeholder={`Search...`}
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(String(event.target.value))}
-              className="pl-9"
+              className="pl-9 min-h-[44px]"
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {enableColumnFilter && <ColumnFilter table={table} />}
             {enableDateFilter && (
               <DateRangePicker
@@ -297,13 +297,13 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="min-w-full">
           <TableHeader className="bg-secondary text-secondary-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {hasSelectionEnabled && (
-                  <TableHead className="w-[50px]">
+                  <TableHead className="w-[50px] sticky left-0 bg-secondary">
                     <Checkbox
                       aria-label="Select all"
                       checked={table.getIsAllPageRowsSelected()}
@@ -338,7 +338,7 @@ export function DataTable<TData, TValue>({
                   }
 
                   return (
-                    <TableHead key={header.id} onClick={handleSort}>
+                    <TableHead key={header.id} onClick={handleSort} className="whitespace-nowrap">
                       <span className="flex items-center gap-2">
                         {headerComponent}
                         {sortIcon}
@@ -358,7 +358,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {hasSelectionEnabled && (
-                    <TableCell className="w-[50px]">
+                    <TableCell className="w-[50px] sticky left-0 bg-background">
                       <Checkbox
                         aria-label="Select row"
                         checked={row.getIsSelected()}
@@ -367,7 +367,7 @@ export function DataTable<TData, TValue>({
                     </TableCell>
                   )}
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="whitespace-nowrap">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -389,7 +389,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between space-x-2 py-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-4">
         <div className="flex items-center gap-2">
           {footer}
           {multiSelectFooter &&
@@ -399,26 +399,30 @@ export function DataTable<TData, TValue>({
             )}
         </div>
         {enablePagination && (
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <span className="text-muted-foreground text-sm text-center sm:text-left">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={table.previousPage}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={table.nextPage}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={table.previousPage}
+                disabled={!table.getCanPreviousPage()}
+                className="min-h-[44px] flex-1 sm:flex-initial"
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={table.nextPage}
+                disabled={!table.getCanNextPage()}
+                className="min-h-[44px] flex-1 sm:flex-initial"
+              >
+                Next
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -501,10 +505,10 @@ function ColumnFilter<TData>({ table }: { table: ReactTable<TData> }) {
       <PopoverTrigger asChild>
         <Button
           variant={hasActiveFilters ? "default" : "outline"}
-          className="relative gap-2"
+          className="relative gap-2 min-h-[44px]"
         >
           <Filter className="h-4 w-4" />
-          Filter
+          <span className="hidden sm:inline">Filter</span>
           {hasActiveFilters && (
             <span
               className="bg-background text-foreground absolute -top-1 -right-1
