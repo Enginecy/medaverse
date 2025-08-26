@@ -196,7 +196,7 @@ export function AddUserDrawer({
 
   const isPending = isCreating || isUpdating;
   return (
-    <SheetContent className="w-140 overflow-auto px-6 py-5">
+    <SheetContent className="overflow-auto px-6 py-5">
       <SheetHeader>
         <SheetTitle>Add New Agent</SheetTitle>
       </SheetHeader>

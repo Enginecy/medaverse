@@ -88,7 +88,7 @@ export function AddGoalDrawer({ resolve }: AddGoalSheetProps) {
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <SheetContent className="w-1/3">
+    <SheetContent>
       <SheetHeader>
         <SheetTitle>Add New Goal</SheetTitle>
         <SheetDescription>

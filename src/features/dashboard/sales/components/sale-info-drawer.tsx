@@ -17,7 +17,7 @@ export function SaleInfoDrawer({
 }) {
   console.log("Selected Row:", selectedRow.products[0]?.productName);
   return (
-    <SheetContent className="w-1/3 overflow-auto p-5">
+    <SheetContent className="overflow-auto p-5">
       <SheetHeader>
         <SheetTitle>Sale Info</SheetTitle>
       </SheetHeader>
@@ -39,7 +39,7 @@ export function SaleInfoDrawer({
           content={selectedRow.totalAmount!.toString()}
         />
         {/* TODO: replace with actual total premiums code */}
-        <Accordion type="multiple" className="w-full flex flex-col gap-3  ">
+        <Accordion type="multiple" className="flex w-full flex-col gap-3">
           {selectedRow.products.map((product) => (
             <ProductExpandContainer
               key={product.policyNumber}

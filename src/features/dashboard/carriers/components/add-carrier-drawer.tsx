@@ -100,9 +100,9 @@ export function CarrierDrawer({
           : "Carrier added successfully!",
         type: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["carriers"] });  
+      queryClient.invalidateQueries({ queryKey: ["carriers"] });
       form.reset();
-      resolve({success: false});
+      resolve({ success: false });
     },
     onError: (actionError) => {
       showSonnerToast({
@@ -116,7 +116,7 @@ export function CarrierDrawer({
     submitCarrierData(data);
   };
   return (
-    <SheetContent className="w-1/3 overflow-auto p-6 ">
+    <SheetContent className="overflow-auto p-6">
       <SheetTitle className="text-2xl font-semibold">Add Carrier</SheetTitle>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <Form {...form}>

@@ -77,17 +77,14 @@ export function RolesFormSheet<T>({
     defaultValues: defaultValues,
   });
   const { mutate: edit, isPending: isUpdating } = useMutation({
-    mutationFn: async ( {
-      formData , 
-      
-    } :{
+    mutationFn: async ({
+      formData,
+    }: {
       formData: RolesFormSchemaData & { id: string };
-      
-    }
-   ) => {
+    }) => {
       const result = await editRole(formData);
       if (result.success) {
-        return  result.data;
+        return result.data;
       }
       throw result.error;
     },
@@ -112,10 +109,10 @@ export function RolesFormSheet<T>({
   });
 
   const { mutate: add, isPending: isAdding } = useMutation({
-    mutationFn: async (formData : RolesFormSchemaData ) => {
+    mutationFn: async (formData: RolesFormSchemaData) => {
       const result = await addRole(formData);
       if (result.success) {
-        return  result.data;
+        return result.data;
       }
       throw result.error;
     },
@@ -169,7 +166,7 @@ export function RolesFormSheet<T>({
   });
 
   return (
-    <SheetContent className="w-1/3 overflow-y-auto p-6">
+    <SheetContent className="overflow-y-auto p-6">
       <SheetHeader className="px-0">
         <SheetTitle>Roles</SheetTitle>
         <SheetDescription>

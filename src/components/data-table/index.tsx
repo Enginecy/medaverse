@@ -130,7 +130,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTableSkeleton() {
   return (
-    <div className="space-y-4 w-full">
+    <div className="space-y-4 w-full max-w-full overflow-x-hidden">
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="bg-muted h-6 w-48 animate-pulse rounded" />
@@ -243,19 +243,19 @@ export function DataTable<TData, TValue>({
   }, new Date());
 
   return (
-    <div className="space-y-4 w-full">
+    <div className="space-y-4 w-full max-w-full min-w-0">
       {(title ?? addButton) && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between min-w-0">
           {title && (
-            <div>
-              <h3 className="text-lg font-medium">{title}</h3>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-lg font-medium truncate">{title}</h3>
               {description && (
-                <p className="text-muted-foreground text-sm">{description}</p>
+                <p className="text-muted-foreground text-sm truncate">{description}</p>
               )}
             </div>
           )}
           {addButton && (
-            <Button size="sm" className="gap-2" onClick={addButton.onClick}>
+            <Button size="sm" className="gap-2 flex-shrink-0" onClick={addButton.onClick}>
               <Plus className="h-4 w-4" />
               {addButton.label}
             </Button>
@@ -264,8 +264,8 @@ export function DataTable<TData, TValue>({
       )}
 
       {hasActions && (
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="relative max-w-sm flex-1">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 min-w-0">
+          <div className="relative max-w-sm flex-1 min-w-0">
             <Search
               className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4
                 -translate-y-1/2"
@@ -274,10 +274,10 @@ export function DataTable<TData, TValue>({
               placeholder={`Search...`}
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(String(event.target.value))}
-              className="pl-9 min-h-[44px]"
+              className="pl-9 min-h-[44px] w-full"
             />
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
             {enableColumnFilter && <ColumnFilter table={table} />}
             {enableDateFilter && (
               <DateRangePicker
@@ -297,8 +297,8 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-      <div className="rounded-md border overflow-x-auto">
-        <Table className="min-w-full">
+      <div className="rounded-md border w-full overflow-x-auto">
+        <Table className="min-w-full w-full">
           <TableHeader className="bg-secondary text-secondary-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
