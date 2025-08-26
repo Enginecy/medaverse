@@ -29,6 +29,7 @@ import {
 } from "@/features/dashboard/carriers/server/actions/carriers";
 import type { Carrier } from "@/features/dashboard/carriers/server/db/carriers";
 import { DeleteCarrierButton } from "@/features/dashboard/carriers/components/delete-carrier-button";
+
 export function CarrierDrawer({
   resolve,
   fieldValues,
@@ -41,10 +42,10 @@ export function CarrierDrawer({
       ? {
           carrierImage: fieldValues.imageUrl,
           companyName: fieldValues.name,
-          phoneNumber: fieldValues.phoneNumber,
-          email: fieldValues.email,
+          phoneNumber: fieldValues.phoneNumber ?? undefined,
+          email: fieldValues.email ?? undefined,
           website: fieldValues.website,
-          code: fieldValues.code,
+          code: fieldValues.code ?? undefined,
         }
       : {
           carrierImage: new File([], ""),
@@ -99,15 +100,13 @@ export function CarrierDrawer({
           : "Carrier added successfully!",
         type: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["carriers"] });
-      resolve({ success: true });
-        },
-        onError: (actionError) => {
-      
+      queryClient.invalidateQueries({ queryKey: ["carriers"] });  
+      form.reset();
+      resolve({success: false});
+    },
+    onError: (actionError) => {
       showSonnerToast({
-        message: isEditing
-          ? "Failed to update carrier"
-          : actionError.message ,
+        message: isEditing ? "Failed to update carrier" : actionError.message,
         type: "error",
         description: actionError.details,
       });

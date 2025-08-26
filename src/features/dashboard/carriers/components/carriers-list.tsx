@@ -53,10 +53,10 @@ function CarriersListSkeleton() {
       {Array.from({ length: 6 }).map((_, idx) => (
         <div
           key={idx}
-          className="flex h-40 w-60 items-center justify-center rounded-2xl
-            border-4 border-gray-100 bg-white p-2"
+          className="flex h-40 w-70 items-center justify-center rounded-2xl
+            border-4 border-gray-100 bg-white"
         >
-          <Skeleton className="h-[120px] w-[190px] rounded-md bg-gray-200" />
+          <Skeleton className="h-full w-full rounded-md bg-gray-200" />
         </div>
       ))}
     </div>
