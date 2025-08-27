@@ -47,8 +47,7 @@ export async function getTotalSalesAmount() {
   if (totalSales?.total === null) {
     return "$0";
   }
-
-  return "$" + totalSales!.total!.toLocaleString();
+  return "$" + Number(totalSales!.total!).toLocaleString();
 }
 
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;

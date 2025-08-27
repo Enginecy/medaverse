@@ -1,10 +1,18 @@
+"use server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { env } from "@/env";
 import type { Database } from "database.types";
 import { createDrizzleSupabaseClient } from "@/db/db";
-import { eq } from "drizzle-orm";
-import { profile } from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
+import { 
+  profile, 
+  permissions, 
+  rolePermissions as rolePermissionsTable, 
+  roles, 
+  userPermissionsEnhanced, 
+  userRoles 
+} from "@/db/schema";
 import { tryCatch } from "@/lib/utils";
 
 export async function createClient() {
@@ -66,4 +74,69 @@ export async function getUser() {
   }
 
   return { user: session.user, profile: userProfile[0] };
+}
+
+export async function getCurrentUserPermissions(): Promise<string[]> {
+  const { user } = await getUser();
+  const drizzle = await createDrizzleSupabaseClient();
+
+  const { data, error } = await tryCatch(
+    drizzle.rls(async (tx) => {
+      // Get permissions from roles
+      const rolePermissionsQuery = tx
+        .select({
+          permissionName: permissions.name,
+        })
+        .from(userRoles)
+        .innerJoin(roles, eq(userRoles.roleId, roles.id))
+        .innerJoin(rolePermissionsTable, eq(roles.id, rolePermissionsTable.roleId))
+        .innerJoin(permissions, eq(rolePermissionsTable.permissionId, permissions.id))
+        .where(
+          sql`${userRoles.userId} = ${user.id} 
+              AND ${userRoles.status} = 'active' 
+              AND ${roles.status} = 'active'
+              AND (${userRoles.expiresAt} IS NULL OR ${userRoles.expiresAt} > NOW())
+              AND ${userRoles.deletedAt} IS NULL
+              AND ${roles.deletedAt} IS NULL
+              AND ${rolePermissionsTable.deletedAt} IS NULL
+              AND ${permissions.deletedAt} IS NULL`
+        );
+
+      // Get direct permissions
+      const directPermissionsQuery = tx
+        .select({
+          permissionName: permissions.name,
+        })
+        .from(userPermissionsEnhanced)
+        .innerJoin(permissions, eq(userPermissionsEnhanced.permissionId, permissions.id))
+        .where(
+          sql`${userPermissionsEnhanced.userId} = ${user.id} 
+              AND ${userPermissionsEnhanced.status} = 'active'
+              AND (${userPermissionsEnhanced.expiresAt} IS NULL OR ${userPermissionsEnhanced.expiresAt} > NOW())
+              AND ${userPermissionsEnhanced.deletedAt} IS NULL
+              AND ${permissions.deletedAt} IS NULL`
+        );
+
+      // Execute both queries
+      const [rolePerms, directPerms] = await Promise.all([
+        rolePermissionsQuery,
+        directPermissionsQuery,
+      ]);
+
+      // Combine and deduplicate permissions
+      const allPermissions = new Set<string>();
+      
+      rolePerms.forEach((p: { permissionName: string }) => allPermissions.add(p.permissionName));
+      directPerms.forEach((p: { permissionName: string }) => allPermissions.add(p.permissionName));
+
+      return Array.from(allPermissions);
+    })
+  );
+
+  if (error) {
+    console.error("Error fetching user permissions:", error);
+    throw new Error("Failed to fetch user permissions");
+  }
+
+  return data || [];
 }
