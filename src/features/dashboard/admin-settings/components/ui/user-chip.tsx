@@ -34,7 +34,7 @@ export function UserChip({ user, size = "md" }: UserChipProps) {
 
   return (
     <div
-      className={`flex items-center gap-3
+      className={`flex items-center gap-2
         ${animate ? "animate-bottom-to-top" : ""}`}
     >
       <Avatar className={sizeClass[size]}>
