@@ -104,21 +104,23 @@ export default async function LeaderboardPage() {
             data={divisionalDirectorData}
           />
         </div>
-        <div className="flex flex-col gap-4">
-          <LeaderboardCard
-            user={{
-              name: regionalDirectorData[0]!.name,
-              avatar: regionalDirectorData[0]!.avatarUrl,
-              role: regionalDirectorData[0]!.role!,
-              annualizedVolume: regionalDirectorData[0]!.totalSalesAmount,
-              households: regionalDirectorData[0]!.salesCount,
-            }}
-          />
-          <LeaderboardTable
-            title="Regional Director"
-            data={regionalDirectorData}
-          />
-        </div>
+        {regionalDirectorData.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <LeaderboardCard
+              user={{
+                name: regionalDirectorData[0]!.name,
+                avatar: regionalDirectorData[0]!.avatarUrl,
+                role: regionalDirectorData[0]!.role!,
+                annualizedVolume: regionalDirectorData[0]!.totalSalesAmount,
+                households: regionalDirectorData[0]!.salesCount,
+              }}
+            />
+            <LeaderboardTable
+              title="Regional Director"
+              data={regionalDirectorData}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
