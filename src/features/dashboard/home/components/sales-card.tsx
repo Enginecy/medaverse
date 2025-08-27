@@ -28,6 +28,7 @@ export function SalesCard({
             onChange={(value) => {
               setSelected(value as (typeof options)[number]);
             }}
+            className="md:text-xs"
           />
         </CardTitle>
       </CardHeader>

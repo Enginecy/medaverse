@@ -26,17 +26,22 @@ export async function PersonalInfoCard() {
   }
 
   return (
-    <Card className="w-full sm:w-1/2 md:w-1/3">
-      <CardHeader>
+    <div
+      className="w-full rounded-2xl border-1 border-gray-300 bg-white p-10 lg:w-1/2 lg:justify-between"
+    >
+      <div className="flex items-center justify-between">
+        <p className="text-lg font-semibold">Personal info</p>
+        <Button variant="outline" className="text-primary">
+          <span>Edit Profile</span>
+          <Edit />
+        </Button>
+      </div>
+      {/* <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <p className="text-lg font-semibold">Personal info</p>
-          <Button variant="outline" className="text-primary">
-            <span>Edit Profile</span>
-            <Edit />
-          </Button>
+          
         </CardTitle>
-      </CardHeader>
-      <CardContent>
+      </CardHeader> */}
+      <div>
         <div className="flex flex-col gap-6">
           <div className="flex gap-6">
             <div className="relative h-[150px] w-[150px] rounded-lg">
@@ -48,12 +53,16 @@ export async function PersonalInfoCard() {
                   />
                 }
               >
-                <Image
-                  src={profile.avatarUrl!}
-                  alt="profile"
-                  fill
-                  className="rounded-lg object-cover object-top"
-                />
+                <div className="relative h-32 w-32">
+                  <Image
+                    src={profile.avatarUrl!}
+                    alt="profile"
+                    fill
+                    sizes="128px" 
+                    style={{ objectFit: "contain" }}
+                    className="rounded-lg object-cover object-top"
+                  />
+                </div>
               </Suspense>
             </div>
             <div className="flex grow flex-col gap-6">
@@ -115,21 +124,19 @@ export async function PersonalInfoCard() {
               </div>
             }
           >
-            <div className="flex flex-col gap-2 md:flex-row">
+            <div className="flex w-full flex-col gap-2 md:flex-row items-center">
               <CommissionCard
                 title="Commission"
                 range={{ min: 4200, max: 12000 }}
-                className="flex aspect-square h-50 w-full flex-col gap-0"
+                className="flex h-50 w-full flex-col gap-0"
               />
 
-              <SalesCard
-                className="flex aspect-square h-50 w-full flex-col gap-0"
-              />
+              <SalesCard className="flex h-50 w-full flex-col gap-0" />
             </div>
           </Suspense>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 function CommissionCard({
