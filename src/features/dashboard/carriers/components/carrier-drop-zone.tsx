@@ -44,12 +44,15 @@ const Container = styled.div`
 
 export function CarrierDropzoneImageFormField({
   form,
+  disabled = false,
 }: {
   form: UseFormReturn<AddCarrierFormData>;
+  disabled?: boolean;
 }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
       accept: { "image/*": [] },
+      disabled,
       // multiple: false,
       onDropAccepted(files) {
         const firstFile = files[0];
@@ -72,6 +75,10 @@ export function CarrierDropzoneImageFormField({
               <div className="container">
                 <Container
                   {...getRootProps({ isFocused, isDragAccept, isDragReject })}
+                  style={{ 
+                    opacity: disabled ? 0.5 : 1, 
+                    cursor: disabled ? 'not-allowed' : 'pointer' 
+                  }}
                 >
                   <input {...getInputProps()} />
                   <SquareArrowUp className="text-primary" />
@@ -79,10 +86,13 @@ export function CarrierDropzoneImageFormField({
                     className="text-foreground text-center text-sm
                       font-semibold"
                   >
-                    Drag & drop or Upload
+                    {disabled ? "Upload disabled" : "Drag & drop or Upload"}
                   </p>
                   <p className="text-center text-sm text-neutral-500">
-                    Supported formats: JPEG, JPG or PNG, max size 5MB
+                    {disabled 
+                      ? "You don't have permission to upload images" 
+                      : "Supported formats: JPEG, JPG or PNG, max size 5MB"
+                    }
                   </p>
                 </Container>
               </div>

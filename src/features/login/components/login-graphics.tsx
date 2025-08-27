@@ -5,17 +5,17 @@ import logo from "public/meda_health_logo.png";
 
  export function LoginGraphics() {
   return (
-    <div className="bg-primary relative h-full w-1/2 rounded-lg">
-      <div className="absolute z-10 flex h-full flex-col items-start justify-between p-8">
+    <div className="bg-primary relative h-full w-1/2 rounded-lg hidden md:block min-w-0">
+      <div className="absolute z-10 flex h-full flex-col items-start justify-between p-4 lg:p-8">
         <Image
           src={logo}
           alt="logo"
           className="brightness-0 invert"
-          width={200}
-          height={200}
+          width={150}
+          height={150}
         />
         <p
-          className="text-light-blue-500 text-5xl"
+          className="text-light-blue-500 text-2xl lg:text-4xl xl:text-5xl leading-tight"
           style={{ fontFamily: "Druk Wide Bold Bold" }}
         >
           Unlock financial freedom in the MedaVerse

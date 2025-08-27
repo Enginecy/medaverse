@@ -119,7 +119,7 @@ export function AddSaleDrawer({
     submitNewSale(data);
   };
   return (
-    <SheetContent className="w-1/3 overflow-y-scroll p-6">
+    <SheetContent className=" overflow-y-scroll p-6">
       <SheetHeader>
         <SheetTitle>Add New Sale</SheetTitle>
       </SheetHeader>

@@ -130,7 +130,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTableSkeleton() {
   return (
-    <div className="space-y-4 w-full">
+    <div className="space-y-4 w-full max-w-full overflow-x-hidden">
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="bg-muted h-6 w-48 animate-pulse rounded" />
@@ -243,19 +243,19 @@ export function DataTable<TData, TValue>({
   }, new Date());
 
   return (
-    <div className="space-y-4 w-full">
+    <div className="space-y-4 w-full max-w-full min-w-0">
       {(title ?? addButton) && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between min-w-0">
           {title && (
-            <div>
-              <h3 className="text-lg font-medium">{title}</h3>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-lg font-medium truncate">{title}</h3>
               {description && (
-                <p className="text-muted-foreground text-sm">{description}</p>
+                <p className="text-muted-foreground text-sm truncate">{description}</p>
               )}
             </div>
           )}
           {addButton && (
-            <Button size="sm" className="gap-2" onClick={addButton.onClick}>
+            <Button size="sm" className="gap-2 flex-shrink-0" onClick={addButton.onClick}>
               <Plus className="h-4 w-4" />
               {addButton.label}
             </Button>
@@ -264,8 +264,8 @@ export function DataTable<TData, TValue>({
       )}
 
       {hasActions && (
-        <div className="flex items-center justify-between gap-2">
-          <div className="relative max-w-sm flex-1">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 min-w-0">
+          <div className="relative max-w-sm flex-1 min-w-0">
             <Search
               className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4
                 -translate-y-1/2"
@@ -274,10 +274,10 @@ export function DataTable<TData, TValue>({
               placeholder={`Search...`}
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(String(event.target.value))}
-              className="pl-9"
+              className="pl-9 min-h-[44px] w-full"
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0  md:flex-row flex-wrap">
             {enableColumnFilter && <ColumnFilter table={table} />}
             {enableDateFilter && (
               <DateRangePicker
@@ -297,13 +297,13 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border w-full overflow-x-auto">
+        <Table className="min-w-full w-full text-xs md:text-sm">
           <TableHeader className="bg-secondary text-secondary-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {hasSelectionEnabled && (
-                  <TableHead className="w-[50px]">
+                  <TableHead className="w-[50px] sticky left-0 bg-secondary h-8 md:h-10 px-1 md:px-2">
                     <Checkbox
                       aria-label="Select all"
                       checked={table.getIsAllPageRowsSelected()}
@@ -328,18 +328,18 @@ export function DataTable<TData, TValue>({
 
                   let sortIcon = null;
                   if (!isSorted) {
-                    sortIcon = <ArrowDownUp className="h-4 w-4" />;
+                    sortIcon = <ArrowDownUp className="h-3 w-3 md:h-4 md:w-4" />;
                   } else if (isSorted === "asc") {
-                    sortIcon = <ArrowUpNarrowWide className="h-4 w-4" />;
+                    sortIcon = <ArrowUpNarrowWide className="h-3 w-3 md:h-4 md:w-4" />;
                   } else if (isSorted === "desc") {
-                    sortIcon = <ArrowDownWideNarrow className="h-4 w-4" />;
+                    sortIcon = <ArrowDownWideNarrow className="h-3 w-3 md:h-4 md:w-4" />;
                   } else if (!canSort) {
                     sortIcon = null;
                   }
 
                   return (
-                    <TableHead key={header.id} onClick={handleSort}>
-                      <span className="flex items-center gap-2">
+                    <TableHead key={header.id} onClick={handleSort} className="whitespace-nowrap h-8 md:h-10 px-1 md:px-2 text-xs md:text-sm">
+                      <span className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
                         {headerComponent}
                         {sortIcon}
                       </span>
@@ -358,7 +358,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {hasSelectionEnabled && (
-                    <TableCell className="w-[50px]">
+                    <TableCell className="w-[50px] sticky left-0 bg-background p-1 md:p-2 text-xs md:text-sm">
                       <Checkbox
                         aria-label="Select row"
                         checked={row.getIsSelected()}
@@ -367,7 +367,7 @@ export function DataTable<TData, TValue>({
                     </TableCell>
                   )}
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="whitespace-nowrap p-1 md:p-2 text-xs md:text-sm">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -380,7 +380,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-16 md:h-24 text-center p-1 md:p-2 text-xs md:text-sm"
                 >
                   No results.
                 </TableCell>
@@ -389,7 +389,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between space-x-2 py-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-4">
         <div className="flex items-center gap-2">
           {footer}
           {multiSelectFooter &&
@@ -399,26 +399,30 @@ export function DataTable<TData, TValue>({
             )}
         </div>
         {enablePagination && (
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <span className="text-muted-foreground text-sm text-center sm:text-left">
               Page {pagination.pageIndex + 1} of {table.getPageCount()}
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={table.previousPage}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={table.nextPage}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={table.previousPage}
+                disabled={!table.getCanPreviousPage()}
+                className="min-h-[44px] flex-1 sm:flex-initial"
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={table.nextPage}
+                disabled={!table.getCanNextPage()}
+                className="min-h-[44px] flex-1 sm:flex-initial"
+              >
+                Next
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -501,10 +505,10 @@ function ColumnFilter<TData>({ table }: { table: ReactTable<TData> }) {
       <PopoverTrigger asChild>
         <Button
           variant={hasActiveFilters ? "default" : "outline"}
-          className="relative gap-2"
+          className="relative gap-2 min-h-[44px]"
         >
           <Filter className="h-4 w-4" />
-          Filter
+          <span className="hidden sm:inline">Filter</span>
           {hasActiveFilters && (
             <span
               className="bg-background text-foreground absolute -top-1 -right-1

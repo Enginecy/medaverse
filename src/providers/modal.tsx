@@ -9,7 +9,6 @@ export const ModalContext = createContext<{
   closeDrawer: () => void;
   openDialog: (dialog: React.ReactNode, onClose?: () => void) => void;
   closeDialog: () => void;
-   
 }>({
   openDrawer: () => {
     throw new Error("openDrawer function not implemented");
@@ -49,7 +48,6 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
       setDrawer(null);
     }
   };
-
   return (
     <ModalContext.Provider
       value={{
@@ -71,7 +69,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
       <Sheet open={openDrawer} onOpenChange={handleOpenDrawerChange}>
         {drawer}
       </Sheet>
-      <Dialog open={openDialog} onOpenChange={handleOpenDialogChange} >
+      <Dialog open={openDialog} onOpenChange={handleOpenDialogChange}>
         {dialog}
       </Dialog>
     </ModalContext.Provider>

@@ -5,7 +5,7 @@ import { deleteCarrier } from "@/features/dashboard/carriers/server/actions/carr
 import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
 import { useQueryClient } from "@tanstack/react-query";
 
-export function DeleteCarrierButton({ id }: { id: string }) {
+export function DeleteCarrierButton({ id, disabled = false }: { id: string; disabled?: boolean }) {
   const queryClient = useQueryClient();
 
   const showDialog = useShowDialog();
@@ -46,6 +46,7 @@ export function DeleteCarrierButton({ id }: { id: string }) {
       type="button"
       className="w-30 bg-red-500 hover:bg-red-400"
       onClick={handleDeleteCarrier}
+      disabled={disabled}
     >
       Delete Carrier
     </Button>

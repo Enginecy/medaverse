@@ -21,14 +21,14 @@ export function EmailFormField({
       control={form.control}
       name="email"
       render={({ field }) => (
-        <FormItem className="w-full">
+        <FormItem className="w-full min-w-0">
           <FormLabel className="text-sm">Email</FormLabel>
           <FormControl>
             <Input
               placeholder="email"
               {...field}
               className={cn(
-                "w-full text-sm",
+                "w-full text-sm min-w-0",
                 step === "pin" && "cursor-not-allowed bg-gray-100",
               )}
               disabled={step === "pin"}

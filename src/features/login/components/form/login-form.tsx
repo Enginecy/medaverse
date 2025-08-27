@@ -25,18 +25,18 @@ export function LoginForm({
 }) {
   const isOtp = mode === "OTP";
   return (
-    <div className="flex w-[45%] flex-col items-center gap-2">
-      <p className="rounded-2xl border px-4 py-1">Login</p>
-      <p className="text-text-heading-primary text-2xl font-semibold">
+    <div className="flex w-full max-w-md flex-col items-center gap-2 px-2 sm:px-4 min-w-0">
+      <p className="rounded-2xl border px-3 py-1 text-sm sm:px-4">Login</p>
+      <p className="text-text-heading-primary text-lg sm:text-xl md:text-2xl font-semibold text-center">
         Sign in to your account
       </p>
       <SegmentedButton
-        className="w-full"
+        className="w-full max-w-full"
         options={["OTP", "Password"]}
         value={mode}
         onChange={(v) => onModeChange(v as "OTP" | "Password")}
       />
-      <p className="text-center text-neutral-500">
+      <p className="text-center text-neutral-500 text-xs sm:text-sm md:text-base px-2 leading-relaxed">
         {isOtp
           ? step === "email"
             ? "Please enter your email address below to receive an OTP code."
@@ -47,12 +47,12 @@ export function LoginForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex w-full flex-col items-center gap-4"
+          className="flex w-full flex-col items-center gap-3 sm:gap-4 min-w-0"
         >
           {env.NODE_ENV === "development" ? (
-            <div className="flex w-full flex-col gap-4">
-              <div className="text-destructive text-center">
-                <p>Development Mode: Automatic login will be enabled.</p>
+            <div className="flex w-full flex-col gap-3 sm:gap-4 min-w-0">
+              <div className="text-destructive text-center px-2">
+                <p className="text-sm">Development Mode: Automatic login will be enabled.</p>
                 <p>
                   <span className="text-xs text-neutral-500">
                     Please Refer to the README.md file for more information.
@@ -63,7 +63,7 @@ export function LoginForm({
               {!isOtp && <PasswordFormField form={form} />}
             </div>
           ) : (
-            <div className="flex w-full flex-col gap-4">
+            <div className="flex w-full flex-col gap-3 sm:gap-4 min-w-0">
               <EmailFormField step={isOtp ? step : "password"} form={form} />
               {isOtp ? (
                 <OTPFormField step={step as "email" | "pin"} form={form} />

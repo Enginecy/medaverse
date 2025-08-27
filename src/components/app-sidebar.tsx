@@ -58,13 +58,13 @@ export function AppSidebar() {
   const pathName = usePathname();
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-border border-b py-[22.5px]">
+      <SidebarHeader className="border-border border-b py-4 md:py-[22.5px]">
         <Image
-          className="mx-auto w-40"
+          className="mx-auto w-32 md:w-40"
           src={logo}
           width={300}
           height={300}
-          alt="Picture of the author"
+          alt="Meda Health Logo"
         />
       </SidebarHeader>
 
@@ -77,10 +77,10 @@ export function AppSidebar() {
                 const isSelected = pathName === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={isSelected}>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
+                    <SidebarMenuButton asChild isActive={isSelected} size="lg">
+                      <a href={item.url} className="min-h-[48px] md:min-h-auto">
+                        <item.icon className="h-5 w-5 md:h-4 md:w-4" />
+                        <span className="text-sm md:text-sm">{item.title}</span>
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -94,11 +94,12 @@ export function AppSidebar() {
       <SidebarFooter>
         <Logout>
           <SidebarMenuButton
+            size="lg"
             className="text-red-500 transition-colors hover:bg-red-50
-              hover:text-red-700 active:bg-red-100 active:text-red-800"
+              hover:text-red-700 active:bg-red-100 active:text-red-800 min-h-[48px] md:min-h-auto"
           >
-            log out
-            <LogOut className="ml-auto" />
+            <span>log out</span>
+            <LogOut className="ml-auto h-5 w-5 md:h-4 md:w-4" />
           </SidebarMenuButton>
         </Logout>
       </SidebarFooter>

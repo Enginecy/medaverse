@@ -29,6 +29,7 @@ import {
 } from "@/features/dashboard/carriers/server/actions/carriers";
 import type { Carrier } from "@/features/dashboard/carriers/server/db/carriers";
 import { DeleteCarrierButton } from "@/features/dashboard/carriers/components/delete-carrier-button";
+import { usePermissions } from "@/lib/supabase/roles-component";
 
 export function CarrierDrawer({
   resolve,
@@ -100,9 +101,9 @@ export function CarrierDrawer({
           : "Carrier added successfully!",
         type: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["carriers"] });  
+      queryClient.invalidateQueries({ queryKey: ["carriers"] });
       form.reset();
-      resolve({success: false});
+      resolve({ success: false });
     },
     onError: (actionError) => {
       showSonnerToast({
@@ -115,8 +116,22 @@ export function CarrierDrawer({
   const onSubmit = (data: AddCarrierFormData) => {
     submitCarrierData(data);
   };
+
+  const {
+    hasAllPermissions,
+    isLoading: isLoadingPermissions,
+  } = usePermissions();
+
+  const canModifyCarrier = hasAllPermissions([
+    "companies:create",
+    "companies:update",
+  ]);
+
+  if (isLoadingPermissions) {
+    return <div>Loading...</div>;
+  }
   return (
-    <SheetContent className="w-1/3 overflow-auto p-6">
+    <SheetContent className="overflow-auto p-6">
       <SheetTitle className="text-2xl font-semibold">Add Carrier</SheetTitle>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <Form {...form}>
@@ -135,6 +150,7 @@ export function CarrierDrawer({
                 size="sm"
                 className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
                 onClick={removeImage}
+                disabled={!canModifyCarrier}
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -142,6 +158,7 @@ export function CarrierDrawer({
           ) : (
             <CarrierDropzoneImageFormField
               form={form}
+              disabled={!canModifyCarrier}
             ></CarrierDropzoneImageFormField>
           )}
 
@@ -152,7 +169,12 @@ export function CarrierDrawer({
               <FormItem>
                 <FormLabel>Company Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company Name" type="text" {...field} />
+                  <Input 
+                    placeholder="Company Name" 
+                    type="text" 
+                    disabled={!canModifyCarrier}
+                    {...field} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -169,6 +191,7 @@ export function CarrierDrawer({
                     placeholder="(xxx) 123-4567"
                     type="tel"
                     inputMode="tel"
+                    disabled={!canModifyCarrier}
                     {...field}
                   />
                 </FormControl>
@@ -186,6 +209,7 @@ export function CarrierDrawer({
                   <Input
                     placeholder="example@domain.com"
                     type="text"
+                    disabled={!canModifyCarrier}
                     {...field}
                   />
                 </FormControl>
@@ -200,7 +224,12 @@ export function CarrierDrawer({
               <FormItem>
                 <FormLabel>Company Code</FormLabel>
                 <FormControl>
-                  <Input placeholder="CIA" type="text" {...field} />
+                  <Input 
+                    placeholder="CIA" 
+                    type="text" 
+                    disabled={!canModifyCarrier}
+                    {...field} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -213,7 +242,12 @@ export function CarrierDrawer({
               <FormItem>
                 <FormLabel>Company website</FormLabel>
                 <FormControl>
-                  <Input placeholder="www.google.com" type="text" {...field} />
+                  <Input 
+                    placeholder="www.google.com" 
+                    type="text" 
+                    disabled={!canModifyCarrier}
+                    {...field} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -222,8 +256,12 @@ export function CarrierDrawer({
           <SheetFooter
             className="justify-justify-end flex flex-row items-end p-0"
           >
-            {isEditing ? <DeleteCarrierButton id={fieldValues.id} /> : null}
-            <Button className="ml-auto w-30" type="submit">
+            {isEditing ? <DeleteCarrierButton id={fieldValues.id} disabled={!canModifyCarrier} /> : null}
+            <Button 
+              className="ml-auto w-30" 
+              type="submit"
+              disabled={!canModifyCarrier || isLoading}
+            >
               {isLoading ? (
                 <PulseMultiple className="h-4 w-4 animate-spin" color="white" />
               ) : isEditing ? (

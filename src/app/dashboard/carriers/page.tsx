@@ -8,13 +8,13 @@ export const metadata: Metadata = {
 };
 export default function CarriersPage() {
   return (
-    <div className="h-full w-full px-4">
-      <div className="flex flex-row items-center justify-between p-4">
-        <p className="text-2xl font-semibold">Carriers Connection</p>
+    <div className="h-full w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-2 md:p-4">
+        <p className="text-xl md:text-2xl font-semibold">Carriers Connection</p>
         <AddCarrierButton />
       </div>
       <div
-        className="w-full rounded-2xl border-1 bg-white p-6"
+        className="w-full rounded-2xl border-1 bg-white p-4 md:p-6"
         style={{ minHeight: "calc(100% - 80px)" }}
       >
         <CarriersList />

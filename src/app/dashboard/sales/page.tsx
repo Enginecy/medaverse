@@ -10,13 +10,13 @@ export const metadata: Metadata = {
 };
 export default function SalesPage() {
   return (
-    <div className="flex h-full w-full flex-col items-start gap-6 p-6">
-      <div className="flex w-full justify-between">
-        <h1 className="text-2xl font-semibold">Sales</h1>
+    <div className="flex h-full w-full flex-col items-start gap-4 md:gap-6">
+      <div className="flex w-full flex-col sm:flex-row sm:justify-between gap-4">
+        <h1 className="text-xl md:text-2xl font-semibold">Sales</h1>
         <SalesActions />
       </div>
       <Card className="w-full grow py-0">
-        <CardContent className="grow">
+        <CardContent className="grow p-0">
           <Suspense fallback={<DataTableSkeleton />}>
             <SalesTable />
           </Suspense>

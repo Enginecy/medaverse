@@ -81,7 +81,7 @@ const TabsList = React.forwardRef<
         ref={ref}
         data-slot="tabs-list"
         className={cn(
-          `bg-muted text-muted-foreground relative inline-flex h-9 w-fit
+          `bg-muted text-muted-foreground relative inline-flex h-12 md:h-9 w-fit
           items-center justify-center rounded-lg p-[3px]`,
           className,
         )}
@@ -109,9 +109,9 @@ const TabsTrigger = React.forwardRef<
       `data-[state=active]:text-primary-foreground focus-visible:border-ring
       focus-visible:ring-ring/50 focus-visible:outline-ring z-10 inline-flex
       h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md
-      border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap
+      border border-transparent px-3 md:px-2 py-2 md:py-1 text-sm font-medium whitespace-nowrap
       transition-colors focus-visible:ring-[3px] focus-visible:outline-1
-      disabled:pointer-events-none disabled:opacity-50
+      disabled:pointer-events-none disabled:opacity-50 min-h-[44px] md:min-h-auto
       [&_svg]:pointer-events-none [&_svg]:shrink-0
       [&_svg:not([class*='size-'])]:size-4`,
       className,

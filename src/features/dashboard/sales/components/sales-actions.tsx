@@ -13,14 +13,16 @@ export function SalesActions() {
   };
 
   return (
-    <div className="flex gap-2">
-      <Button variant="outline">
-        <Download />
-        Download Xlsx
+    <div className="flex flex-col sm:flex-row gap-2">
+      <Button variant="outline" className="min-h-[44px]">
+        <Download className="h-4 w-4" />
+        <span className="hidden sm:inline">Download Xlsx</span>
+        <span className="sm:hidden">Download</span>
       </Button>
-      <Button variant="default" onClick={openAddNewSaleModal}>
-        <Plus />
-        Add New
+      <Button variant="default" onClick={openAddNewSaleModal} className="min-h-[44px]">
+        <Plus className="h-4 w-4" />
+        <span className="hidden sm:inline">Add New</span>
+        <span className="sm:hidden">Add</span>
       </Button>
     </div>
   );
