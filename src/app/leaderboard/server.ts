@@ -2,7 +2,7 @@
 
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, roles, sales, userRoles } from "@/db/schema";
-import { count, eq, sql, desc } from "drizzle-orm";
+import { count, eq, sql, desc, gt } from "drizzle-orm";
 
 export async function getLeaderboardData() {
   const db = await createDrizzleSupabaseClient();
@@ -18,9 +18,10 @@ export async function getLeaderboardData() {
     .from(profile)
     .leftJoin(userRoles, eq(profile.userId, userRoles.userId))
     .leftJoin(roles, eq(userRoles.roleId, roles.id))
-    .leftJoin(sales, eq(profile.userId, sales.userId))
+    .innerJoin(sales, eq(profile.userId, sales.userId))
     .orderBy(desc(sql<number>`COALESCE(SUM(${sales.totalSaleValue}), 0)`))
-    .groupBy(profile.userId, profile.name, profile.avatarUrl, roles.name);
+    .groupBy(profile.userId, profile.name, profile.avatarUrl, roles.name)
+    .having(gt(count(sales.id), 0));
 
   return results.map((r) => ({
     ...r,
@@ -43,10 +44,11 @@ export async function getLeaderboardDataByRole(roleCode: string) {
     .from(profile)
     .leftJoin(userRoles, eq(profile.userId, userRoles.userId))
     .leftJoin(roles, eq(userRoles.roleId, roles.id))
-    .leftJoin(sales, eq(profile.userId, sales.userId))
+    .innerJoin(sales, eq(profile.userId, sales.userId))
     .where(eq(roles.code, roleCode))
     .orderBy(desc(sql<number>`COALESCE(SUM(${sales.totalSaleValue}), 0)`))
-    .groupBy(profile.userId, profile.name, profile.avatarUrl, roles.name);
+    .groupBy(profile.userId, profile.name, profile.avatarUrl, roles.name)
+    .having(gt(count(sales.id), 0));
 
   return results.map((r) => ({
     ...r,
