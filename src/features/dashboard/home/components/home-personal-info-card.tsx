@@ -1,5 +1,4 @@
 import { ChartRadialText } from "@/components/radial-chart";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
   Card,
@@ -12,10 +11,10 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SalesCard } from "@/features/dashboard/home/components/sales-card";
 import { cn } from "@/lib/utils";
-import { Edit } from "lucide-react";
 import { getUser } from "@/lib/supabase/server";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { EditProfileButton } from "@/features/dashboard/home/components/edit-profile-button";
 
 export async function PersonalInfoCard() {
   const { profile } = await getUser();
@@ -27,20 +26,13 @@ export async function PersonalInfoCard() {
 
   return (
     <div
-      className="w-full rounded-2xl border-1 border-gray-300 bg-white p-10 lg:w-1/2 lg:justify-between"
+      className="w-full rounded-2xl border-1 border-gray-300 bg-white p-10
+        lg:w-1/2 lg:justify-between"
     >
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Personal info</p>
-        <Button variant="outline" className="text-primary">
-          <span>Edit Profile</span>
-          <Edit />
-        </Button>
+        <EditProfileButton profile={profile} />
       </div>
-      {/* <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          
-        </CardTitle>
-      </CardHeader> */}
       <div>
         <div className="flex flex-col gap-6">
           <div className="flex gap-6">
@@ -58,7 +50,7 @@ export async function PersonalInfoCard() {
                     src={profile.avatarUrl!}
                     alt="profile"
                     fill
-                    sizes="128px" 
+                    sizes="128px"
                     style={{ objectFit: "contain" }}
                     className="rounded-lg object-cover object-top"
                   />
@@ -124,7 +116,7 @@ export async function PersonalInfoCard() {
               </div>
             }
           >
-            <div className="flex w-full flex-col gap-2 md:flex-row items-center">
+            <div className="flex w-full flex-col items-center gap-2 md:flex-row">
               <CommissionCard
                 title="Commission"
                 range={{ min: 4200, max: 12000 }}
