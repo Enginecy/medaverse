@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { EditProfileDrawer } from "@/features/dashboard/home/components/edit-profile-drawer";
-import type { User } from "@/features/dashboard/user-management/server/db/user-management";
+import type { UserProfile } from "@/features/dashboard/home/server/db/home";
 import { useShowDrawer } from "@/lib/react-utils";
 import { Edit } from "lucide-react";
 
 export function EditProfileButton(
-  {profile} : { profile : User }
+  {profile} : { profile : UserProfile  }
 ) {
   const showDrawer = useShowDrawer();
 

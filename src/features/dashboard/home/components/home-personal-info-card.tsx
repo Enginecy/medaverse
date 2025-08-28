@@ -15,10 +15,11 @@ import { getUser } from "@/lib/supabase/server";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { EditProfileButton } from "@/features/dashboard/home/components/edit-profile-button";
+import { getUserProfile } from "@/features/dashboard/home/server/db/home";
 
 export async function PersonalInfoCard() {
   const { profile } = await getUser();
-
+  const userProfile = await getUserProfile();
   if (!profile) {
     console.error("No profile found");
     redirect("/login");
@@ -31,7 +32,7 @@ export async function PersonalInfoCard() {
     >
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Personal info</p>
-        <EditProfileButton profile={profile} />
+        <EditProfileButton profile={userProfile} />
       </div>
       <div>
         <div className="flex flex-col gap-6">
