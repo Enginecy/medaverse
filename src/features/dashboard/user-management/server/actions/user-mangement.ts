@@ -193,6 +193,7 @@ export async function updateAgent(
   data: AddUserFormData,
   id: string,
 ): Promise<ActionResult<void>> {
+
   const { auth } = createAdminClient();
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
@@ -275,8 +276,10 @@ export async function updateAgent(
       const {
         data: { publicUrl },
       } = supabase.storage.from("profile-images").getPublicUrl(fileName);
+      
+        console.log(data, id);
 
-      const profileData = await db.rls((tx) => {
+      const profileData = await db.admin.transaction((tx) => {
         tx.update(userRoles)
           .set({
             roleId: data.role,

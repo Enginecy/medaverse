@@ -66,11 +66,13 @@ import { RoleField } from "@/features/dashboard/user-management/components/form/
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import type { UserProfile } from "@/features/dashboard/home/server/db/home";
 import { UpLineField } from "@/features/dashboard/user-management/components/form/upline-field";
+import {useRouter} from 'next/navigation';
 
 export function EditProfileDrawer(
     { resolve, user }: { resolve: (_: unknown) => void  , user: UserProfile}
 ) {
   const isEditing = !!user;
+  console.log(user?.npnNumber)
   
     const defaultValues: DefaultValues<AddUserFormData> = isEditing
       ? {
@@ -97,7 +99,6 @@ export function EditProfileDrawer(
           profileImage: new File([], ""),
           dateOfBirth: new Date(),
         };
-    const queryClient = useQueryClient();
   
     const form = useForm<AddUserFormData>({
       resolver: zodResolver(addUserSchema),
@@ -133,10 +134,8 @@ export function EditProfileDrawer(
           type: "success",
         });
         form.reset();
-        
-        queryClient.invalidateQueries({
-          queryKey: ["users"],
-        });
+        window.location.reload();
+        resolve(true);
       },
     });
   
@@ -196,23 +195,23 @@ export function EditProfileDrawer(
                )}
                {/* Full Name and Username */}
                <FullNameField form={form} />
-               <UsernameField form={form} />
              </div>
    
              {/* Email and Phone Number */}
              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+               <UsernameField form={form} />
                <EmailField form={form} />
-               <PhoneField form={form} />
              </div>
    
              {/* Address and Date of Birth */}
              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+               <PhoneField form={form} />
                <AddressField form={form} />
-               <DobField form={form} />
              </div>
    
              {/* Role and Regional */}
              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+               <DobField form={form} />
                {isLoadingRoles ? (
                  <div
                    className="flex h-full w-full items-center justify-center pt-6"
