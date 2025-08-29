@@ -46,9 +46,9 @@ export default async function Home() {
           className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 md:gap-6
             lg:w-1/2"
         >
-          {/* <Suspense fallback={<PersonalGoalsGridSkeleton />}>
+          <Suspense fallback={<PersonalGoalsGridSkeleton />}>
             <PersonalGoalsGrid />
-          </Suspense> */}
+          </Suspense>
         </div>
       </div>
       <div className="flex w-full flex-col gap-4 md:gap-6 xl:flex-row">
