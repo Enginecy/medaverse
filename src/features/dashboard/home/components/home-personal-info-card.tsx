@@ -123,8 +123,7 @@ export async function PersonalInfoCard() {
                 range={{ min: 4200, max: 12000 }}
                 className="flex h-50 w-full flex-col gap-0"
               />
-
-              <SalesCard className="flex h-50 w-full flex-col gap-0" />
+              <SalesCard />
             </div>
           </Suspense>
         </div>
