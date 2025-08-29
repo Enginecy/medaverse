@@ -75,7 +75,6 @@ export function AddUserDrawer({
   user?: User;
   closeDrawer: (value?: unknown) => void;
 }) {
-  
   const isEditing = !!user;
 
   const defaultValues: DefaultValues<AddUserFormData> = isEditing
@@ -199,7 +198,7 @@ export function AddUserDrawer({
   return (
     <SheetContent className="overflow-auto px-6 py-5">
       <SheetHeader>
-        <SheetTitle>Add New Agent</SheetTitle>
+        <SheetTitle>{isEditing ? "Edit Agent" : "Add New Agent"}</SheetTitle>
       </SheetHeader>
 
       <Form {...form}>

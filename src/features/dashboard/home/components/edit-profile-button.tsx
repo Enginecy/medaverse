@@ -13,7 +13,7 @@ export function EditProfileButton(
 
   const handleEditClick = () => showDrawer((resolve) => (
     console.log('Profile to edit:', profile), 
-    <EditProfileDrawer resolve={resolve} />
+    <EditProfileDrawer resolve={resolve}  user={profile} />
   ));
   
   return (

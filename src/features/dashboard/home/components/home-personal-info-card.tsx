@@ -40,7 +40,7 @@ export async function PersonalInfoCard() {
                     className="rounded-lg object-cover object-top"
                   />
                 </div>
-           
+                             
             </div>
             <div className="flex grow flex-col gap-6">
               <div className="flex flex-col items-start">
