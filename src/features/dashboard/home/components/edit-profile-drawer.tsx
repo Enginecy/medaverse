@@ -1,13 +1,12 @@
-import { Drawer , DrawerContent } from "@/components/ui/drawer";
+
+import { SheetContent } from "@/components/ui/sheet";
 
 export function EditProfileDrawer(
     { resolve }: { resolve: (_: unknown) => void }
 ) {
-  return <Drawer>
-    <DrawerContent>
-
-    EditProfileDrawer
-    </DrawerContent>
-
-    </Drawer>;
+  return (
+    <SheetContent> 
+        
+    </SheetContent>
+  )
 }

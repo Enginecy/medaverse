@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { tryCatch } from "@/lib/utils";
 import { desc, eq, getTableColumns } from "drizzle-orm";
 
-export async function getUpComingDBs() {
+export async function getUpComingBDs() {
   try {
     const db = await createDrizzleSupabaseClient();
     const today = new Date();

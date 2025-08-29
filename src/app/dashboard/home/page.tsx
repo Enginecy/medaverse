@@ -31,18 +31,24 @@ export const metadata: Metadata = {
 export default async function Home() {
   return (
     <div className="flex w-full flex-col items-start gap-4 md:gap-6">
-      <div
-        className="flex w-full flex-col gap-4 md:gap-6 lg:flex-row"
-      >
-        <PersonalInfoCard />
+      <div className="flex w-full flex-col gap-4 md:gap-6 lg:flex-row">
+        <Suspense
+          fallback={
+            <Skeleton
+              className="h-[500px] w-full rounded-2xl bg-blue-200 lg:w-1/2"
+            />
+          }
+        >
+          <PersonalInfoCard />
+        </Suspense>
 
         <div
           className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 md:gap-6
             lg:w-1/2"
         >
-          <Suspense fallback={<PersonalGoalsGridSkeleton />}>
+          {/* <Suspense fallback={<PersonalGoalsGridSkeleton />}>
             <PersonalGoalsGrid />
-          </Suspense>
+          </Suspense> */}
         </div>
       </div>
       <div className="flex w-full flex-col gap-4 md:gap-6 xl:flex-row">
@@ -69,7 +75,7 @@ export default async function Home() {
             <CardTitle>Upcoming Birthdays</CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            <BirthdayTable />
+            {/* <BirthdayTable /> */}
           </CardContent>
         </Card>
       </div>

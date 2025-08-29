@@ -15,6 +15,7 @@ export function EditProfileButton(
     console.log('Profile to edit:', profile), 
     <EditProfileDrawer resolve={resolve} />
   ));
+  
   return (
     <Button variant="outline" className="text-primary" onClick={handleEditClick}>
       <span>Edit Profile</span>
