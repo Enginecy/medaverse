@@ -3,10 +3,13 @@ import Image from "next/image";
 import graphics from "public/login-graphics.png";
 import logo from "public/meda_health_logo.png";
 
- export function LoginGraphics() {
+export function LoginGraphics() {
   return (
-    <div className="bg-primary relative h-full w-1/2 rounded-lg hidden md:block min-w-0">
-      <div className="absolute z-10 flex h-full flex-col items-start justify-between p-4 lg:p-8">
+    <div className="pointer-events-none absolute inset-0 z-0 h-full w-full bg-primary">
+      <div
+        className="absolute z-10 hidden h-full flex-col items-start
+          justify-between p-4 lg:p-8 md:flex"
+      >
         <Image
           src={logo}
           alt="logo"
@@ -15,10 +18,12 @@ import logo from "public/meda_health_logo.png";
           height={150}
         />
         <p
-          className="text-light-blue-500 text-2xl lg:text-4xl xl:text-5xl leading-tight"
-          style={{ fontFamily: "Druk Wide Bold Bold" }}
+          className="text-2xl leading-tight font-bold text-white uppercase
+            lg:text-4xl xl:text-8xl"
         >
-          Unlock financial freedom in the MedaVerse
+          Financial freedom
+          <br />
+          awaits you
         </p>
       </div>
       <div className="relative h-full w-full">
@@ -26,7 +31,11 @@ import logo from "public/meda_health_logo.png";
           src={graphics}
           alt="login-graphics"
           fill
-          className="rounded-lg object-cover object-top"
+          className="object-cover object-top"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-black/30
+            to-black/60"
         />
       </div>
     </div>
