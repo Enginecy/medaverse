@@ -193,7 +193,7 @@ export async function updateAgent(
   data: AddUserFormData,
   id: string,
 ): Promise<ActionResult<void>> {
-
+  console.log("you are using the update agent function hell yeahhhhh !!!!!! ");
   const { auth } = createAdminClient();
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
@@ -216,6 +216,7 @@ export async function updateAgent(
 
   let createdUser: { id: string } | null = null;
   let uploadedFileName: string | null = null;
+  let profileUrl: string | null = null;
 
   try {
     const {
@@ -255,11 +256,12 @@ export async function updateAgent(
       const fileExt = file.name.split(".").pop();
       const fileName = `${id}/avatar.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("profile-images")
-        .upload(fileName, file, { upsert: true });
+      const { data: profileImageData, error: uploadError } =
+        await supabase.storage
+          .from("profile-images")
+          .upload(fileName, file, { upsert: true });
 
-      if (uploadError) {
+      if (uploadError || !profileImageData) {
         return {
           success: false,
           error: {
@@ -272,49 +274,43 @@ export async function updateAgent(
         };
       }
       uploadedFileName = fileName;
-
       const {
         data: { publicUrl },
       } = supabase.storage.from("profile-images").getPublicUrl(fileName);
-      
-        console.log(data, id);
-
-      const profileData = await db.admin.transaction((tx) => {
-        tx.update(userRoles)
-          .set({
-            roleId: data.role,
-            userId: user.id,
-            assignedBy: currentUser!.data!.user?.id,
-          })
-          .returning({ id: userRoles.id });
-
-        return tx
-          .update(profile)
-          .set({
-            name: data.fullName,
-            username: data.username,
-            office: data.office,
-            dob: data.dateOfBirth,
-            avatarUrl: publicUrl,
-            phoneNumber: data.phoneNumber,
-            npnNumber: data.npnNumber,
-            states: data.states ?? ([] as State[]),
-          })
-          .where(eq(profile.id, id))
-          .returning();
-      });
-      if (!profileData) {
-        return {
-          success: false,
-          error: {
-            message: "Failed to update user profile",
-            statusCode: 400,
-            details: "An error occurred while updating the user profile.",
-          },
-        };
-      }
-      return { success: true, data: undefined };
+      profileUrl = publicUrl;
     }
+
+    console.log(data, id, "<========== this should help");
+    const statesJson = JSON.stringify(data.states ?? []);
+    const profileData = await db.rls((tx) =>
+      tx.execute(sql`
+    select * from public.update_agent_profile(
+      ${id}::uuid,
+      ${data.role}::uuid,
+      ${data.fullName}::text,
+      ${data.username}::text,
+      ${data.office}::text,
+      ${data.dateOfBirth}::date,
+      ${data.phoneNumber}::text,
+      ${data.npnNumber ?? ''}::text,
+      ${statesJson}::jsonb,      -- jsonb, you can also JSON.stringify if preferred
+      ${profileUrl===null ? "," : profileUrl+"::text,"}      -- nullable
+      ${currentUser!.data!.user!.id}::uuid
+    )
+  `),
+    );
+    console.log(profileData, "<================================= value");
+    if (!profileData) {
+      return {
+        success: false,
+        error: {
+          message: "Failed to update user profile",
+          statusCode: 400,
+          details: "An error occurred while updating the user profile.",
+        },
+      };
+    }
+    return { success: true, data: undefined };
   } catch {
     // Clean up uploaded file if it exists
     if (uploadedFileName) {
@@ -322,6 +318,14 @@ export async function updateAgent(
         await supabase.storage
           .from("profile-images")
           .remove([uploadedFileName]);
+        return {
+          success: false,
+          error: {
+            message: "something went wrong",
+            statusCode: 400,
+            details: "error happened while updating profile",
+          },
+        };
       } catch {
         return {
           success: false,
@@ -359,7 +363,6 @@ export async function updateAgent(
       },
     };
   }
-  return { success: true, data: undefined };
 }
 
 export async function deleteAgent(id: string): Promise<ActionResult<void>> {
@@ -517,7 +520,7 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
 
     console.log("createdUsers", createdUsers);
 
-   const result = await db.admin.transaction(async (tx) => {
+    const result = await db.admin.transaction(async (tx) => {
       const profileValues = importedData.map((singleUser, index) => ({
         name: singleUser.name ?? "",
         username: singleUser.username ?? "",
@@ -544,7 +547,7 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
         await tx.insert(profile).values(profileValues);
         await tx.insert(userRoles).values(userRoleValues);
       });
-      return 1
+      return 1;
     });
 
     if (result !== 1) {
