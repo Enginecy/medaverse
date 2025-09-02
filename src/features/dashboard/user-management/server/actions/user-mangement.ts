@@ -281,6 +281,10 @@ export async function updateAgent(
     }
 
     console.log(data, id, "<========== this should help");
+    console.log(data, id, "<========== this should help");
+
+    const profileUrlSql =
+      profileUrl === null ? sql`NULL` : sql`${profileUrl}::text`;
     const statesJson = JSON.stringify(data.states ?? []);
     const profileData = await db.rls((tx) =>
       tx.execute(sql`
@@ -292,9 +296,9 @@ export async function updateAgent(
       ${data.office}::text,
       ${data.dateOfBirth}::date,
       ${data.phoneNumber}::text,
-      ${data.npnNumber ?? ''}::text,
-      ${statesJson}::jsonb,      -- jsonb, you can also JSON.stringify if preferred
-      ${profileUrl===null ? "," : profileUrl+"::text,"}      -- nullable
+      ${data.npnNumber ?? ""}::text,
+      ${statesJson}::jsonb,
+      ${profileUrlSql}, 
       ${currentUser!.data!.user!.id}::uuid
     )
   `),
