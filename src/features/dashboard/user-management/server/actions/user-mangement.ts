@@ -193,7 +193,6 @@ export async function updateAgent(
   data: AddUserFormData,
   id: string,
 ): Promise<ActionResult<void>> {
-  console.log("you are using the update agent function hell yeahhhhh !!!!!! ");
   const { auth } = createAdminClient();
   const supabase = await createClient();
   const db = await createDrizzleSupabaseClient();
@@ -280,9 +279,6 @@ export async function updateAgent(
       profileUrl = publicUrl;
     }
 
-    console.log(data, id, "<========== this should help");
-    console.log(data, id, "<========== this should help");
-
     const profileUrlSql =
       profileUrl === null ? sql`NULL` : sql`${profileUrl}::text`;
     const statesJson = JSON.stringify(data.states ?? []);
@@ -294,16 +290,15 @@ export async function updateAgent(
       ${data.fullName}::text,
       ${data.username}::text,
       ${data.office}::text,
-      ${data.dateOfBirth}::date,
+      ${data.dateOfBirth.toISOString()}::date,
       ${data.phoneNumber}::text,
       ${data.npnNumber ?? ""}::text,
-      ${statesJson}::jsonb,
       ${profileUrlSql}, 
       ${currentUser!.data!.user!.id}::uuid
     )
   `),
     );
-    console.log(profileData, "<================================= value");
+
     if (!profileData) {
       return {
         success: false,
@@ -522,8 +517,6 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
 
     createdUsers.push(...ids.map((id) => ({ id })));
 
-    console.log("createdUsers", createdUsers);
-
     const result = await db.admin.transaction(async (tx) => {
       const profileValues = importedData.map((singleUser, index) => ({
         name: singleUser.name ?? "",
@@ -537,15 +530,11 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
         status: "active" as const,
       }));
 
-      console.log("profileValues", profileValues);
-
       const userRoleValues = importedData.map((singleUser, index) => ({
         roleId: singleUser.role?.id ?? "",
         userId: createdUsers[index]?.id ?? "",
         assignedBy: currentUser.data.user?.id,
       }));
-
-      console.log("userRoleValues", userRoleValues);
 
       await tx.transaction(async (tx) => {
         await tx.insert(profile).values(profileValues);
@@ -603,7 +592,7 @@ async function createUsersBulk(
       sql`, `,
     )}])`,
   );
-  console.log("ids", ids);
+
   const firstRow = ids[0];
   if (firstRow?.create_users_bulk_optimized) {
     const results = firstRow.create_users_bulk_optimized as string[];
