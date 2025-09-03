@@ -13,7 +13,7 @@ export default function UserManagement() {
         <h1 className="text-xl md:text-2xl font-semibold">User Management</h1>
       </div>
       <div className="w-full">
-        <div className="mb-4 rounded-2xl border border-gray-300 bg-white p-2 md:p-4 lg:p-6">
+        <div className="mb-4 rounded-3xl border border-gray-300 bg-white p-2 md:p-4 lg:p-6">
           <Suspense fallback={<DataTableSkeleton />}>
             <UserManagementTable />
           </Suspense>

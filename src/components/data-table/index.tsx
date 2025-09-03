@@ -255,7 +255,7 @@ export function DataTable<TData, TValue>({
             </div>
           )}
           {addButton && (
-            <Button size="sm" className="gap-2 flex-shrink-0" onClick={addButton.onClick}>
+            <Button size="sm" className="gap-2 rounded-full flex-shrink-0" onClick={addButton.onClick}>
               <Plus className="h-4 w-4" />
               {addButton.label}
             </Button>

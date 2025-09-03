@@ -67,7 +67,7 @@ export default async function Home() {
           </CardContent>
         </Card>
 
-        <Card className="w-full border-0 shadow-none xl:w-1/3 xl:flex-shrink-0">
+        <Card className="w-full border-0 shadow-none xl:w-1/3 xl:flex-shrink-0 rounded-3xl">
           <CardHeader>
             <CardTitle className="flex flex-row justify-between">
               <span> Upcoming Birthdays</span>
