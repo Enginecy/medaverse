@@ -78,6 +78,7 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       asChild
                       isActive={isSelected}
+                      variant={"outline"}
                       size="lg"
                       className={`aria-selected:bg-primary-500 rounded-full p-4
                       ${isSelected ? "bg-primary-800" : "bg-transparent"}`}
