@@ -44,8 +44,8 @@ export default function RootLayout({
           <div className="flex min-w-0 flex-1 flex-col">
             <nav
               className="bg-sidebar flex h-16 w-full items-center
-                justify-between gap-2 px-2 md:h-20 md:justify-end
-                md:gap-4 md:px-4 lg:h-24"
+                justify-between gap-2 px-2 md:h-20 md:justify-end md:gap-4
+                md:px-4 lg:h-24"
             >
               <SidebarTrigger className="min-h-[44px] min-w-[44px] md:hidden" />
               <div className="flex items-center gap-2 md:gap-4">
@@ -58,10 +58,11 @@ export default function RootLayout({
                   >
                     <Button
                       variant={"default"}
-                      className="min-h-[44px] py-6 px-6 md:min-h-auto rounded-full bg-white text-black"
-                      
+                      className="hover:bg-primary min-h-[43px] hover:cursor-pointer
+                        rounded-full bg-white px-6 py-6 text-black
+                        hover:text-white md:min-h-auto "
                     >
-                      <item.icon className="h-4 w-4 md:h-5 md:w-5" />
+                      <item.icon className=" md:h-5 md:w-5"  size={1}/>
                       <span className="hidden sm:inline">{item.title}</span>
                     </Button>
                   </Link>

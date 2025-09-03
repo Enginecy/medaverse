@@ -89,7 +89,7 @@
 }
 
 :root {
-  --radius: 3rem;
+  --radius: 0.65rem;
 
   /* Theme colors based on Figma design system */
   --background: #DBE4EB; /* surface-b-g */
