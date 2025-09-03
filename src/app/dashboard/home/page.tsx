@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Goal } from "@/features/dashboard/profile/server/db/goals";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddGoalButton } from "@/features/dashboard/profile/components/modals/add-goal-drawer";
-import { Target, TrendingUp, Calendar, DollarSign } from "lucide-react";
+import { Target, TrendingUp, Calendar, DollarSign, Cake } from "lucide-react";
 import type { Metadata } from "next";
 import { DataTableSkeleton } from "@/components/data-table";
 export const metadata: Metadata = {
@@ -52,12 +52,17 @@ export default async function Home() {
         </div>
       </div>
       <div className="flex w-full flex-col gap-4 md:gap-6 xl:flex-row">
-        <Card className="flex-1">
+        <Card className="flex-1 rounded-3xl border-0 shadow-none">
           <CardHeader>
             <CardTitle>Recent Sales</CardTitle>
             <CardAction>
               <Link href="/dashboard/sales">
-                <Button variant="outline" size="sm" className="min-h-[44px]">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="min-h-[44px] rounded-full border-0 bg-[#F5F5F5]
+                    text-black shadow-none hover:text-white"
+                >
                   View All
                 </Button>
               </Link>
@@ -70,9 +75,15 @@ export default async function Home() {
           </CardContent>
         </Card>
 
-        <Card className="w-full xl:w-1/3 xl:flex-shrink-0">
+        <Card
+          className="w-full rounded-3xl border-0 shadow-none xl:w-1/3
+            xl:flex-shrink-0"
+        >
           <CardHeader>
-            <CardTitle>Upcoming Birthdays</CardTitle>
+            <CardTitle className="flex flex-row justify-between">
+              <span> Upcoming Birthdays</span>
+              <Cake className="text-primary h-5 w-5" />
+            </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
             {/* <BirthdayTable /> */}
@@ -115,7 +126,7 @@ async function PersonalGoalsGrid() {
             <Target className="h-8 w-8 text-white" />
           </div>
           <div
-            className="absolute -top-1 -right-1 flex h-6 w-6 items-center
+            className="absolute -right-1 -top-1 flex h-6 w-6 items-center
               justify-center rounded-full bg-green-500"
           >
             <TrendingUp className="h-3 w-3 text-white" />
@@ -195,8 +206,7 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
   return (
     <div
       className="flex h-auto w-full flex-col items-center justify-between gap-4
-        rounded-2xl border border-[#E5ECF6] bg-white p-4 shadow-sm md:h-[180px]
-        md:flex-row md:p-6"
+        rounded-3xl bg-white p-4 md:h-[180px] md:flex-row md:p-6"
     >
       <div className="flex w-full flex-1 flex-col items-start gap-1 md:w-auto">
         <div className="mb-1 flex flex-col gap-2 sm:flex-row sm:items-center">

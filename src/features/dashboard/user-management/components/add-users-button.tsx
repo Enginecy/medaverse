@@ -13,7 +13,12 @@ export function AddUsersButton() {
   };
 
   return (
-    <Button variant="default" onClick={handleAddUser}>
+    <Button
+      variant="default"
+      onClick={handleAddUser}
+      className="text-primary w-35 cursor-pointer rounded-full bg-[#E5ECF6]
+        shadow-none hover:bg-[#E5ECF6]/50"
+    >
       Add User
       <Plus />
     </Button>

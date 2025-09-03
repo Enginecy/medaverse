@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { EditProfileButton } from "@/features/dashboard/home/components/edit-profile-button";
 import { getUserProfile } from "@/features/dashboard/home/server/db/home";
-
+import { CommissionAndSalesCards } from "@/features/dashboard/home/components/commission-and-sales-cards";
 
 export async function PersonalInfoCard() {
   const { profile } = await getUser();
@@ -29,42 +29,35 @@ export async function PersonalInfoCard() {
         <div className="flex flex-col gap-6">
           <div className="flex gap-6">
             <div className="relative h-[150px] w-[150px] rounded-lg">
-           
-                <div className="relative h-32 w-32">
-                  <Image
-                    src={profile.avatarUrl!}
-                    alt="profile"
-                    fill
-                    sizes="128px"
-                    style={{ objectFit: "contain" }}
-                    className="rounded-lg object-cover object-top"
-                  />
-                </div>
-                             
+              <div className="relative h-32 w-32">
+                <Image
+                  src={profile.avatarUrl!}
+                  alt="profile"
+                  fill
+                  sizes="128px"
+                  style={{ objectFit: "contain" }}
+                  className="rounded-lg object-cover object-top"
+                />
+              </div>
             </div>
             <div className="flex grow flex-col gap-6">
-              <div className="flex flex-col items-start">
-       
-              </div>
+              <div className="flex flex-col items-start"></div>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between">
-                
-                    <div className="flex w-full flex-col justify-between gap-1">
-                      <div className="flex flex-row justify-between">
-                        <p className="text-md font-semibold">
-                          $7,350
-                          <span
-                            className="text-muted-foreground text-sm
-                              font-normal"
-                          >
-                            {" of target $15,000"}
-                          </span>
-                        </p>
-                        <p className="text-md font-semibold">{"49%"}</p>
-                      </div>
-                      <Progress value={49} />
+                  <div className="flex w-full flex-col justify-between gap-1">
+                    <div className="flex flex-row justify-between">
+                      <p className="text-md font-semibold">
+                        $7,350
+                        <span
+                          className="text-muted-foreground text-sm font-normal"
+                        >
+                          {" of target $15,000"}
+                        </span>
+                      </p>
+                      <p className="text-md font-semibold">{"49%"}</p>
                     </div>
-                
+                    <Progress value={49} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -77,7 +70,7 @@ export async function PersonalInfoCard() {
               </div>
             }
           >
-          {/* <CommissionAndSalesCards /> */}
+            <CommissionAndSalesCards />
           </Suspense>
         </div>
       </div>

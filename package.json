@@ -75,8 +75,10 @@
     "zod": "^3.25.49"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx-source": "^7.27.1",
     "@eslint/eslintrc": "^3.3.1",
     "@locator/babel-jsx": "^0.4.4",
+    "@locator/runtime": "^0.4.4",
     "@tailwindcss/postcss": "^4.0.15",
     "@types/node": "^20.14.10",
     "@types/react": "^19.0.0",

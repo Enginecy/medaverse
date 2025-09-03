@@ -15,7 +15,7 @@ export default function SalesPage() {
         <h1 className="text-xl md:text-2xl font-semibold">Sales</h1>
         <SalesActions />
       </div>
-      <Card className="w-full grow py-0">
+      <Card className="w-full grow rounded-3xl border-0 shadow-none p-6">
         <CardContent className="grow p-0">
           <Suspense fallback={<DataTableSkeleton />}>
             <SalesTable />
