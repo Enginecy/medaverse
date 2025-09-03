@@ -215,6 +215,7 @@ export async function updateAgent(
 
   let createdUser: { id: string } | null = null;
   let uploadedFileName: string | null = null;
+  let profileUrl: string | null = null;
 
   try {
     const {
@@ -254,11 +255,12 @@ export async function updateAgent(
       const fileExt = file.name.split(".").pop();
       const fileName = `${id}/avatar.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("profile-images")
-        .upload(fileName, file, { upsert: true });
+      const { data: profileImageData, error: uploadError } =
+        await supabase.storage
+          .from("profile-images")
+          .upload(fileName, file, { upsert: true });
 
-      if (uploadError) {
+      if (uploadError || !profileImageData) {
         return {
           success: false,
           error: {
@@ -271,47 +273,43 @@ export async function updateAgent(
         };
       }
       uploadedFileName = fileName;
-
       const {
         data: { publicUrl },
       } = supabase.storage.from("profile-images").getPublicUrl(fileName);
-
-      const profileData = await db.rls((tx) => {
-        tx.update(userRoles)
-          .set({
-            roleId: data.role,
-            userId: user.id,
-            assignedBy: currentUser!.data!.user?.id,
-          })
-          .returning({ id: userRoles.id });
-
-        return tx
-          .update(profile)
-          .set({
-            name: data.fullName,
-            username: data.username,
-            office: data.office,
-            dob: data.dateOfBirth,
-            avatarUrl: publicUrl,
-            phoneNumber: data.phoneNumber,
-            npnNumber: data.npnNumber,
-            states: data.states ?? ([] as State[]),
-          })
-          .where(eq(profile.id, id))
-          .returning();
-      });
-      if (!profileData) {
-        return {
-          success: false,
-          error: {
-            message: "Failed to update user profile",
-            statusCode: 400,
-            details: "An error occurred while updating the user profile.",
-          },
-        };
-      }
-      return { success: true, data: undefined };
+      profileUrl = publicUrl;
     }
+
+    const profileUrlSql =
+      profileUrl === null ? sql`NULL` : sql`${profileUrl}::text`;
+    const statesJson = JSON.stringify(data.states ?? []);
+    const profileData = await db.rls((tx) =>
+      tx.execute(sql`
+    select * from public.update_agent_profile(
+      ${id}::uuid,
+      ${data.role}::uuid,
+      ${data.fullName}::text,
+      ${data.username}::text,
+      ${data.office}::text,
+      ${data.dateOfBirth.toISOString()}::date,
+      ${data.phoneNumber}::text,
+      ${data.npnNumber ?? ""}::text,
+      ${profileUrlSql}, 
+      ${currentUser!.data!.user!.id}::uuid
+    )
+  `),
+    );
+
+    if (!profileData) {
+      return {
+        success: false,
+        error: {
+          message: "Failed to update user profile",
+          statusCode: 400,
+          details: "An error occurred while updating the user profile.",
+        },
+      };
+    }
+    return { success: true, data: undefined };
   } catch {
     // Clean up uploaded file if it exists
     if (uploadedFileName) {
@@ -319,6 +317,14 @@ export async function updateAgent(
         await supabase.storage
           .from("profile-images")
           .remove([uploadedFileName]);
+        return {
+          success: false,
+          error: {
+            message: "something went wrong",
+            statusCode: 400,
+            details: "error happened while updating profile",
+          },
+        };
       } catch {
         return {
           success: false,
@@ -356,7 +362,6 @@ export async function updateAgent(
       },
     };
   }
-  return { success: true, data: undefined };
 }
 
 export async function deleteAgent(id: string): Promise<ActionResult<void>> {
@@ -512,9 +517,7 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
 
     createdUsers.push(...ids.map((id) => ({ id })));
 
-    console.log("createdUsers", createdUsers);
-
-   const result = await db.admin.transaction(async (tx) => {
+    const result = await db.admin.transaction(async (tx) => {
       const profileValues = importedData.map((singleUser, index) => ({
         name: singleUser.name ?? "",
         username: singleUser.username ?? "",
@@ -527,21 +530,17 @@ export async function addImportedUsers(importedData: Partial<User>[]) {
         status: "active" as const,
       }));
 
-      console.log("profileValues", profileValues);
-
       const userRoleValues = importedData.map((singleUser, index) => ({
         roleId: singleUser.role?.id ?? "",
         userId: createdUsers[index]?.id ?? "",
         assignedBy: currentUser.data.user?.id,
       }));
 
-      console.log("userRoleValues", userRoleValues);
-
       await tx.transaction(async (tx) => {
         await tx.insert(profile).values(profileValues);
         await tx.insert(userRoles).values(userRoleValues);
       });
-      return 1
+      return 1;
     });
 
     if (result !== 1) {
@@ -593,7 +592,7 @@ async function createUsersBulk(
       sql`, `,
     )}])`,
   );
-  console.log("ids", ids);
+
   const firstRow = ids[0];
   if (firstRow?.create_users_bulk_optimized) {
     const results = firstRow.create_users_bulk_optimized as string[];

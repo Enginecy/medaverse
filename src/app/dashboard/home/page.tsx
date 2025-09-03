@@ -32,7 +32,15 @@ export default async function Home() {
   return (
     <div className="flex w-full flex-col items-start gap-4 md:gap-6">
       <div className="flex w-full flex-col gap-4 md:gap-6 lg:flex-row">
-        <PersonalInfoCard />
+        <Suspense
+          fallback={
+            <Skeleton
+              className="h-[500px] w-full rounded-2xl bg-blue-200 lg:w-1/2"
+            />
+          }
+        >
+          <PersonalInfoCard />
+        </Suspense>
 
         <div
           className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 md:gap-6
@@ -52,8 +60,8 @@ export default async function Home() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="min-h-[44px] rounded-full border-0 text-black bg-[#F5F5F5] hover:text-white
-                    shadow-none"
+                  className="min-h-[44px] rounded-full border-0 bg-[#F5F5F5]
+                    text-black shadow-none hover:text-white"
                 >
                   View All
                 </Button>
@@ -67,7 +75,10 @@ export default async function Home() {
           </CardContent>
         </Card>
 
-        <Card className="w-full border-0 shadow-none xl:w-1/3 xl:flex-shrink-0 rounded-3xl">
+        <Card
+          className="w-full rounded-3xl border-0 shadow-none xl:w-1/3
+            xl:flex-shrink-0"
+        >
           <CardHeader>
             <CardTitle className="flex flex-row justify-between">
               <span> Upcoming Birthdays</span>
@@ -115,7 +126,7 @@ async function PersonalGoalsGrid() {
             <Target className="h-8 w-8 text-white" />
           </div>
           <div
-            className="absolute -top-1 -right-1 flex h-6 w-6 items-center
+            className="absolute -right-1 -top-1 flex h-6 w-6 items-center
               justify-center rounded-full bg-green-500"
           >
             <TrendingUp className="h-3 w-3 text-white" />

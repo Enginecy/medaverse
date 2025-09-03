@@ -8,7 +8,7 @@ export async function SalesTable() {
   // TODO: Implement the sale info drawer
 
   return (
-    <div className="py-6">
+    <div className="p-6">
       <DataTable
         columns={salesColumnsDef}
         data={sales }

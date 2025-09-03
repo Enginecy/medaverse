@@ -10,8 +10,8 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { birthdayColumns } from "@/features/dashboard/home/components/birthday-columns";
-import type { Birthday } from "../data/birthday-data";
-import { getUpComingDBs } from "@/features/dashboard/home/server/db/bds";
+import type { Birthday } from "../data/home";
+import { getUpComingBDs } from "@/features/dashboard/home/server/db/home";
 
 export function BirthdayTable() {
   const {
@@ -21,7 +21,7 @@ export function BirthdayTable() {
     error,
   } = useQuery<Birthday[]>({
     queryKey: ["birthdays"],
-    queryFn: getUpComingDBs,
+    queryFn: getUpComingBDs,
   });
 
   const columns = birthdayColumns;

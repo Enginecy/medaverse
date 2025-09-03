@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import {
@@ -9,17 +9,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { SegmentedButton } from "@/components/ui/segmented-button";
-import { cn } from "@/lib/utils";
 
-export function SalesCard({
-  className,
-}: {
-  className?: React.HTMLAttributes<HTMLDivElement>["className"];
-}) {
+export function SalesCard() {
   const options = ["Week", "Month"] as const;
   const [selected, setSelected] = useState<(typeof options)[number]>("Week");
   return (
-    <Card className={cn(className)}>
+    <Card className="flex h-50 w-full flex-col gap-0">
       <CardHeader>
         <CardTitle>
           <SegmentedButton
