@@ -27,11 +27,15 @@ export async function PersonalInfoCard() {
 
   return (
     <div
-      className="w-full rounded-3xl border-1 border-gray-300 bg-[#F1F1F1] p-10 lg:w-1/2 lg:justify-between"
+      className="w-full rounded-3xl bg-[#F1F1F1] p-10 lg:w-1/2
+        lg:justify-between"
     >
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Personal info</p>
-        <Button  className="text-black bg-white rounded-full hover:text-white cursor-pointer  ">
+        <Button
+          className="cursor-pointer rounded-full bg-white text-black
+            hover:text-white"
+        >
           <span>Edit Profile</span>
           <Edit />
         </Button>
@@ -58,7 +62,7 @@ export async function PersonalInfoCard() {
                     src={profile.avatarUrl!}
                     alt="profile"
                     fill
-                    sizes="128px" 
+                    sizes="128px"
                     style={{ objectFit: "contain" }}
                     className="rounded-lg object-cover object-top"
                   />
@@ -124,14 +128,18 @@ export async function PersonalInfoCard() {
               </div>
             }
           >
-            <div className="flex w-full flex-col gap-2 md:flex-row items-center">
+            <div className="flex w-full flex-col items-center gap-2 md:flex-row">
               <CommissionCard
                 title="Commission"
                 range={{ min: 4200, max: 12000 }}
-                className="flex h-50 w-full flex-col gap-0"
+                className="flex h-50 w-full flex-col gap-0 rounded-2xl border-0
+                  shadow-none"
               />
 
-              <SalesCard className="flex h-50 w-full flex-col gap-0" />
+              <SalesCard
+                className="flex h-50 w-full flex-col gap-0 rounded-2xl border-0
+                  shadow-none"
+              />
             </div>
           </Suspense>
         </div>
@@ -165,7 +173,7 @@ function CommissionCard({
           </p>
         </CardTitle>
       </CardHeader>
-      <CardContent className="grow">
+      <CardContent className="h-30 w-30 md:h-40 md:w-40">
         <ChartRadialText title={`${value}%`} value={value} />
       </CardContent>
       <CardFooter>

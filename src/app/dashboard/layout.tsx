@@ -59,7 +59,7 @@ export default function RootLayout({
                     <Button
                       variant={"default"}
                       className="hover:bg-primary min-h-[43px] hover:cursor-pointer
-                        rounded-full bg-white px-6 py-6 text-black
+                        rounded-full bg-white py-6 px-8 text-black
                         hover:text-white md:min-h-auto "
                     >
                       <item.icon className=" md:h-5 md:w-5"  size={1}/>
