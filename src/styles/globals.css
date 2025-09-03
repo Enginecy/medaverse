@@ -89,10 +89,10 @@
 }
 
 :root {
-  --radius: 0.65rem;
+  --radius: 3rem;
 
   /* Theme colors based on Figma design system */
-  --background: #f8f8f8; /* surface-b-g */
+  --background: #DBE4EB; /* surface-b-g */
   --foreground: #1a1a1a; /* text-body-primary */
   --card: #ffffff; /* surface-card */
   --card-foreground: #1a1a1a; /* text-body-primary */
@@ -115,7 +115,7 @@
   --chart-3: #07406f; /* charts-dark */
   --chart-4: #1987e0; /* primary-400 */
   --chart-5: #6dacfc; /* primary-300 */
-  --sidebar: #ffffff; /* surface-card */
+  --sidebar: #DBE4EB; /* surface-card */
   --sidebar-foreground: #1a1a1a; /* text-body-primary */
   --sidebar-primary: #02213d; /* button-primary */
   --sidebar-primary-foreground: #ffffff; /* button-text */

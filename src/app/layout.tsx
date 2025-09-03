@@ -21,13 +21,17 @@ export default function RootLayout({
   return (
     <QueryProvider>
       <SupabaseClientProvider>
-        <html lang="en" className={`${urbanist.className}`} suppressHydrationWarning>
-          <body>
-            <ModalProvider>
+        <html
+          lang="en"
+          className={`${urbanist.className}`}
+          suppressHydrationWarning
+        >
+          <ModalProvider>
+            <body className="bg-amber-400">
               {children}
               <Toaster />
-            </ModalProvider>
-          </body>
+            </body>
+          </ModalProvider>
         </html>
       </SupabaseClientProvider>
     </QueryProvider>

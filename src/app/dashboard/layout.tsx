@@ -43,8 +43,8 @@ export default function RootLayout({
           <AppSidebar />
           <div className="flex min-w-0 flex-1 flex-col">
             <nav
-              className="border-border bg-card flex h-16 w-full items-center
-                justify-between gap-2 border-b px-2 md:h-20 md:justify-end
+              className="bg-sidebar flex h-16 w-full items-center
+                justify-between gap-2 px-2 md:h-20 md:justify-end
                 md:gap-4 md:px-4 lg:h-24"
             >
               <SidebarTrigger className="min-h-[44px] min-w-[44px] md:hidden" />
@@ -57,10 +57,9 @@ export default function RootLayout({
                     rel={item.newWindow ? "noopener noreferrer" : undefined}
                   >
                     <Button
-                      variant={"outline"}
-                      className="min-h-[44px] px-2 py-3 md:min-h-auto md:px-4
-                        md:py-4 lg:py-6"
-                      size="sm"
+                      variant={"default"}
+                      className="min-h-[44px] py-6 px-6 md:min-h-auto rounded-full bg-white text-black"
+                      
                     >
                       <item.icon className="h-4 w-4 md:h-5 md:w-5" />
                       <span className="hidden sm:inline">{item.title}</span>
