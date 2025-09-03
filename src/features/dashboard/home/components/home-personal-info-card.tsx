@@ -31,7 +31,7 @@ export async function PersonalInfoCard() {
     >
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Personal info</p>
-        <Button  className="text-black bg-white rounded-full hover:text-white cursor-pointer">
+        <Button  className="text-black bg-white rounded-full hover:text-white cursor-pointer  ">
           <span>Edit Profile</span>
           <Edit />
         </Button>
