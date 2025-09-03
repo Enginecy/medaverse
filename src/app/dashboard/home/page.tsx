@@ -52,7 +52,7 @@ export default async function Home() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="min-h-[44px] rounded-full border-0 bg-[#F5F5F5]
+                  className="min-h-[44px] rounded-full border-0 text-black bg-[#F5F5F5] hover:text-white
                     shadow-none"
                 >
                   View All

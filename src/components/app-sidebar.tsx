@@ -75,8 +75,17 @@ export function AppSidebar() {
                 const isSelected = pathName === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={isSelected} size="lg">
-                      <a href={item.url} className="min-h-[48px] md:min-h-auto">
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isSelected}
+                      size="lg"
+                      className={`aria-selected:bg-primary-500 rounded-full p-4
+                      ${isSelected ? "bg-primary-800" : "bg-transparent"}`}
+                    >
+                      <a
+                        href={item.url}
+                        className={"min-h-[48px] md:min-h-auto"}
+                      >
                         <item.icon className="h-5 w-5 md:h-4 md:w-4" />
                         <span className="text-sm md:text-sm">{item.title}</span>
                       </a>

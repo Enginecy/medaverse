@@ -27,7 +27,7 @@ export default function RootLayout({
           suppressHydrationWarning
         >
           <ModalProvider>
-            <body className="bg-amber-400">
+            <body>
               {children}
               <Toaster />
             </body>
