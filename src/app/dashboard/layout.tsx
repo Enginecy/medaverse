@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/providers/theme";
 
 import Link from "next/link";
 import { ClientPasswordGate } from "@/features/login/components/modals/password-gate";
+import { cn } from "@/lib/utils";
 
 const navItems = [
   {
@@ -14,6 +15,8 @@ const navItems = [
     icon: TrophyIcon,
     href: "/leaderboard",
     newWindow: true,
+    style:
+      "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
   },
   {
     title: "News",
@@ -58,11 +61,14 @@ export default function RootLayout({
                   >
                     <Button
                       variant={"default"}
-                      className="hover:bg-primary min-h-[43px] hover:cursor-pointer
-                        rounded-full bg-white py-6 px-8 text-black
-                        hover:text-white md:min-h-auto "
+                      className={cn(
+                        `hover:bg-primary min-h-[43px] rounded-full bg-white
+                        px-8 py-6 text-black hover:cursor-pointer
+                        hover:text-white md:min-h-auto`,
+                        item.style,
+                      )}
                     >
-                      <item.icon className=" md:h-5 md:w-5"  size={1}/>
+                      <item.icon className="md:h-5 md:w-5" size={1} />
                       <span className="hidden sm:inline">{item.title}</span>
                     </Button>
                   </Link>

@@ -16,7 +16,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { Logout } from "./logout";
+import { cn } from "@/lib/utils";
 
 // Menu items.
 const items = [
@@ -77,11 +77,13 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild
-                      isActive={isSelected}
-                      variant={"outline"}
                       size="lg"
-                      className={`aria-selected:bg-primary-500 rounded-full p-4
-                      ${isSelected ? "bg-primary-800" : "bg-transparent"}`}
+                      className={cn(
+                        "rounded-full p-4",
+                        isSelected &&
+                          `bg-primary text-primary-foreground hover:bg-primary
+                          hover:text-primary-foreground`,
+                      )}
                     >
                       <a
                         href={item.url}
