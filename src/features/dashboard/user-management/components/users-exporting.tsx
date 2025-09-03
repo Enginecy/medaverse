@@ -51,8 +51,9 @@ export function ExportUsersButton() {
   }
   return (
     <Button
-      className="w-35"
-      variant="outline"
+      className="text-primary w-35 cursor-pointer rounded-full bg-[#E5ECF6]
+        shadow-none hover:bg-[#E5ECF6]/50"
+      variant="default"
       onClick={() => exportUsersData()}
       disabled={isLoading}
     >

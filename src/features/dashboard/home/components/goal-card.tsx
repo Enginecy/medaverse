@@ -17,7 +17,7 @@ export function GoalCard({
 //     <GoalCardSkeleton/>
 //   ) 
   return (
-    <Card className="flex min-h-0 w-full flex-col gap-0 overflow-hidden">
+    <Card className="flex min-h-0 w-full flex-col gap-0 overflow-hidden shadow-none border-0">
       <CardHeader className="flex-shrink-0">
         <CardTitle className="mx-auto text-center text-lg font-semibold">
           {title}

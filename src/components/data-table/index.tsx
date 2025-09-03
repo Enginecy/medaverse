@@ -255,7 +255,7 @@ export function DataTable<TData, TValue>({
             </div>
           )}
           {addButton && (
-            <Button size="sm" className="gap-2 flex-shrink-0" onClick={addButton.onClick}>
+            <Button size="sm" className="gap-2 rounded-full flex-shrink-0" onClick={addButton.onClick}>
               <Plus className="h-4 w-4" />
               {addButton.label}
             </Button>
@@ -277,7 +277,7 @@ export function DataTable<TData, TValue>({
               className="pl-9 min-h-[44px] w-full"
             />
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0  md:flex-row flex-wrap">
+          <div className="flex items-center gap-2 flex-shrink-0 md:flex-row flex-wrap">
             {enableColumnFilter && <ColumnFilter table={table} />}
             {enableDateFilter && (
               <DateRangePicker
@@ -297,9 +297,9 @@ export function DataTable<TData, TValue>({
         </div>
       )}
 
-      <div className="rounded-md border w-full overflow-x-auto">
+      <div className="rounded-2xl w-full overflow-x-auto">
         <Table className="min-w-full w-full text-xs md:text-sm">
-          <TableHeader className="bg-secondary text-secondary-foreground">
+          <TableHeader className="text-secondary-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {hasSelectionEnabled && (
@@ -436,7 +436,8 @@ function ColumnsDropdown<TData>({ table }: { table: ReactTable<TData> }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="ml-auto">
+        <Button variant="outline" className="text-primary min-h-[44px] cursor-pointer rounded-full
+            border-0 bg-[#E5ECF6] p-1 shadow-none hover:bg-[#E5ECF6]/50">
           Columns <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
@@ -505,14 +506,15 @@ function ColumnFilter<TData>({ table }: { table: ReactTable<TData> }) {
       <PopoverTrigger asChild>
         <Button
           variant={hasActiveFilters ? "default" : "outline"}
-          className="relative gap-2 min-h-[44px]"
+          className="relative text-primary min-h-[44px] cursor-pointer rounded-full
+            border-0 bg-[#E5ECF6] p-1 shadow-none hover:bg-[#E5ECF6]/50"
         >
           <Filter className="h-4 w-4" />
           <span className="hidden sm:inline">Filter</span>
           {hasActiveFilters && (
             <span
-              className="bg-background text-foreground absolute -top-1 -right-1
-                flex h-5 w-4 items-center justify-center rounded-full text-xs
+              className="bg-primary text-white  absolute -top-1 -right-1
+                flex h-5 w-5 items-center justify-center rounded-full text-l
                 font-medium"
             >
               {activeFilterCount}
@@ -520,7 +522,7 @@ function ColumnFilter<TData>({ table }: { table: ReactTable<TData> }) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80" align="start">
+      <PopoverContent className="w-80" align="start" side="left">
         <FilterPanel
           filters={filters}
           onApplyFilters={handleApplyFilters}

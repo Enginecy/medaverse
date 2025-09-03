@@ -17,7 +17,7 @@ export default function DocsManagementLayout({
         <AddDocumentButton />
       </div>
       <TabBar />
-      <Card className="w-full grow py-0">
+      <Card className="w-full grow py-0 rounded-3xl border-0 shadow-none ">
         <CardContent className="grow p-2 md:p-6">{children}</CardContent>
       </Card>
     </div>

@@ -269,7 +269,8 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
       }}
     >
       <PopoverTrigger asChild>
-        <Button size={"lg"} variant="outline">
+        <Button size={"lg"} variant="outline" className="text-primary min-h-[44px] cursor-pointer rounded-full
+            border-0 bg-[#E5ECF6] p-1 shadow-none hover:bg-[#E5ECF6]/50">
           {selectedPreset && (
             <div className="text-sm font-medium">
               {PRESETS.find((p) => p.name === selectedPreset)?.label}

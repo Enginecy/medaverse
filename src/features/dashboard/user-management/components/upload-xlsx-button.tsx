@@ -10,19 +10,17 @@ export function UploadXlsxButton() {
   function handleUploading() {
     showDialog(() => {
       return <UploadXLSXDialog />;
-    } 
-  
-  );
+    });
   }
   return (
-    <Button className="w-35" variant="outline" onClick={handleUploading}>
-      <label
-        className="hover:bg-accent flex cursor-pointer items-center gap-2
-          rounded-md px-3 py-2 transition-colors"
-      >
-        <Upload className="text-primary h-5 w-5" />
-        <span className="text-primary font-medium">Upload Xlsx file</span>
-      </label>
+    <Button
+      className="w-35 cursor-pointer rounded-full bg-[#E5ECF6] shadow-none
+        hover:bg-[#E5ECF6]/50"
+      variant="default"
+      onClick={handleUploading}
+    >
+      <Upload className="text-primary h-5 w-5" />
+      <span className="text-primary font-medium">Upload Xlsx file</span>
     </Button>
   );
 }

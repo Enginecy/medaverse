@@ -13,13 +13,22 @@ export function SalesActions() {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-2">
-      <Button variant="outline" className="min-h-[44px]">
+    <div className="flex flex-col gap-2 sm:flex-row">
+      <Button
+        variant="outline"
+        className="text-primary cursor-pointer rounded-full border-0 bg-white
+          p-1 shadow-none hover:bg-gray-100"
+      >
         <Download className="h-4 w-4" />
         <span className="hidden sm:inline">Download Xlsx</span>
         <span className="sm:hidden">Download</span>
       </Button>
-      <Button variant="default" onClick={openAddNewSaleModal} className="min-h-[44px]">
+      <Button
+        variant="default"
+        onClick={openAddNewSaleModal}
+        className="bg-primary cursor-pointer rounded-full border-0 p-1
+          shadow-none "
+      >
         <Plus className="h-4 w-4" />
         <span className="hidden sm:inline">Add New</span>
         <span className="sm:hidden">Add</span>
