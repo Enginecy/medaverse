@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Admin Settings - Dashboard",
   description: "Manage system resources, permissions, roles, and user access.",
 };
+
 export default function AdminSettingsPage() {
   return (
     <div className="flex flex-1 flex-col gap-4 md:gap-6">
