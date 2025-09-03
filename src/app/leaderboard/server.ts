@@ -25,7 +25,7 @@ export async function getLeaderboardData() {
 
   return results.map((r) => ({
     ...r,
-    totalSalesAmount: Number(r.totalSalesAmount ?? 0).toLocaleString(),
+    totalSalesAmount: (Number(r.totalSalesAmount ?? 0) * 12).toLocaleString(),
     salesCount: Number(r.salesCount ?? 0),
   }));
 }
@@ -52,7 +52,7 @@ export async function getLeaderboardDataByRole(roleCode: string) {
 
   return results.map((r) => ({
     ...r,
-    totalSalesAmount: Number(r.totalSalesAmount ?? 0).toLocaleString(),
+    totalSalesAmount: (Number(r.totalSalesAmount ?? 0) * 12).toLocaleString(),
     salesCount: Number(r.salesCount ?? 0),
   }));
 }
