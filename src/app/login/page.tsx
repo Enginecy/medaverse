@@ -95,23 +95,25 @@ export default function Home() {
     },
   });
 
-  const { mutate: passwordLogin, isPending: isPasswordLoggingIn } = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      const result = await loginWithPassword(data);
-      if (!result.success) {
-        throw result.error;
-      }
-      return result.data;
+  const { mutate: passwordLogin, isPending: isPasswordLoggingIn } = useMutation(
+    {
+      mutationFn: async (data: { email: string; password: string }) => {
+        const result = await loginWithPassword(data);
+        if (!result.success) {
+          throw result.error;
+        }
+        return result.data;
+      },
+      onSuccess: router.refresh,
+      onError: (error: ActionError) => {
+        showSonnerToast({
+          message: error.message,
+          description: error.details,
+          type: "error",
+        });
+      },
     },
-    onSuccess: router.refresh,
-    onError: (error: ActionError) => {
-      showSonnerToast({
-        message: error.message,
-        description: error.details,
-        type: "error",
-      });
-    },
-  });
+  );
 
   // Unified form submission handler
   const onSubmit = (values: z.infer<ReturnType<typeof createFormSchema>>) => {
@@ -138,17 +140,21 @@ export default function Home() {
 
   return (
     <div
-      className="fixed inset-0 flex h-screen w-full max-w-full items-center justify-center
-        bg-white p-2 md:p-4 overflow-hidden"
+      className="relative flex min-h-screen w-full max-w-full items-center
+        justify-center overflow-hidden p-4 md:justify-end"
     >
-      <LoginGraphics />
+      <div className="absolute inset-0 z-0"><LoginGraphics /></div>
       <div
-        className="flex h-full w-full md:w-1/2 flex-col items-center justify-center gap-4 md:gap-6
-          bg-white px-4 md:px-6 min-w-0 overflow-y-auto"
+        className="relative z-10 flex h-auto w-full max-w-md flex-col items-center justify-center gap-4
+          overflow-y-auto rounded-3xl border-[12px] border-black bg-[#404552]
+          p-4 backdrop-blur-sm md:h-2/3 md:w-1/3 md:rounded-4xl md:border-[16px]
+          md:gap-6 md:p-6"
       >
         <LoginForm
           form={form}
-          isLoading={isSendingOtp || isVerifyingOtp || isLoggingIn || isPasswordLoggingIn}
+          isLoading={
+            isSendingOtp || isVerifyingOtp || isLoggingIn || isPasswordLoggingIn
+          }
           onSubmit={onSubmit}
           step={step}
           mode={mode}
@@ -171,7 +177,7 @@ export default function Home() {
               form.setValue("code", "");
               form.trigger();
             }}
-            className="text-sm text-gray-600 min-h-[44px] px-4 w-full max-w-md"
+            className="min-h-[44px] w-full max-w-md px-4 text-sm text-gray-600"
           >
             Back to email
           </Button>
