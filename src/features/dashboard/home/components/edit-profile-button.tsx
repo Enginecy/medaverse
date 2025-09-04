@@ -19,8 +19,8 @@ export function EditProfileButton({ profile }: { profile: UserProfile }) {
 
   return (
     <Button
-      variant="outline"
-      className="cursor-pointer rounded-full bg-white text-black
+      variant="default"
+      className="shadow-none cursor-pointer rounded-full bg-[#ededed] text-black
         hover:text-white"
       onClick={handleEditClick}
     >

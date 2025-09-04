@@ -19,7 +19,7 @@ export function CommissionCard({
 }) {
   const value = Math.round((range.min / range.max) * 100);
   return (
-    <Card className="flex h-50 w-full flex-col gap-0">
+    <Card className="flex h-50 w-full flex-col gap-0 rounded-3xl">
       <CardHeader>
         <CardTitle>
           <p className="text-md font-semibold">

@@ -299,17 +299,3 @@ export function AddGoalDrawer({ resolve }: AddGoalSheetProps) {
   );
 }
 
-export function AddGoalButton() {
-  const showDrawer = useShowDrawer();
-
-  const handleOpen = () => {
-    showDrawer((resolve) => <AddGoalDrawer resolve={resolve} />);
-  };
-
-  return (
-    <Button onClick={handleOpen}>
-      <PlusIcon className="mr-2 h-4 w-4" />
-      Add Goal
-    </Button>
-  );
-}

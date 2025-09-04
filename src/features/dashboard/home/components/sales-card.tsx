@@ -14,7 +14,7 @@ export function SalesCard() {
   const options = ["Week", "Month"] as const;
   const [selected, setSelected] = useState<(typeof options)[number]>("Week");
   return (
-    <Card className="flex h-50 w-full flex-col gap-0">
+    <Card className="flex h-50 w-full flex-col gap-0 rounded-3xl">
       <CardHeader>
         <CardTitle>
           <SegmentedButton
