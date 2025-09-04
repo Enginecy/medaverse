@@ -57,7 +57,7 @@ const items = [
 export function AppSidebar() {
   const pathName = usePathname();
   return (
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar collapsible="icon" variant="inset" className="bg-gradient-to-t from-[#DBE4EB] to-white">
       <SidebarHeader className="py-4 md:py-[22.5px]">
         <Image
           className="mx-auto w-32 md:w-40"
