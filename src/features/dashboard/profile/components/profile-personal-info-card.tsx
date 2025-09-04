@@ -13,7 +13,7 @@ export async function ProfilePersonalInfoCard() {
   const userProfile = await getUserProfile();
 
   return (
-    <Card className="w-full rounded-2xl">
+    <Card className="w-full rounded-3xl shadow-none border-0">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
@@ -82,7 +82,7 @@ export async function ProfilePersonalInfoCard() {
 
 export function ProfilePersonalInfoCardSkeleton() {
   return (
-    <Card className="w-1/3 rounded-2xl">
+    <Card className="w-full rounded-3xl shadow-none border-0">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>

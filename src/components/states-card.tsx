@@ -4,7 +4,7 @@ import { type State } from "@/lib/data";
 
 export function StatesCard({ states }: { states: State[] }) {
   return (
-    <Card className="min-w-[630px] flex-1 items-center justify-center">
+    <Card className="min-w-[630px] flex-1 items-center justify-center rounded-3xl shadow-none border-0">
       <CardContent className="flex h-full w-full gap-4">
         <div className="flex w-1/3 flex-col gap-6">
           <CardTitle className="flex items-center justify-between gap-2">
