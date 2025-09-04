@@ -83,7 +83,7 @@ export function AppSidebar() {
                       asChild
                       size="lg"
                       className={cn(
-                        "rounded-full p-4 hover:bg-white/40",
+                        "rounded-full p-4 hover:bg-primary-200",
                         isSelected && "bg-primary text-primary-foreground",
                       )}
                     >
