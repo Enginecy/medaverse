@@ -1,9 +1,9 @@
 "use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, roles, userRoles, users } from "@/db/schema";
-import type { User } from "@/features/dashboard/user-management/server/db/user-management";
+
 import { createClient } from "@/lib/supabase/server";
-import { tryCatch } from "@/lib/utils";
+
 import { desc, eq, getTableColumns } from "drizzle-orm";
 
 export async function getUpComingBDs() {
@@ -21,8 +21,15 @@ export async function getUpComingBDs() {
       })
       .from(profile)
       .innerJoin(users, eq(users.id, profile.userId))
-      .orderBy(profile.dob);
-    return birthdays.map((row) => {
+      .orderBy(desc(profile.dob));
+
+    return birthdays.filter(
+      (row) => {
+        const dob = new Date(row.dob);
+        return dob>=today ;
+      }
+    ).map((row) => {
+
       const dob = new Date(row.dob);
       const isToday =
         dob.getDate() === today.getDate() &&

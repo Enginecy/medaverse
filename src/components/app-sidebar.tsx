@@ -72,7 +72,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
-                const isSelected = pathName === item.url;
+                const isSelected = pathName.includes(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
@@ -80,8 +80,7 @@ export function AppSidebar() {
                       size="lg"
                       className={cn(
                         "rounded-full p-4 hover:bg-white/50",
-                        isSelected &&
-                          `bg-primary text-primary-foreground`,
+                        isSelected && "bg-primary text-primary-foreground",
                       )}
                     >
                       <a

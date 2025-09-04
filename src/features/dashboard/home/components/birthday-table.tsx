@@ -29,7 +29,7 @@ export function BirthdayTable() {
   const todaysBirthdays = birthdays?.filter((b) => b.isToday) ?? [];
   const upcomingBirthdays = birthdays?.filter((b) => !b.isToday) ?? [];
 
-  const limitedUpComingBirthdays = upcomingBirthdays?.reverse().slice(0, 5);
+  const limitedUpComingBirthdays = [...upcomingBirthdays]?.reverse().slice(0, 5);
   const todayTable = useReactTable({
     data: todaysBirthdays,
     columns,
