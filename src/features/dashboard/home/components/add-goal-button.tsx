@@ -1,3 +1,4 @@
+'use client';
 import { Button } from "@/components/ui/button";
 import { AddGoalDrawer } from "@/features/dashboard/profile/components/modals/add-goal-drawer";
 import { useShowDrawer } from "@/lib/react-utils";
@@ -11,7 +12,7 @@ export function AddGoalButton() {
   };
 
   return (
-    <Button onClick={handleOpen}>
+    <Button onClick={handleOpen} className="w-35 cursor-pointer rounded-full bg-primary shadow-none">
       <PlusIcon className="mr-2 h-4 w-4" />
       Add Goal
     </Button>

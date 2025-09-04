@@ -9,7 +9,7 @@ export function GaolsCardEmptyState() {
         text-center md:h-[180px] md:p-6`}
     >
       <h3 className="mt-2 text-base font-semibold">
-        Add and customize your gaol
+        Add and customize your goal
       </h3>
 
       <AddGoalButton />

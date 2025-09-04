@@ -124,6 +124,8 @@
   --sidebar-border: #f8f8f8; /* border-light */
   --sidebar-ring: #8ebafd; /* border-accent */
 
+  --drawer: #ffffff;
+
   /* Additional theme colors from Figma */
   --light-blue-100: #ffffff;
   --light-blue-200: #f4f7f9;

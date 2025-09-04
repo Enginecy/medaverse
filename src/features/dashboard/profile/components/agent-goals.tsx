@@ -6,13 +6,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AddGoalButton } from "./modals/add-goal-drawer";
 import { getUserGoalsAction } from "../server/actions/goals";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import type { Goal } from "../server/db/goals";
 import { format } from "date-fns";
 import { Suspense } from "react";
+import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-button";
 
 export function AgentGoals() {
   return (
