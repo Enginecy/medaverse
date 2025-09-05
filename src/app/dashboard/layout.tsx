@@ -44,7 +44,7 @@ export default function RootLayout({
       <SidebarProvider>
         <div
           className="flex h-screen w-full max-w-full overflow-hidden
-            bg-gradient-to-tl from-[#1b6caa] to-white"
+            bg-gradient-to-tl from-[#1b6caa] from-30% to-white to-70%"
         >
           <AppSidebar />
           <div className="flex min-w-0 flex-1 flex-col">
