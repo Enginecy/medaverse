@@ -20,18 +20,18 @@ import { ChartRadialText } from "@/components/radial-chart";
 import { Badge } from "@/components/ui/badge";
 import type { Goal } from "@/features/dashboard/profile/server/db/goals";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Target, TrendingUp, Calendar, DollarSign, Cake } from "lucide-react";
+import { Cake } from "lucide-react";
 import type { Metadata } from "next";
 import { DataTableSkeleton } from "@/components/data-table";
 import { GoalsCardEmptyState } from "@/components/empty-states/gaols-card-empty-state";
-import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-button";
+import { EmptyGoalsState } from "@/components/empty-states/empty-goals-state";
 export const metadata: Metadata = {
   title: "Dashboard Home",
   description: "Welcome to the dashboard. Explore your data and insights.",
 };
 export default async function Home() {
   return (
-    <div className="flex w-full flex-col items-start gap-4 md:gap-6 ">
+    <div className="flex w-full flex-col items-start gap-4 md:gap-6">
       <div className="flex w-full flex-col gap-4 md:gap-6 lg:flex-row">
         <Suspense
           fallback={
@@ -42,15 +42,9 @@ export default async function Home() {
         >
           <PersonalInfoCard />
         </Suspense>
-
-        <div
-          className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 md:gap-6
-            lg:w-1/2"
-        >
-          <Suspense fallback={<PersonalGoalsGridSkeleton />}>
-            <PersonalGoalsGrid />
-          </Suspense>
-        </div>
+        <Suspense fallback={<PersonalGoalsGridSkeleton />}>
+          <PersonalGoalsGrid />
+        </Suspense>
       </div>
       <div className="flex w-full flex-col gap-4 md:gap-6 xl:flex-row">
         <Card className="flex-1 rounded-3xl border-0 shadow-none">
@@ -87,7 +81,7 @@ export default async function Home() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            <BirthdayTable />
+            {/* <BirthdayTable /> */}
           </CardContent>
         </Card>
       </div>
@@ -114,75 +108,26 @@ async function PersonalGoalsGrid() {
   const goals = result.data ?? [];
 
   if (goals.length === 0) {
-    return (
-      <div
-        className="col-span-2 flex flex-col items-center justify-center px-8
-          py-12"
-      >
-        <div className="relative mb-6">
-          <div
-            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center
-              rounded-full bg-gradient-to-br from-blue-500 to-purple-600"
-          >
-            <Target className="h-8 w-8 text-white" />
-          </div>
-          <div
-            className="absolute -top-1 -right-1 flex h-6 w-6 items-center
-              justify-center rounded-full bg-green-500"
-          >
-            <TrendingUp className="h-3 w-3 text-white" />
-          </div>
-        </div>
-
-        <h3 className="text-foreground mb-2 text-xl font-semibold">
-          Start Your Success Journey
-        </h3>
-
-        <p
-          className="text-muted-foreground mb-6 max-w-md text-center
-            leading-relaxed"
-        >
-          Set your first goal and watch your progress soar! Whether it&apos;s
-          sales targets or revenue milestones, tracking goals helps you achieve
-          3x better results.
-        </p>
-
-        <div
-          className="text-muted-foreground mb-8 flex items-center gap-6 text-sm"
-        >
-          <div className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-green-500" />
-            <span>Track Revenue</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-blue-500" />
-            <span>Set Deadlines</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-purple-500" />
-            <span>Monitor Progress</span>
-          </div>
-        </div>
-
-        <AddGoalButton />
-      </div>
-    );
+    return <EmptyGoalsState />;
   }
 
   return (
-    <>
+    <div
+      className="grid w-full auto-rows-fr grid-cols-1 gap-5 lg:w-1/2
+        lg:grid-cols-2"
+    >
       {goals.length < 4
         ? goals
             .map((goal) => <HomeGoalCard key={goal.id} goal={goal} />)
             .concat(
               Array.from({ length: 4 - goals.length }).map((_, index) => (
-                <GoalsCardEmptyState key={index}/>
+                <GoalsCardEmptyState key={index} />
               )),
             )
         : goals
             .slice(0, 4)
             .map((goal) => <HomeGoalCard key={goal.id} goal={goal} />)}
-    </>
+    </div>
   );
 }
 
@@ -214,12 +159,12 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 
   return (
     <div
-      className="flex h-auto w-full flex-col items-center justify-between gap-4
-        rounded-3xl bg-white p-4 md:h-[180px] md:flex-row md:p-6"
+      className="flex h-full w-full flex-col items-center rounded-3xl bg-white
+        p-4 md:flex-row md:justify-between min-h-50"
     >
       <div className="flex w-full flex-1 flex-col items-start gap-1 md:w-auto">
         <div className="mb-1 flex flex-col gap-2 sm:flex-row sm:items-center">
-          <span className="md:text-md text-sm font-medium text-gray-500">
+          <span className="lg:text-md text-sm font-medium text-gray-500">
             {goal.label}
           </span>
           <Badge
@@ -236,9 +181,18 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
         </span>
         <span className="text-xs text-gray-500">{getGoalPeriod()}</span>
       </div>
-      <div className="flex w-full items-center justify-center md:w-auto">
+      <div className="flex  items-center justify-center md:w-auto">
         <ChartRadialText title={`${percent}%`} value={percent} />
       </div>
+    </div>
+  );
+}
+function PersonalGoalsGridSkeleton() {
+  return (
+    <div className="grid w-full auto-rows-fr grid-cols-1 gap-5 lg:w-1/2 lg:grid-cols-2">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <HomeGoalCardSkeleton key={index} />
+      ))}
     </div>
   );
 }
@@ -246,29 +200,21 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 function HomeGoalCardSkeleton() {
   return (
     <div
-      className="flex h-auto w-full flex-col items-center justify-between gap-4
-        rounded-2xl border border-[#E5ECF6] bg-white p-4 shadow-sm md:h-[180px]
-        md:flex-row md:p-6"
+      className="flex h-full w-full flex-col items-center rounded-3xl bg-white
+        p-4 md:flex-row md:justify-between"
     >
-      <div className="flex w-full flex-1 flex-col items-start gap-1 md:w-auto">
-        <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-8 w-24" />
-        <Skeleton className="h-3 w-32" />
-        <Skeleton className="h-3 w-28" />
+      <div className="flex w-full flex-1 flex-col items-start gap-2 md:w-auto">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Skeleton className="h-4 w-24 rounded-md" />
+          <Skeleton className="h-5 w-12 rounded-full" />
+        </div>
+        <Skeleton className="h-8 w-32 rounded-md" />
+        <Skeleton className="h-3 w-28 rounded-md" />
+        <Skeleton className="h-3 w-24 rounded-md" />
       </div>
-      <div className="flex w-full items-center justify-center md:w-auto">
+      <div className="flex items-center justify-center md:w-auto mt-4 md:mt-0">
         <Skeleton className="h-16 w-16 rounded-full" />
       </div>
     </div>
-  );
-}
-
-function PersonalGoalsGridSkeleton() {
-  return (
-    <>
-      {Array.from({ length: 4 }).map((_, index) => (
-        <HomeGoalCardSkeleton key={index} />
-      ))}
-    </>
   );
 }

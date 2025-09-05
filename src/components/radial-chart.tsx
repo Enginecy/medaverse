@@ -32,6 +32,7 @@ export function ChartRadialText({
           },
         })}
         text={title}
+        className="w-min"
       />
     </div>
   );
