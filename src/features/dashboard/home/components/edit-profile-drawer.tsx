@@ -35,7 +35,6 @@ import {
   queryOptions,
   useMutation,
   useQuery,
-  useQueryClient,
 } from "@tanstack/react-query";
 import {
   updateAgent,
@@ -66,7 +65,7 @@ import { RoleField } from "@/features/dashboard/user-management/components/form/
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import type { UserProfile } from "@/features/dashboard/home/server/db/home";
 import { UpLineField } from "@/features/dashboard/user-management/components/form/upline-field";
-import {useRouter} from 'next/navigation';
+
 
 export function EditProfileDrawer(
     { resolve, user }: { resolve: (_: unknown) => void  , user: UserProfile}
