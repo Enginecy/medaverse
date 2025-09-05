@@ -42,13 +42,16 @@ export default function RootLayout({
   return (
     <ThemeProvider attribute="class" forcedTheme="light" enableSystem>
       <SidebarProvider>
-        <div className="flex h-screen w-full max-w-full overflow-hidden">
+        <div
+          className="flex h-screen w-full max-w-full overflow-hidden
+            bg-gradient-to-tl from-[#1b6caa] to-white"
+        >
           <AppSidebar />
           <div className="flex min-w-0 flex-1 flex-col">
             <nav
-              className="bg-sidebar flex h-16 w-full items-center
-                justify-between gap-2 px-2 md:h-20 md:justify-end md:gap-4
-                md:px-4 lg:h-24"
+              className="flex h-16 w-full items-center justify-between gap-2
+                bg-transparent px-2 md:h-20 md:justify-end md:gap-4 md:px-4
+                lg:h-24"
             >
               <SidebarTrigger className="min-h-[44px] min-w-[44px] md:hidden" />
               <div className="flex items-center gap-2 md:gap-4">
@@ -77,7 +80,7 @@ export default function RootLayout({
               </div>
             </nav>
             <main
-              className="bg-background min-w-0 flex-1 overflow-auto p-2 md:p-4
+              className="min-w-0 flex-1 overflow-auto bg-transparent p-2 md:p-4
                 lg:p-6"
             >
               <ClientPasswordGate />

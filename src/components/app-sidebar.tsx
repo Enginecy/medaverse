@@ -60,7 +60,7 @@ export function AppSidebar() {
     <Sidebar
       collapsible="icon"
       variant="inset"
-      className="bg-gradient-to-t from-[#DBE4EB] to-white"
+      className="bg-transparent"
     >
       <SidebarHeader className="py-4 md:py-[22.5px]">
         <Image
