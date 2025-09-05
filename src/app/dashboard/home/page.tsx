@@ -23,7 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Target, TrendingUp, Calendar, DollarSign, Cake } from "lucide-react";
 import type { Metadata } from "next";
 import { DataTableSkeleton } from "@/components/data-table";
-import { GaolsCardEmptyState } from "@/components/empty-states/gaols-card-empty-state";
+import { GoalsCardEmptyState } from "@/components/empty-states/gaols-card-empty-state";
 import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-button";
 export const metadata: Metadata = {
   title: "Dashboard Home",
@@ -87,7 +87,7 @@ export default async function Home() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            {/* <BirthdayTable /> */}
+            <BirthdayTable />
           </CardContent>
         </Card>
       </div>
@@ -176,7 +176,7 @@ async function PersonalGoalsGrid() {
             .map((goal) => <HomeGoalCard key={goal.id} goal={goal} />)
             .concat(
               Array.from({ length: 4 - goals.length }).map((_, index) => (
-                <GaolsCardEmptyState />
+                <GoalsCardEmptyState key={index}/>
               )),
             )
         : goals

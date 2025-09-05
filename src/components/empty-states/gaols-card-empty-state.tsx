@@ -1,7 +1,6 @@
 import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-button";
-import { Plus } from "lucide-react";
 
-export function GaolsCardEmptyState() {
+export function GoalsCardEmptyState() {
   return (
     <div
       className={`border-primary flex h-auto w-full flex-col items-center
