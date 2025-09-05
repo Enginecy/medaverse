@@ -20,10 +20,11 @@ import { ChartRadialText } from "@/components/radial-chart";
 import { Badge } from "@/components/ui/badge";
 import type { Goal } from "@/features/dashboard/profile/server/db/goals";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AddGoalButton } from "@/features/dashboard/profile/components/modals/add-goal-drawer";
 import { Target, TrendingUp, Calendar, DollarSign, Cake } from "lucide-react";
 import type { Metadata } from "next";
 import { DataTableSkeleton } from "@/components/data-table";
+import { GoalsCardEmptyState } from "@/components/empty-states/gaols-card-empty-state";
+import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-button";
 export const metadata: Metadata = {
   title: "Dashboard Home",
   description: "Welcome to the dashboard. Explore your data and insights.",
@@ -126,7 +127,7 @@ async function PersonalGoalsGrid() {
             <Target className="h-8 w-8 text-white" />
           </div>
           <div
-            className="absolute -right-1 -top-1 flex h-6 w-6 items-center
+            className="absolute -top-1 -right-1 flex h-6 w-6 items-center
               justify-center rounded-full bg-green-500"
           >
             <TrendingUp className="h-3 w-3 text-white" />
@@ -170,9 +171,17 @@ async function PersonalGoalsGrid() {
 
   return (
     <>
-      {goals.slice(0, 4).map((goal) => (
-        <HomeGoalCard key={goal.id} goal={goal} />
-      ))}
+      {goals.length < 4
+        ? goals
+            .map((goal) => <HomeGoalCard key={goal.id} goal={goal} />)
+            .concat(
+              Array.from({ length: 4 - goals.length }).map((_, index) => (
+                <GoalsCardEmptyState key={index}/>
+              )),
+            )
+        : goals
+            .slice(0, 4)
+            .map((goal) => <HomeGoalCard key={goal.id} goal={goal} />)}
     </>
   );
 }

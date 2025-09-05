@@ -5,19 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { InfoTile } from "@/features/dashboard/profile/components/info-tile";
 import { getUser } from "@/lib/supabase/server";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EditProfileButton } from "@/features/dashboard/home/components/edit-profile-button";
+import { getUserProfile } from "@/features/dashboard/home/server/db/home";
 
 export async function ProfilePersonalInfoCard() {
   const user = await getUser();
+  const userProfile = await getUserProfile();
 
   return (
-    <Card className="w-1/3 rounded-2xl">
+    <Card className="w-full rounded-3xl shadow-none border-0">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
-          <Button variant="outline" className="text-primary">
-            <span>Edit Profile</span>
-            <Edit />
-          </Button>
+          <EditProfileButton profile={userProfile} />
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -36,10 +36,7 @@ export async function ProfilePersonalInfoCard() {
                 <div>
                   <p className="text-lg font-semibold">{user?.profile?.name}</p>
                   <p className="text-md text-muted-foreground">
-                    {/* {user?.profile?.role} 
-                    // TODO: Add user role when available
-                    
-                    */}
+                    {user?.user.role}
                   </p>
                 </div>
               </div>
@@ -85,7 +82,7 @@ export async function ProfilePersonalInfoCard() {
 
 export function ProfilePersonalInfoCardSkeleton() {
   return (
-    <Card className="w-1/3 rounded-2xl">
+    <Card className="w-full rounded-3xl shadow-none border-0">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>

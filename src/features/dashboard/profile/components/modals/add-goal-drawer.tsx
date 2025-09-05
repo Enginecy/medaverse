@@ -10,7 +10,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { CalendarIcon, PlusIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useShowDrawer } from "@/lib/react-utils";
 import { createGoalAction } from "../../server/actions/goals";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -299,17 +298,3 @@ export function AddGoalDrawer({ resolve }: AddGoalSheetProps) {
   );
 }
 
-export function AddGoalButton() {
-  const showDrawer = useShowDrawer();
-
-  const handleOpen = () => {
-    showDrawer((resolve) => <AddGoalDrawer resolve={resolve} />);
-  };
-
-  return (
-    <Button onClick={handleOpen}>
-      <PlusIcon className="mr-2 h-4 w-4" />
-      Add Goal
-    </Button>
-  );
-}

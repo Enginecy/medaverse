@@ -6,17 +6,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AddGoalButton } from "./modals/add-goal-drawer";
 import { getUserGoalsAction } from "../server/actions/goals";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import type { Goal } from "../server/db/goals";
 import { format } from "date-fns";
 import { Suspense } from "react";
+import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-button";
 
 export function AgentGoals() {
   return (
-    <Card className="w-full">
+    <Card className="w-full rounded-3xl shadow-none border-0">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900">
           Agent Goals

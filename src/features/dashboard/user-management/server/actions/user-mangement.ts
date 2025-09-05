@@ -281,7 +281,7 @@ export async function updateAgent(
 
     const profileUrlSql =
       profileUrl === null ? sql`NULL` : sql`${profileUrl}::text`;
-    const statesJson = JSON.stringify(data.states ?? []);
+    // const statesJson = JSON.stringify(data.states ?? []);
     const profileData = await db.rls((tx) =>
       tx.execute(sql`
     select * from public.update_agent_profile(

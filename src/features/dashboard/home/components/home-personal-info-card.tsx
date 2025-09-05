@@ -18,7 +18,7 @@ export async function PersonalInfoCard() {
 
   return (
     <div
-      className="w-full rounded-2xl border-1 border-gray-300 bg-white p-10
+      className="w-full rounded-3xl bg-white p-10
         lg:w-1/2 lg:justify-between"
     >
       <div className="flex items-center justify-between">
