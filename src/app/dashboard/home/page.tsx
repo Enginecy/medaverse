@@ -156,15 +156,15 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 
   return (
     <div
-      className="flex h-full min-h-50 w-full flex-col items-center rounded-3xl
-        bg-white p-4 md:flex-row md:justify-between"
+      className="flex h-full min-h-50 w-full flex-row  items-center rounded-3xl
+        bg-white p-4"
     >
-      <div className="flex w-full flex-1 flex-col items-start gap-1">
-        <div className="flex flex-row justify-between">
+      <div className="flex w-full  flex-1 flex-col items-start gap-1">
+        <div className="flex flex-row w-full gap-x-2.5 ">
           <span className="lg:text-md text-sm font-medium text-gray-500">
             {goal.label}
           </span>
-          <Badge className={`text-xs ${getGoalTypeColor(goal.goalType)}`}>
+          <Badge className={`max-h-6 text-xs w-min ${getGoalTypeColor(goal.goalType)}`}>
             {goal.goalType?.toUpperCase()}
           </Badge>
         </div>
