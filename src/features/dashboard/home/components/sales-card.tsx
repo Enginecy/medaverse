@@ -26,7 +26,7 @@ export function SalesCard() {
             onChange={(value) => {
               setSelected(value as (typeof options)[number]);
             }}
-            className="text-black md:text-xs"
+            className="text-xs"
           />
         </CardTitle>
       </CardHeader>
