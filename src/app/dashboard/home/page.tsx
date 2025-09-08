@@ -112,10 +112,7 @@ async function PersonalGoalsGrid() {
   }
 
   return (
-    <div
-      className="grid w-full auto-rows-fr grid-cols-1 gap-5 lg:w-1/2
-        lg:grid-cols-2"
-    >
+    <div className="grid w-full auto-rows-fr grid-cols-1 gap-5 lg:grid-cols-2">
       {goals.length < 4
         ? goals
             .map((goal) => <HomeGoalCard key={goal.id} goal={goal} />)
@@ -159,17 +156,15 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 
   return (
     <div
-      className="flex h-full w-full flex-col items-center rounded-3xl bg-white
-        p-4 md:flex-row md:justify-between min-h-50"
+      className="flex h-full min-h-50 w-full flex-col items-center rounded-3xl
+        bg-white p-4 md:flex-row md:justify-between"
     >
-      <div className="flex w-full flex-1 flex-col items-start gap-1 md:w-auto">
-        <div className="mb-1 flex flex-col gap-2 sm:flex-row sm:items-center">
+      <div className="flex w-full flex-1 flex-col items-start gap-1">
+        <div className="flex flex-row justify-between">
           <span className="lg:text-md text-sm font-medium text-gray-500">
             {goal.label}
           </span>
-          <Badge
-            className={`self-start text-xs ${getGoalTypeColor(goal.goalType)}`}
-          >
+          <Badge className={`text-xs ${getGoalTypeColor(goal.goalType)}`}>
             {goal.goalType?.toUpperCase()}
           </Badge>
         </div>
@@ -181,7 +176,7 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
         </span>
         <span className="text-xs text-gray-500">{getGoalPeriod()}</span>
       </div>
-      <div className="flex  items-center justify-center md:w-auto">
+      <div className="flex items-center justify-center md:w-25">
         <ChartRadialText title={`${percent}%`} value={percent} />
       </div>
     </div>
@@ -189,7 +184,10 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 }
 function PersonalGoalsGridSkeleton() {
   return (
-    <div className="grid w-full auto-rows-fr grid-cols-1 gap-5 lg:w-1/2 lg:grid-cols-2">
+    <div
+      className="grid w-full auto-rows-fr grid-cols-1 gap-5 lg:w-1/2
+        lg:grid-cols-2"
+    >
       {Array.from({ length: 4 }).map((_, index) => (
         <HomeGoalCardSkeleton key={index} />
       ))}
@@ -212,7 +210,7 @@ function HomeGoalCardSkeleton() {
         <Skeleton className="h-3 w-28 rounded-md" />
         <Skeleton className="h-3 w-24 rounded-md" />
       </div>
-      <div className="flex items-center justify-center md:w-auto mt-4 md:mt-0">
+      <div className="mt-4 flex items-center justify-center md:mt-0 md:w-auto">
         <Skeleton className="h-16 w-16 rounded-full" />
       </div>
     </div>

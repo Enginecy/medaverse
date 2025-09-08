@@ -19,19 +19,19 @@ export function CommissionCard({
 }) {
   const value = Math.round((range.min / range.max) * 100);
   return (
-    <Card className="flex h-50 w-full flex-col gap-0 rounded-3xl">
+    <Card className="flex h-50 w-full flex-col gap-0 rounded-3xl border-0 shadow-none">
       <CardHeader>
-        <CardTitle>
-          <p className="text-md font-semibold">
+        <CardTitle >
+          <p className="text-xs font-semibold">
             ${range.min}
-            <span className="text-muted-foreground text-sm font-normal">
+            <span className="text-muted-foreground text-xs ">
               {" of target $" + range.max}
             </span>
           </p>
         </CardTitle>
       </CardHeader>
-      <CardContent className="grow">
-        <ChartRadialText title={`${value}%`} value={value} />
+      <CardContent className="h-30 text-sm" >
+        <ChartRadialText  title={`${value}%`} value={value} />
       </CardContent>
       <CardFooter>
         <CardTitle className="text-secondary-foreground">{title}</CardTitle>

@@ -11,10 +11,10 @@ import {
 import { SegmentedButton } from "@/components/ui/segmented-button";
 
 export function SalesCard() {
-  const options = ["Week", "Month"] as const;
+  const options = ["Week", "Month"];
   const [selected, setSelected] = useState<(typeof options)[number]>("Week");
   return (
-    <Card className="flex h-50 w-full flex-col gap-0 rounded-3xl">
+    <Card className="flex h-50 w-full flex-col gap-0 rounded-3xl border-0 shadow-none">
       <CardHeader>
         <CardTitle>
           <SegmentedButton
@@ -23,7 +23,7 @@ export function SalesCard() {
             onChange={(value) => {
               setSelected(value as (typeof options)[number]);
             }}
-            className="md:text-xs"
+            className="md:text-xs text-black "
           />
         </CardTitle>
       </CardHeader>

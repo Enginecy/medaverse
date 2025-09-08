@@ -20,7 +20,7 @@ export function EditProfileButton({ profile }: { profile: UserProfile }) {
   return (
     <Button
       variant="default"
-      className="shadow-none cursor-pointer rounded-full bg-[#ededed] text-black
+      className="shadow-none cursor-pointer rounded-full bg-white text-black
         hover:text-white"
       onClick={handleEditClick}
     >
