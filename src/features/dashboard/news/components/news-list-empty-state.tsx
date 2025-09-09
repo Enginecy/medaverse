@@ -10,7 +10,8 @@ export function NewsListEmptyState() {
         text-center"
     >
       <div
-        className="flex flex-col items-center gap-4 rounded-2xl  outline-2 outline-dashed outline-primary bg-gray-50 p-10 shadow-sm "
+        className="outline-primary flex flex-col items-center gap-4 rounded-2xl
+          bg-gray-50 p-10 shadow-sm outline-2 outline-dashed"
       >
         <div
           className="flex h-16 w-16 items-center justify-center rounded-full
@@ -24,13 +25,11 @@ export function NewsListEmptyState() {
           Stay tuned — announcements and updates will appear here once they’re
           published.
         </p>
+        <AllowPermissions permissions={["create:news"]}>
           <Link href="/dashboard/create-news">
-            <Button className="mt-4 rounded-xl px-6">
-              Add Your News
-            </Button>
+            <Button className="mt-4 rounded-xl px-6">Add Your News</Button>
           </Link>
-        {/* <AllowPermissions permissions={["create:news"]}>
-        </AllowPermissions> */}
+        </AllowPermissions>
       </div>
     </div>
   );
