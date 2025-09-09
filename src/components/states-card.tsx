@@ -26,8 +26,8 @@ export function StatesCard({ states }: { states: State[] }) {
       className="h-full flex-1 items-center justify-center rounded-3xl border-0
         shadow-none md:min-w-[630px]"
     >
-      <CardContent className="flex h-full w-full gap-4">
-        <div className="flex w-1/3 flex-col gap-6">
+      <CardContent className="flex h-full w-full gap-4 justify-between xl:flex-col xl:h-120">
+        <div className="flex w-full flex-col gap-3 max-h-28 ">
           <CardTitle className="flex items-center justify-between gap-2">
             States
             {/* button */}
@@ -37,7 +37,7 @@ export function StatesCard({ states }: { states: State[] }) {
             </Button> */}
           </CardTitle>
           {/* chips for selected states */}
-          <div className="flex max-h-[300px] flex-wrap gap-2 overflow-y-auto">
+          <div className="flex max-h-[300px] flex-wrap gap-2 overflow-auto w-full">
             {states
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((state, idx) => (

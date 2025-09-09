@@ -184,57 +184,59 @@ export function USAMapComponent({
   }, [selectedStates, onSelectState, onDeselectState]);
 
   // Calculate the dominant region based on selected states
-  const dominantRegion = useMemo(() => {
-    if (selectedStates.length === 0 || selectedStates.length === states.length)
-      return "DEFAULT";
-
-    const regionCounts = Object.entries(REGIONS).reduce(
-      (acc, [regionName, stateCodes]) => {
-        const count = selectedStates.filter((state) =>
-        state.code?
-         (stateCodes as readonly string[]).includes(state.code.toUpperCase()): false
-        ).length;
-        acc[regionName] = count;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
-
-    // Find the region with the most selected states
-    const maxCount = Math.max(...Object.values(regionCounts));
-
-    // If no clear majority (less than 30% of selections in one region), use default
-    if (maxCount === 0 || maxCount / selectedStates.length < 0.3) {
-      return "DEFAULT";
-    }
-
-    // Get all regions with the maximum count
-    const topRegions = Object.entries(regionCounts)
-      .filter(([_, count]) => count === maxCount)
-      .map(([regionName, _]) => regionName);
-
-    // Priority order: more specific regions first, then directional
-    const regionPriority = [
-      "NORTHEAST",
-      "SOUTHEAST",
-      "SOUTHWEST",
-      "MIDWEST",
-      "NORTH",
-      "SOUTH",
-      "EAST",
-      "CENTRAL",
-      "WEST",
-      "ALASKA_HAWAII",
-    ];
-
-    // Return the highest priority region among those with max count
-    for (const region of regionPriority) {
-      if (topRegions.includes(region)) {
-        return region;
-      }
-    }
-
+  const dominantRegion 
+  = useMemo(() => {
     return "DEFAULT";
+    // if (selectedStates.length === 0 || selectedStates.length === states.length)
+    //   return "DEFAULT";
+
+    // const regionCounts = Object.entries(REGIONS).reduce(
+    //   (acc, [regionName, stateCodes]) => {
+    //     const count = selectedStates.filter((state) =>
+    //     state.code?
+    //      (stateCodes as readonly string[]).includes(state.code.toUpperCase()): false
+    //     ).length;
+    //     acc[regionName] = count;
+    //     return acc;
+    //   },
+    //   {} as Record<string, number>,
+    // );
+
+    // // Find the region with the most selected states
+    // const maxCount = Math.max(...Object.values(regionCounts));
+
+    // // If no clear majority (less than 30% of selections in one region), use default
+    // if (maxCount === 0 || maxCount / selectedStates.length < 0.3) {
+    //   return "DEFAULT";
+    // }
+
+    // // Get all regions with the maximum count
+    // const topRegions = Object.entries(regionCounts)
+    //   .filter(([_, count]) => count === maxCount)
+    //   .map(([regionName, _]) => regionName);
+
+    // // Priority order: more specific regions first, then directional
+    // const regionPriority = [
+    //   "NORTHEAST",
+    //   "SOUTHEAST",
+    //   "SOUTHWEST",
+    //   "MIDWEST",
+    //   "NORTH",
+    //   "SOUTH",
+    //   "EAST",
+    //   "CENTRAL",
+    //   "WEST",
+    //   "ALASKA_HAWAII",
+    // ];
+
+    // // Return the highest priority region among those with max count
+    // for (const region of regionPriority) {
+    //   if (topRegions.includes(region)) {
+    //     return region;
+    //   }
+    // }
+
+    // return "DEFAULT";
   }, [selectedStates]);
 
   // Get the appropriate transform class
@@ -278,7 +280,7 @@ export function USAMapComponent({
   const style = isInteractive ? isInteractiveStyle : defaultStyle;
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden xl:h-90">
       <div
         className={`h-full w-full origin-center transition-transform
           duration-700 ease-in-out ${transformClass} `}

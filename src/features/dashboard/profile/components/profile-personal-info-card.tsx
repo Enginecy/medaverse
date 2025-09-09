@@ -13,14 +13,17 @@ export async function ProfilePersonalInfoCard() {
   const userProfile = await getUserProfile();
 
   return (
-    <Card className="w-full rounded-3xl shadow-none border-1 border-gray-200 md:w-1/2">
+    <Card
+      className="w-full rounded-3xl border-1 border-gray-200 shadow-none
+        md:w-1/2"
+    >
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
           <EditProfileButton profile={userProfile} />
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col justify-center h-full">
         <div className="flex flex-col gap-6">
           <div className="flex gap-6">
             <div className="relative h-[150px] w-[150px] rounded-lg">
@@ -82,7 +85,7 @@ export async function ProfilePersonalInfoCard() {
 
 export function ProfilePersonalInfoCardSkeleton() {
   return (
-    <Card className="w-full rounded-3xl shadow-none border-0">
+    <Card className="w-full rounded-3xl border-0 shadow-none">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
