@@ -36,7 +36,8 @@ export default async function Home() {
         <Suspense
           fallback={
             <Skeleton
-              className="h-[500px] w-full rounded-2xl bg-blue-200 lg:w-1/2"
+              className="h-115 w-full rounded-3xl border-1 border-gray-200 bg-blue-200
+                p-7 md:w-2/3 lg:justify-between"
             />
           }
         >
@@ -156,15 +157,18 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 
   return (
     <div
-      className="flex h-full min-h-50 w-full flex-row  items-center rounded-3xl
+      className="flex h-full min-h-50 w-full flex-row items-center rounded-3xl
         bg-white p-4"
     >
-      <div className="flex w-full  flex-1 flex-col items-start gap-1">
-        <div className="flex flex-row w-full gap-x-2.5 ">
+      <div className="flex w-full flex-1 flex-col items-start gap-1">
+        <div className="flex w-full flex-row gap-x-2.5">
           <span className="lg:text-md text-sm font-medium text-gray-500">
             {goal.label}
           </span>
-          <Badge className={`max-h-6 text-xs w-min ${getGoalTypeColor(goal.goalType)}`}>
+          <Badge
+            className={`max-h-6 w-min text-xs
+              ${getGoalTypeColor(goal.goalType)}`}
+          >
             {goal.goalType?.toUpperCase()}
           </Badge>
         </div>

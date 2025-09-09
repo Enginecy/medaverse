@@ -64,8 +64,8 @@ export async function PersonalInfoCard() {
           <Suspense
             fallback={
               <div className="flex flex-row gap-3">
-                <Skeleton className="h-55 w-full rounded-2xl bg-blue-300" />
-                <Skeleton className="h-55 w-full rounded-2xl bg-blue-300" />
+                <Skeleton className="h-full w-full rounded-2xl bg-blue-300" />
+                <Skeleton className="h-full w-full rounded-2xl bg-blue-300" />
               </div>
             }
           >
