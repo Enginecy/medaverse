@@ -82,7 +82,7 @@ export default async function Home() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            {/* <BirthdayTable /> */}
+            <BirthdayTable />
           </CardContent>
         </Card>
       </div>
