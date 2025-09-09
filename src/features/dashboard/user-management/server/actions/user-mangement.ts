@@ -281,10 +281,10 @@ export async function updateAgent(
 
     const profileUrlSql =
       profileUrl === null ? sql`NULL` : sql`${profileUrl}::text`;
-    // const statesJson = JSON.stringify(data.states ?? []);
+    const statesJson = data.states?.map((value) => `'${JSON.stringify(value)}'::jsonb`).join(', ');
     const profileData = await db.rls((tx) =>
       tx.execute(sql`
-    select * from public.update_agent_profile(
+    select public.update_agent_profile(
       ${id}::uuid,
       ${data.role}::uuid,
       ${data.fullName}::text,
@@ -294,7 +294,8 @@ export async function updateAgent(
       ${data.phoneNumber}::text,
       ${data.npnNumber ?? ""}::text,
       ${profileUrlSql}, 
-      ${currentUser!.data!.user!.id}::uuid
+      ${currentUser!.data!.user!.id}::uuid,
+      ${sql.raw(`ARRAY[${statesJson}]::jsonb[]`)}
     )
   `),
     );
