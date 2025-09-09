@@ -1,22 +1,24 @@
-import { NewsCard } from "@/features/dashboard/news/components/news-card";
-import { getNews } from "@/features/dashboard/news/server/db";
+import { NewsList } from "@/features/dashboard/news/components/news-list";
+import { NewsListSkeleton } from "@/features/dashboard/news/components/news-list-skeleton";
 import type { Metadata } from "next";
+import { Suspense } from "react";
+
 export const metadata: Metadata = {
   title: "Meda News - Dashboard",
   description: "Stay updated with the latest news and announcements from Meda.",
 };
-export default async function NewsPage() {
-  const news = await getNews();
 
+export default function NewsPage() {
   return (
     <div className="flex h-full w-full flex-col items-start gap-4 md:gap-6">
       <div className="flex w-full justify-between">
-        <h1 className="text-xl md:text-2xl font-semibold">Meda News</h1>
+        <h1 className="text-xl font-semibold md:text-2xl">Meda News</h1>
       </div>
-      <div className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-        {news.map((news) => (
-          <NewsCard key={news.id} title={news.title} file={news.file_path!} />
-        ))}
+      <div className="rounded-3xl bg-white w-full h-full  border-1 border-gray-300 p-3"> 
+
+      <Suspense fallback={<NewsListSkeleton />}>
+        <NewsList />
+      </Suspense>
       </div>
     </div>
   );
