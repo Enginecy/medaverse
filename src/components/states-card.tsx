@@ -3,8 +3,29 @@ import { USAMapComponent } from "@/components/usa-map";
 import { type State } from "@/lib/data";
 
 export function StatesCard({ states }: { states: State[] }) {
+  if (states.length === 0) {
+    return (
+      <Card
+        className="h-full  flex-1 items-center justify-center rounded-3xl
+          border-0 shadow-none md:min-w-[630px]"
+      >
+        <CardContent className="flex h-full flex-col w-full gap-4">
+            <CardTitle >
+              States
+            </CardTitle>
+
+          <div className="rounded-2xl bg-[#084D851A] w-full max-h-90">
+            <USAMapComponent selectedStates={states} />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
   return (
-    <Card className="min-w-[630px] flex-1 items-center justify-center rounded-3xl shadow-none border-0">
+    <Card
+      className="h-full flex-1 items-center justify-center rounded-3xl border-0
+        shadow-none md:min-w-[630px]"
+    >
       <CardContent className="flex h-full w-full gap-4">
         <div className="flex w-1/3 flex-col gap-6">
           <CardTitle className="flex items-center justify-between gap-2">
