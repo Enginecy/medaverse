@@ -25,6 +25,7 @@ import type { Metadata } from "next";
 import { DataTableSkeleton } from "@/components/data-table";
 import { GoalsCardEmptyState } from "@/components/empty-states/gaols-card-empty-state";
 import { EmptyGoalsState } from "@/components/empty-states/empty-goals-state";
+import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Dashboard Home",
   description: "Welcome to the dashboard. Explore your data and insights.",
@@ -36,8 +37,8 @@ export default async function Home() {
         <Suspense
           fallback={
             <Skeleton
-              className="h-115 w-full rounded-3xl border-1 border-gray-200 bg-blue-200
-                p-7 md:w-2/3 lg:justify-between"
+              className="h-115 w-full rounded-3xl border-1 border-gray-200
+                bg-blue-200 p-7 md:w-2/3 lg:justify-between"
             />
           }
         >
@@ -129,7 +130,13 @@ async function PersonalGoalsGrid() {
   );
 }
 
-function HomeGoalCard({ goal }: { goal: Goal }) {
+export function HomeGoalCard({
+  goal,
+  className,
+}: {
+  goal: Goal;
+  className?: string;
+}) {
   const target = parseFloat(goal.target ?? "0");
   const achieved = parseFloat(goal.achieved ?? "0");
   const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
@@ -157,19 +164,22 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 
   return (
     <div
-      className="flex h-full min-h-50 w-full flex-row items-center rounded-3xl
-        bg-white p-4"
+      className={cn(
+        `flex h-full min-h-50 w-full flex-row items-center rounded-3xl bg-white
+        p-4`,
+        className,
+      )}
     >
-      <div className="flex w-full flex-1 flex-col items-start gap-1">
+      <div className="flex w-full flex-1 flex-col items-start gap-3">
         <div className="flex w-full flex-row gap-x-2.5">
-          <span className="lg:text-md text-sm font-medium text-gray-500">
-            {goal.label}
-          </span>
+          {/* <span className="lg:text-md text-sm font-medium text-gray-500"> */}
+          {/* {goal.label} */}
+          {/* </span> */}
           <Badge
             className={`max-h-6 w-min text-xs
               ${getGoalTypeColor(goal.goalType)}`}
           >
-            {goal.goalType?.toUpperCase()}
+            {goal.label?.toUpperCase()}
           </Badge>
         </div>
         <span className="text-2xl font-bold text-gray-900 md:text-3xl">

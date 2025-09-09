@@ -13,7 +13,7 @@ export async function ProfilePersonalInfoCard() {
   const userProfile = await getUserProfile();
 
   return (
-    <Card className="w-full rounded-3xl shadow-none border-0">
+    <Card className="w-full rounded-3xl shadow-none border-1 border-gray-200 md:w-1/2">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <p className="text-lg font-semibold">Personal info</p>
@@ -36,7 +36,7 @@ export async function ProfilePersonalInfoCard() {
                 <div>
                   <p className="text-lg font-semibold">{user?.profile?.name}</p>
                   <p className="text-md text-muted-foreground">
-                    {user?.user.role}
+                    {userProfile?.role?.name}
                   </p>
                 </div>
               </div>

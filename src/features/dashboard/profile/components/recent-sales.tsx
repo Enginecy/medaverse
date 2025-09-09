@@ -19,7 +19,7 @@ export function RecentSales({ sales }: { sales: Sale[] }) {
   const dotVerticalOffset = (lineHeightBase - dotSize) / 2;
 
   return (
-    <Card className="w-full rounded-3xl shadow-none border-0">
+    <Card className="w-full rounded-3xl shadow-none border-0  md:max-w-2/5">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900">
           Recent Sales

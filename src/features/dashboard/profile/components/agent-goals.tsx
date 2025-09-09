@@ -13,10 +13,13 @@ import type { Goal } from "../server/db/goals";
 import { format } from "date-fns";
 import { Suspense } from "react";
 import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-button";
+import { HomeGoalCard } from "@/app/dashboard/home/page";
+import { GoalsCardEmptyState } from "@/components/empty-states/gaols-card-empty-state";
+import { EmptyGoalsState } from "@/components/empty-states/empty-goals-state";
 
 export function AgentGoals() {
   return (
-    <Card className="w-full rounded-3xl shadow-none border-0">
+    <Card className="w-full rounded-3xl border-1 border-gray-200 shadow-none md:w-3/5">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900">
           Agent Goals
@@ -25,7 +28,7 @@ export function AgentGoals() {
           <AddGoalButton />
         </CardAction>
       </CardHeader>
-      <CardContent className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+      <CardContent className="w-full">
         <Suspense fallback={<GoalsLoadingSkeleton />}>
           <GoalsList />
         </Suspense>
@@ -55,24 +58,25 @@ async function GoalsList() {
   const goals = result.data ?? [];
 
   if (goals.length === 0) {
-    return (
-      <div
-        className="col-span-full flex flex-col items-center justify-center py-8"
-      >
-        <p className="text-muted-foreground text-sm">No goals found</p>
-        <p className="text-muted-foreground mt-1 text-xs">
-          Create your first goal to start tracking progress
-        </p>
-      </div>
-    );
+    return <EmptyGoalsState />;
   }
 
   return (
-    <>
-      {goals.map((goal) => (
-        <GoalCard key={goal.id} goal={goal} />
-      ))}
-    </>
+    <div className="grid w-full auto-rows-fr grid-cols-1 gap-5 lg:grid-cols-2">
+      {goals
+        .map((goal) => (
+          <HomeGoalCard
+            className="border-1 border-gray-200"
+            key={goal.id}
+            goal={goal}
+          />
+        ))
+        .concat(
+          Array.from({ length: 4 - goals.length }).map((_, index) => (
+            <GoalsCardEmptyState key={index} />
+          )),
+        )}
+    </div>
   );
 }
 

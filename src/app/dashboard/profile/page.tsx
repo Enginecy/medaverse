@@ -17,21 +17,17 @@ export default async function Profile() {
 
   return (
     <div className="flex h-auto w-full flex-col gap-4 md:gap-6">
-      <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
-        <div className="w-full lg:flex-1">
-          <ProfilePersonalInfoCard />
-        </div>
-        <div className="w-full lg:w-auto lg:flex-shrink-0">
+      <div className="flex w-full flex-col gap-4 md:gap-6 lg:flex-row">
+        <ProfilePersonalInfoCard />
+
+        <div className="w-full">
           <StatesCard states={states} />
         </div>
       </div>
-      <div className="flex flex-col xl:flex-row gap-4 md:gap-6">
-        <div className="w-full xl:flex-1">
-          <AgentGoals />
-        </div>
-        <div className="w-full xl:w-auto xl:flex-shrink-0">
-          <RecentSales sales={sales} />
-        </div>
+      <div className="flex w-full flex-col gap-4 md:gap-6 xl:flex-row">
+        <AgentGoals />
+
+        <RecentSales sales={sales} />
       </div>
     </div>
   );
