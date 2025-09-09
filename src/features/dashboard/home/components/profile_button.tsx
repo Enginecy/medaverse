@@ -53,7 +53,7 @@ export async function ProfileButton() {
             <Image
               src={user!.profile!.avatarUrl!}
               alt="Profile"
-              className="border-border h-full w-8 rounded-full object-cover p-3
+              className="border-border h-full rounded-full object-cover p-3
                 md:h-full md:w-13"
               width={40}
               height={40}

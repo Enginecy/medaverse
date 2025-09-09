@@ -45,7 +45,7 @@ export function SegmentedButton({
               `relative z-10 cursor-pointer rounded-xl px-4 py-3 text-center
               font-medium transition-colors duration-300`,
               isSelected
-                ? "text-background"
+                ? "text-white"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >

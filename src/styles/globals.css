@@ -92,7 +92,7 @@
   --radius: 0.65rem;
 
   /* Theme colors based on Figma design system */
-  --background: #DBE4EB; /* surface-b-g */
+  --background: #dbe4eb00; /* surface-b-g */
   --foreground: #1a1a1a; /* text-body-primary */
   --card: #ffffff; /* surface-card */
   --card-foreground: #1a1a1a; /* text-body-primary */
@@ -172,6 +172,8 @@
   --surface-card: #ffffff;
   --surface-card-alt: #f8f8f8;
 
+  --container-gray: #efefef;
+
   --border-light: #f8f8f8;
   --border-default: #d1d1d1;
   --border-strong: #b0b0b0;
@@ -229,7 +231,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-transparent text-foreground;
+
   }
 }
 

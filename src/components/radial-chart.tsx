@@ -16,7 +16,7 @@ export function ChartRadialText({
   }
 
   return (
-    <div className="h-30 w-full">
+    <div className="h-30 w-auto">
       <Gauge
         cornerRadius={6}
         value={value}
@@ -32,6 +32,7 @@ export function ChartRadialText({
           },
         })}
         text={title}
+        className="w-min"
       />
     </div>
   );

@@ -20,8 +20,8 @@ export function EditProfileButton({ profile }: { profile: UserProfile }) {
   return (
     <Button
       variant="default"
-      className="shadow-none cursor-pointer rounded-full bg-[#ededed] text-black
-        hover:text-white"
+      className="cursor-pointer rounded-full bg-[var(--container-gray)] 
+        text-black shadow-none hover:text-white"
       onClick={handleEditClick}
     >
       <span>Edit Profile</span>

@@ -18,8 +18,8 @@ export async function PersonalInfoCard() {
 
   return (
     <div
-      className="w-full rounded-3xl bg-white p-10
-        lg:w-1/2 lg:justify-between"
+      className="w-full rounded-3xl border-1 border-gray-200 bg-white p-7
+        lg:justify-between md:w-2/3"
     >
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Personal info</p>
@@ -40,33 +40,32 @@ export async function PersonalInfoCard() {
                 />
               </div>
             </div>
-            <div className="flex grow flex-col gap-6">
-              <div className="flex flex-col items-start"></div>
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-between">
-                  <div className="flex w-full flex-col justify-between gap-1">
-                    <div className="flex flex-row justify-between">
-                      <p className="text-md font-semibold">
-                        $7,350
-                        <span
-                          className="text-muted-foreground text-sm font-normal"
-                        >
-                          {" of target $15,000"}
-                        </span>
-                      </p>
-                      <p className="text-md font-semibold">{"49%"}</p>
-                    </div>
-                    <Progress value={49} />
-                  </div>
+            
+              <div className="flex w-full flex-col gap-2">
+                <span> 
+                  {profile.name}
+                </span>
+                <span> 
+                  {userProfile?.role?.name}
+                </span>
+                <div className="flex flex-row justify-between">
+                  <p className="text-md font-semibold">
+                    $7,350
+                    <span className="text-sm text-gray-400">
+                      {" of target $15,000"}
+                    </span>
+                  </p>
+                  <p className="text-md font-semibold">{"49%"}</p>
                 </div>
+                <Progress value={49} />
               </div>
-            </div>
+            
           </div>
           <Suspense
             fallback={
               <div className="flex flex-row gap-3">
-                <Skeleton className="h-55 w-full rounded-2xl bg-blue-300" />
-                <Skeleton className="h-55 w-full rounded-2xl bg-blue-300" />
+                <Skeleton className="h-full w-full rounded-2xl bg-blue-300" />
+                <Skeleton className="h-full w-full rounded-2xl bg-blue-300" />
               </div>
             }
           >
