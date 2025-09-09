@@ -16,7 +16,7 @@ import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-but
 
 export function AgentGoals() {
   return (
-    <Card className="w-full rounded-3xl shadow-none border-0">
+    <Card className="w-full rounded-3xl shadow-none border-0 md:w-3/5">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900">
           Agent Goals
