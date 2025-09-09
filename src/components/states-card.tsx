@@ -40,9 +40,9 @@ export function StatesCard({ states }: { states: State[] }) {
           <div className="flex max-h-[300px] flex-wrap gap-2 overflow-y-auto">
             {states
               .sort((a, b) => a.name.localeCompare(b.name))
-              .map((state) => (
+              .map((state, idx) => (
                 <div
-                  key={state.code}
+                  key={idx}
                   className="bg-background flex items-center gap-2 rounded-full
                     px-4 py-1"
                 >

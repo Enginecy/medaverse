@@ -191,7 +191,8 @@ export function USAMapComponent({
     const regionCounts = Object.entries(REGIONS).reduce(
       (acc, [regionName, stateCodes]) => {
         const count = selectedStates.filter((state) =>
-          (stateCodes as readonly string[]).includes(state.code.toUpperCase()),
+        state.code?
+         (stateCodes as readonly string[]).includes(state.code.toUpperCase()): false
         ).length;
         acc[regionName] = count;
         return acc;

@@ -25,6 +25,7 @@ import type { Metadata } from "next";
 import { DataTableSkeleton } from "@/components/data-table";
 import { GoalsCardEmptyState } from "@/components/empty-states/gaols-card-empty-state";
 import { EmptyGoalsState } from "@/components/empty-states/empty-goals-state";
+import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Dashboard Home",
   description: "Welcome to the dashboard. Explore your data and insights.",
@@ -129,7 +130,7 @@ async function PersonalGoalsGrid() {
   );
 }
 
-function HomeGoalCard({ goal }: { goal: Goal }) {
+export function HomeGoalCard({ goal , className}: { goal: Goal , className?: string}) {
   const target = parseFloat(goal.target ?? "0");
   const achieved = parseFloat(goal.achieved ?? "0");
   const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
@@ -157,8 +158,8 @@ function HomeGoalCard({ goal }: { goal: Goal }) {
 
   return (
     <div
-      className="flex h-full min-h-50 w-full flex-row items-center rounded-3xl
-        bg-white p-4"
+      className={cn(`flex h-full min-h-50 w-full flex-row items-center rounded-3xl
+        bg-white p-4` , className)}
     >
       <div className="flex w-full flex-1 flex-col items-start gap-1">
         <div className="flex w-full flex-row gap-x-2.5">
