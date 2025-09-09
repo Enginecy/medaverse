@@ -170,7 +170,7 @@ export function HomeGoalCard({
         className,
       )}
     >
-      <div className="flex w-full flex-1 flex-col items-start gap-1">
+      <div className="flex w-full flex-1 flex-col items-start gap-3">
         <div className="flex w-full flex-row gap-x-2.5">
           {/* <span className="lg:text-md text-sm font-medium text-gray-500"> */}
           {/* {goal.label} */}

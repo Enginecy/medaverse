@@ -19,7 +19,7 @@ import { EmptyGoalsState } from "@/components/empty-states/empty-goals-state";
 
 export function AgentGoals() {
   return (
-    <Card className="w-full rounded-3xl border-0 shadow-none md:w-3/5">
+    <Card className="w-full rounded-3xl border-1 border-gray-200 shadow-none md:w-3/5">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-gray-900">
           Agent Goals
@@ -66,7 +66,7 @@ async function GoalsList() {
       {goals
         .map((goal) => (
           <HomeGoalCard
-            className="bg-[var(--container-gray)]"
+            className="border-1 border-gray-200"
             key={goal.id}
             goal={goal}
           />
