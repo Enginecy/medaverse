@@ -1,7 +1,7 @@
 "use server";
 
 import { createDrizzleSupabaseClient } from "@/db/db";
-import { profile, roles, userRoles, users } from "@/db/schema";
+import { profile, roles, userHierarchy, userRoles, users } from "@/db/schema";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { createClient } from "@/lib/supabase/server";
 import { desc, getTableColumns, eq, gt, sql } from "drizzle-orm";
@@ -15,11 +15,17 @@ export async function getUsers() {
         ...getTableColumns(profile),
         email: users.email,
         role: roles,
+        upline: sql<string>`leader_profile.id`.as("upline"),
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
       .leftJoin(userRoles, eq(userRoles.userId, profile.userId))
       .leftJoin(roles, eq(userRoles.roleId, roles.id))
+      .leftJoin(userHierarchy, eq(userHierarchy.userId, profile.userId))
+      .leftJoin(
+        sql`${profile} as leader_profile`,
+        eq(userHierarchy.leaderId, sql`leader_profile.user_id`)
+      )
       .orderBy(desc(profile.createdAt));
   });
   return profiles;

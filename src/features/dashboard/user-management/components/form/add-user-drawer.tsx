@@ -75,6 +75,7 @@ export function AddUserDrawer({
   user?: User;
   closeDrawer: (value?: unknown) => void;
 }) {
+  console.log("user", user);
   const isEditing = !!user;
 
   const defaultValues: DefaultValues<AddUserFormData> = isEditing
@@ -87,6 +88,7 @@ export function AddUserDrawer({
         npnNumber: user!.npnNumber!,
         states: user!.states ?? [],
         role: user!.role?.id ?? "",
+        upLine: user!.upline ?? "",
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
       }

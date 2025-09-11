@@ -323,7 +323,7 @@ export const userHierarchy = pgTable(
     id: uuid().primaryKey().notNull().defaultRandom(),
     userId: uuid("user_id").notNull(),
     leaderId: uuid("leader_id"),
-    region: varchar({ length: 100 }).notNull(),
+    region: varchar({ length: 100 }),
     division: varchar({ length: 100 }),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),

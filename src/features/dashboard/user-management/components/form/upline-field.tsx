@@ -25,6 +25,7 @@ export function UpLineField({
   upLines?: Superior[];
 }) {
   const roleField = form.watch("role");
+  console.log("upLines", upLines, roleField);
   return (
     <FormField
       control={form.control}

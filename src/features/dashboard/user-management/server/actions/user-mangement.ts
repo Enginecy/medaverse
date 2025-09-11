@@ -1,7 +1,7 @@
 "use server";
 
 import { createDrizzleSupabaseClient } from "@/db/db";
-import { profile, userRoles } from "@/db/schema";
+import { profile, userHierarchy, userRoles } from "@/db/schema";
 import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
 import { eq, sql } from "drizzle-orm";
@@ -137,16 +137,26 @@ export async function createAgent(
           status: "active",
           ...(avatarUrl ? { avatarUrl } : {}),
           userId: user.id,
-        })
-        .returning();
-      return await tx
+        });
+       await tx
         .insert(userRoles)
         .values({
           roleId: data.role,
           userId: user.id,
           assignedBy: currentUser.data.user?.id,
-        })
-        .returning({ id: userRoles.id });
+        });
+
+        if (data.upLine) {
+          const [uplineProfile] = await tx
+            .select({ userId: profile.userId })
+            .from(profile)
+            .where(eq(profile.id, data.upLine));
+
+          await tx.insert(userHierarchy).values({
+            userId: user.id,
+            leaderId: uplineProfile?.userId,
+          });
+        }
     });
 
     return { success: true, data: undefined };
@@ -281,6 +291,7 @@ export async function updateAgent(
 
     const profileUrlSql =
       profileUrl === null ? sql`NULL` : sql`${profileUrl}::text`;
+    const uplineSql = data.upLine === null ? sql`NULL` : sql`${data.upLine}::uuid`;
     const statesJson = data.states?.map((value) => `'${JSON.stringify(value)}'::jsonb`).join(', ');
     const profileData = await db.rls((tx) =>
       tx.execute(sql`
@@ -295,7 +306,8 @@ export async function updateAgent(
       ${data.npnNumber ?? ""}::text,
       ${profileUrlSql}, 
       ${currentUser!.data!.user!.id}::uuid,
-      ${sql.raw(`ARRAY[${statesJson}]::jsonb[]`)}
+      ${sql.raw(`ARRAY[${statesJson}]::jsonb[]`)},
+      ${uplineSql}
     )
   `),
     );
