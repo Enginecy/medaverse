@@ -9,7 +9,7 @@ import { ErrorComponent } from "@/components/ui/error-component";
 export async function SalesTable() {
   const user = await getUserProfile();
   if(!user) return (<ErrorComponent  />);
-  const sales  = await getSales(user!.id, user!.role?.name === "Super Administrator");
+  const sales  = await getSales();
   // TODO: Implement the sale info drawer
 
   return (

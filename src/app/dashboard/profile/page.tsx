@@ -15,12 +15,7 @@ export const metadata: Metadata = {
 };
 export default async function Profile() {
   const states = await getUser().then((user) => user.profile?.states ?? []);
-  const user = await getUserProfile();
-  if (!user) return <ErrorComponent />;
-  const sales = await getSales(
-    user!.id,
-    user!.role?.name === "Super Administrator",
-  );
+  const sales = await getSales();
 
   return (
     <div className="flex h-auto w-full flex-col gap-4 md:gap-6">

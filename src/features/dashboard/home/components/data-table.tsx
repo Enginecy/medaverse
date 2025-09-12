@@ -6,12 +6,7 @@ import { getUserProfile } from "@/features/dashboard/home/server/db/home";
 import { ErrorComponent } from "@/components/ui/error-component";
 
 export async function RecentSalesDataTable() {
-  const user = await getUserProfile();
-  if (!user) return <ErrorComponent />;
-  const sales = await getSales(
-    user!.id,
-    user!.role?.name === "Super Administrator",
-  );
+  const sales = await getSales();
   // TODO: enable pages or not
   return (
     <DataTable

@@ -9,12 +9,31 @@ import {
   sales,
   users,
 } from "@/db/schema";
+import { getUserProfile } from "@/features/dashboard/home/server/db/home";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { count, desc, eq, sql } from "drizzle-orm";
 
-export async function getSales(userId: string, isSuperAdmin: boolean) {
+export async function getSales() {
   const db = await createDrizzleSupabaseClient();
+  const supabase = await createClient();
+  const currentUser = await supabase.auth.getUser();
+  if (currentUser.error || !currentUser.data.user) {
+    throw new Error("User not authenticated");
+  }
+  const userId = currentUser.data.user?.id;
+  const userProfile = await getUserProfile();
+  if (!userProfile) {
+    throw new Error("User profile not found");
+  }
+  
+  const isSuperAdmin =  userProfile.role?.name === "Super Administrator";
+
+  console.log("isAdmin", isSuperAdmin);
+
   const salesData = await db.rls(async (tx) => {
     const _count = await tx.select({ count: count() }).from(sales).limit(1);
+
     const baseQuery = tx
       .select({
         id: sales.id,
@@ -53,6 +72,8 @@ export async function getSales(userId: string, isSuperAdmin: boolean) {
       )
       .innerJoin(users, eq(sales.userId, users.id))
       .innerJoin(profile, eq(users.id, profile.userId));
+
+    console.log(isSuperAdmin, userId);
 
     const query = (
       isSuperAdmin ? baseQuery : baseQuery.where(eq(sales.userId, userId))
