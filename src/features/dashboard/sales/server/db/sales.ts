@@ -134,3 +134,16 @@ export async function getProductsAndCompanies() {
   const companies = await getCompanies();
   return { products, companies };
 }
+
+export async function deleteSale(saleId : string){
+  const supabase =  createAdminClient();
+  const { data, error } = await supabase
+    .from("sales")
+    .delete()
+    .eq("id", saleId);
+    
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
