@@ -11,11 +11,11 @@ import {
 } from "@/db/schema";
 import { count, desc, eq, sql } from "drizzle-orm";
 
-export async function getSales(userId: string) {
+export async function getSales(userId: string, isSuperAdmin: boolean) {
   const db = await createDrizzleSupabaseClient();
   const salesData = await db.rls(async (tx) => {
     const _count = await tx.select({ count: count() }).from(sales).limit(1);
-    return tx
+    const baseQuery = tx
       .select({
         id: sales.id,
         user: {
@@ -52,11 +52,20 @@ export async function getSales(userId: string) {
         eq(saleItems.companyId, insuranceCompanies.id),
       )
       .innerJoin(users, eq(sales.userId, users.id))
-      .innerJoin(profile, eq(users.id, profile.userId))
-       .where(eq(sales.userId, userId))
-      .groupBy(sales.id, insuranceProducts.name, insuranceCompanies.name ,profile.name,  profile.avatarUrl)
-      //TODO : Add role when available
+      .innerJoin(profile, eq(users.id, profile.userId));
+
+    const query = (
+      isSuperAdmin ? baseQuery : baseQuery.where(eq(sales.userId, userId))
+    )
+      .groupBy(
+        sales.id,
+        insuranceProducts.name,
+        insuranceCompanies.name,
+        profile.name,
+        profile.avatarUrl,
+      )
       .orderBy(desc(sales.createdAt));
+    return query;
   });
 
   return salesData;
