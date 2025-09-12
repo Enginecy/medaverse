@@ -11,7 +11,7 @@ import {
 } from "@/db/schema";
 import { count, desc, eq, sql } from "drizzle-orm";
 
-export async function getSales() {
+export async function getSales(userId: string) {
   const db = await createDrizzleSupabaseClient();
   const salesData = await db.rls(async (tx) => {
     const _count = await tx.select({ count: count() }).from(sales).limit(1);
@@ -53,6 +53,7 @@ export async function getSales() {
       )
       .innerJoin(users, eq(sales.userId, users.id))
       .innerJoin(profile, eq(users.id, profile.userId))
+       .where(eq(sales.userId, userId))
       .groupBy(sales.id, insuranceProducts.name, insuranceCompanies.name ,profile.name,  profile.avatarUrl)
       //TODO : Add role when available
       .orderBy(desc(sales.createdAt));

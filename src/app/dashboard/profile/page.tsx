@@ -12,8 +12,9 @@ export const metadata: Metadata = {
     "View and manage your profile information, goals, and recent sales.",
 };
 export default async function Profile() {
+  const user = await getUser();
   const states = await getUser().then((user) => user.profile?.states ?? []);
-  const sales = await getSales().then((sales) => sales.slice(0, 5));
+  const sales = await getSales(user.user.id).then((sales) => sales.slice(0, 5));
 
   return (
     <div className="flex h-auto w-full flex-col gap-4 md:gap-6">
