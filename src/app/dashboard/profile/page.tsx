@@ -6,6 +6,8 @@ import { RecentSales } from "@/features/dashboard/profile/components/recent-sale
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
 import type { Metadata } from "next";
 import { getUser } from "@/lib/supabase/server";
+import { getUserProfile } from "@/features/dashboard/home/server/db/home";
+import { ErrorComponent } from "@/components/ui/error-component";
 export const metadata: Metadata = {
   title: "Profile",
   description:
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
 };
 export default async function Profile() {
   const states = await getUser().then((user) => user.profile?.states ?? []);
-  const sales = await getSales().then((sales) => sales.slice(0, 5));
+  const sales = await getSales();
 
   return (
     <div className="flex h-auto w-full flex-col gap-4 md:gap-6">

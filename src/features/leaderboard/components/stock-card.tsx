@@ -103,7 +103,7 @@ export function StockCard() {
             bg-slate-800 px-6 py-2 outline outline-offset-[-1px]"
         >
           <div className="justify-start text-3xl font-semibold text-blue-400">
-            ${lastSale.amount}
+            ${Number(lastSale.amount) * 12}
           </div>
         </div>
 
