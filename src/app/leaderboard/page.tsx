@@ -5,14 +5,15 @@ import { LeaderboardTable } from "@/components/leaderboard-table";
 import Link from "next/link";
 import { StockCard } from "@/features/leaderboard/components/stock-card";
 import { TotalCard } from "@/features/leaderboard/components/price-card";
-import { getTotalSalesAmount } from "@/features/leaderboard/server/db/leaderboard";
+import { getWeeklySalesAmount, getTodaySalesAmount } from "@/features/leaderboard/server/db/leaderboard";
 import {
   getLeaderboardData,
   getLeaderboardDataByRole,
 } from "@/app/leaderboard/server";
 
 export default async function LeaderboardPage() {
-  const totalSales = await getTotalSalesAmount();
+  const weeklySales = await getWeeklySalesAmount();
+  const todaySales = await getTodaySalesAmount();
   const leaderboardData = await getLeaderboardData();
   const associateDirectorData =
     await getLeaderboardDataByRole("associate_director");
@@ -32,8 +33,8 @@ export default async function LeaderboardPage() {
           lg:grid-cols-4"
       >
         <LogoCard />
-        <TotalCard week amount={totalSales} />
-        <TotalCard amount={totalSales} />
+        <TotalCard week amount={weeklySales} />
+        <TotalCard amount={todaySales} />
 
         <Tabs defaultValue="option1" orientation="vertical">
           <TabsList
