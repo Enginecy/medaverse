@@ -111,7 +111,7 @@ export async function getWeeklySalesAmount() {
   if (weeklySales?.total === null) {
     return "$0";
   }
-  return "$" + Number(weeklySales!.total!).toLocaleString();
+  return "$" + (Number(weeklySales!.total!) * 12).toLocaleString();
 }
 
 export async function getTodaySalesAmount() {
@@ -132,7 +132,7 @@ export async function getTodaySalesAmount() {
   if (todaySales?.total === null) {
     return "$0";
   }
-  return "$" + Number(todaySales!.total!).toLocaleString();
+  return "$" + (Number(todaySales!.total!) * 12).toLocaleString();
 }
 
 /**
