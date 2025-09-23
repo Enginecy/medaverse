@@ -1,6 +1,13 @@
 "use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
-import { profile, roles, sales, userRoles } from "@/db/schema";
+import {
+  profile,
+  roles,
+  sales,
+  userHierarchy,
+  userRoles,
+  users,
+} from "@/db/schema";
 import { desc, eq, sum, sql } from "drizzle-orm";
 
 export async function getLastSale() {
@@ -54,10 +61,10 @@ export async function getWeeklySalesAmount() {
   const db = await createDrizzleSupabaseClient();
   const now = new Date();
   const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  
+
   let monday: Date;
   let friday: Date;
-  
+
   if (currentDay === 0 || currentDay === 6) {
     // Saturday (6) or Sunday (0): Show previous week's Monday-Friday
     if (currentDay === 0) {
@@ -70,7 +77,7 @@ export async function getWeeklySalesAmount() {
       monday.setDate(now.getDate() - 5);
     }
     monday.setHours(0, 0, 0, 0);
-    
+
     friday = new Date(monday);
     friday.setDate(monday.getDate() + 4);
     friday.setHours(23, 59, 59, 999);
@@ -87,25 +94,26 @@ export async function getWeeklySalesAmount() {
       monday.setDate(now.getDate() - daysToMonday);
       monday.setHours(0, 0, 0, 0);
     }
-    
+
     friday = new Date(monday);
     friday.setDate(monday.getDate() + 4); // Set to Friday for the upper bound
     friday.setHours(23, 59, 59, 999);
   }
-  
-  const mondayStr = currentDay === 1 ? 
-    now.toISOString().split('T')[0] : // If today is Monday, use today
-    monday.toISOString().split('T')[0]; // Otherwise use calculated Monday
-  
-  const fridayStr = friday.toISOString().split('T')[0];
-  
+
+  const mondayStr =
+    currentDay === 1
+      ? now.toISOString().split("T")[0] // If today is Monday, use today
+      : monday.toISOString().split("T")[0]; // Otherwise use calculated Monday
+
+  const fridayStr = friday.toISOString().split("T")[0];
+
   const [weeklySales] = await db.admin
     .select({ total: sum(sales.totalSaleValue) })
     .from(sales)
     .where(
       sql`DATE(${sales.createdAt}) >= ${mondayStr} 
           AND DATE(${sales.createdAt}) <= ${fridayStr}
-          AND ${sales.deletedAt} IS NULL`
+          AND ${sales.deletedAt} IS NULL`,
     );
 
   if (weeklySales?.total === null) {
@@ -116,17 +124,17 @@ export async function getWeeklySalesAmount() {
 
 export async function getTodaySalesAmount() {
   const db = await createDrizzleSupabaseClient();
-  
+
   // Get today's date
   const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
-  
+  const todayStr = today.toISOString().split("T")[0];
+
   const [todaySales] = await db.admin
     .select({ total: sum(sales.totalSaleValue) })
     .from(sales)
     .where(
       sql`DATE(${sales.createdAt}) = ${todayStr}
-          AND ${sales.deletedAt} IS NULL`
+          AND ${sales.deletedAt} IS NULL`,
     );
 
   if (todaySales?.total === null) {
@@ -142,10 +150,10 @@ export async function getTodaySalesAmount() {
 export async function getWeeklyDateRange() {
   const now = new Date();
   const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  
+
   let monday: Date;
   let friday: Date;
-  
+
   if (currentDay === 0 || currentDay === 6) {
     // Saturday (6) or Sunday (0): Show previous week's Monday-Friday
     if (currentDay === 0) {
@@ -158,7 +166,7 @@ export async function getWeeklyDateRange() {
       monday.setDate(now.getDate() - 5);
     }
     monday.setHours(0, 0, 0, 0);
-    
+
     friday = new Date(monday);
     friday.setDate(monday.getDate() + 4);
     friday.setHours(23, 59, 59, 999);
@@ -175,18 +183,70 @@ export async function getWeeklyDateRange() {
       monday.setDate(now.getDate() - daysToMonday);
       monday.setHours(0, 0, 0, 0);
     }
-    
+
     friday = new Date(monday);
     friday.setDate(monday.getDate() + 4); // Set to Friday for the upper bound
     friday.setHours(23, 59, 59, 999);
   }
-  
+
   return {
-    monday: monday.toISOString().split('T')[0],
-    friday: friday.toISOString().split('T')[0],
+    monday: monday.toISOString().split("T")[0],
+    friday: friday.toISOString().split("T")[0],
     isWeekend: currentDay === 0 || currentDay === 6,
-    currentDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][currentDay]
+    currentDay: [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ][currentDay],
   };
 }
 
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
+
+export async function getLeaderAndFollowers() {
+  const db = await createDrizzleSupabaseClient();
+  const requiredRole = "Associate Director";
+  const results = await db.rls(async (tx) => {
+    return tx.execute(
+      sql`SELECT
+          users.id,
+          profile.name,
+          profile.avatar_url,
+          coalesce(SUM(subordinate.sales), 0) AS total_subordinate_sales,
+          JSON_ARRAYAGG(
+              JSON_OBJECT(ARRAY['id', 'user_id', 'name', 'avatar_url', 'sales'], ARRAY[subordinate.id, subordinate.user_id, subordinate.name, subordinate.avatar_url, COALESCE(subordinate.sales, 0)::TEXT]::text[])
+          ) as subordinates
+          FROM auth.users
+          INNER JOIN profile ON profile.user_id = users.id
+          INNER JOIN user_roles ON users.id = user_roles.user_id
+          INNER JOIN roles ON user_roles.role_id = roles.id
+          INNER JOIN user_hierarchy ON user_hierarchy.leader_id = users.id
+          INNER JOIN (
+            SELECT
+              profile.id,
+              profile.user_id,
+              profile.name,
+              profile.avatar_url,
+              SUM(sales.total_sale_value) * 12 AS sales
+            FROM profile
+            LEFT JOIN sales ON profile.user_id = sales.user_id
+            GROUP BY
+              profile.id,
+              profile.user_id,
+              profile.name,
+              profile.avatar_url
+          ) AS subordinate ON user_hierarchy.user_id = subordinate.user_id
+          WHERE
+            roles.id = '4a1ba935-f500-4179-b0f1-053028523256'
+          GROUP BY
+            users.id,
+            profile.name,
+            profile.avatar_url;`,
+    );
+  });
+  console.table(results);
+}

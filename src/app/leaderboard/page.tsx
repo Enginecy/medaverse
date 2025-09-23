@@ -5,7 +5,7 @@ import { LeaderboardTable } from "@/components/leaderboard-table";
 import Link from "next/link";
 import { StockCard } from "@/features/leaderboard/components/stock-card";
 import { TotalCard } from "@/features/leaderboard/components/price-card";
-import { getWeeklySalesAmount, getTodaySalesAmount } from "@/features/leaderboard/server/db/leaderboard";
+import { getWeeklySalesAmount, getTodaySalesAmount, getLeaderAndFollowers } from "@/features/leaderboard/server/db/leaderboard";
 import {
   getLeaderboardData,
   getLeaderboardDataByRole,
@@ -15,6 +15,7 @@ export default async function LeaderboardPage() {
   const weeklySales = await getWeeklySalesAmount();
   const todaySales = await getTodaySalesAmount();
   const leaderboardData = await getLeaderboardData();
+  const leadersWithFollowers = await getLeaderAndFollowers();
   const associateDirectorData =
     await getLeaderboardDataByRole("associate_director");
   const divisionalDirectorData = await getLeaderboardDataByRole(
