@@ -207,11 +207,13 @@ export async function getWeeklyDateRange() {
 
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
 
-export async function getLeadersAndFollowers() {
+export async function getLeaderAndFollowers(
+  {leaderId} : {leaderId?: string} 
+) {
   const db = await createDrizzleSupabaseClient();
   const results = await db.rls(async (tx) => {
     return tx.execute(
-      sql`SELECT
+      sql <LeaderAndFollowers[]>`SELECT
           users.id,
           profile.name,
           profile.avatar_url,
@@ -230,7 +232,8 @@ export async function getLeadersAndFollowers() {
               profile.user_id,
               profile.name,
               profile.avatar_url,
-              SUM(sales.total_sale_value) * 12 AS sales
+              SUM(sales.total_sale_value) * 12 AS sales,
+              Count(sales.id) AS sales_count
             FROM profile
             LEFT JOIN sales ON profile.user_id = sales.user_id
             GROUP BY
@@ -240,13 +243,27 @@ export async function getLeadersAndFollowers() {
               profile.avatar_url
           ) AS subordinate ON user_hierarchy.user_id = subordinate.user_id
           WHERE
-            roles.id = '4a1ba935-f500-4179-b0f1-053028523256'
+            roles.id = ${leaderId}
           GROUP BY
             users.id,
             profile.name,
             profile.avatar_url;`,
     );
   });
+  return (results as unknown as { rows: LeaderAndFollowers[] }).rows;
 }
 
-export type LeadersAndFollowers = Awaited<ReturnType<typeof getLeadersAndFollowers>>;
+export type LeaderAndFollowers = {
+  id: string;
+  name: string;
+  avatar_url: string;
+  total_subordinates_sales: string;
+  subordinates: { 
+      id: string;
+      user_id: string;
+      name: string;
+      avatar_url: string;
+      sales: string;
+      sales_count: number;
+    }[]
+};

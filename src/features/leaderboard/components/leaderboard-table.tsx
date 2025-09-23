@@ -17,8 +17,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { LeaderboardDataSection } from "@/app/leaderboard/server";
+import { Button } from "@/components/ui/button";
+import type { LeaderAndFollowers } from "@/features/leaderboard/server/db/leaderboard";
 
-const columns: ColumnDef<LeaderboardDataSection>[] = [
+const columns: ColumnDef<LeaderAndFollowers>[] = [
   {
     id: "rank",
     header: "No",
@@ -35,7 +37,7 @@ const columns: ColumnDef<LeaderboardDataSection>[] = [
           size="sm"
           user={{
             name: row.original.name,
-            avatar: row.original.avatarUrl,
+            avatar: row.original.avatar_url,
           }}
         />
       );
@@ -46,7 +48,7 @@ const columns: ColumnDef<LeaderboardDataSection>[] = [
     header: "Premium",
     cell: ({ row }) => (
       <div className="font-semibold text-neutral-400">
-        ${row.original.totalSalesAmount}
+        ${row.original.total_subordinates_sales}
       </div>
     ),
   },
@@ -55,7 +57,7 @@ const columns: ColumnDef<LeaderboardDataSection>[] = [
     header: "Sales",
     cell: ({ row }) => (
       <div className="font-semibold text-neutral-400">
-        {row.original.salesCount}
+        {row.original.subordinates[row.index]?.sales_count}
       </div>
     ),
   },
@@ -66,7 +68,7 @@ export function LeaderboardTable({
   data,
 }: {
   title: string;
-  data: LeaderboardDataSection[];
+  data: LeaderAndFollowers[];
 }) {
   const table = useReactTable({
     data,
@@ -80,56 +82,65 @@ export function LeaderboardTable({
   return (
     <div
       onClick={toggleExpand}
-      className="w-full cursor-pointer rounded-3xl border border-neutral-800
+      className="w-full cursor-pointer rounded-3xl border border-neutral-800 
         bg-neutral-900/80 p-4"
     >
-      <div className="mb-4 text-center text-xl font-semibold text-white">
+      <div className="text-center text-xl font-semibold text-white">
         {title}
       </div>
+      <Button variant={'ghost'} className="rounded-3xl "></Button>
 
-      <Table className="cursor-pointer">
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="border-neutral-700 hover:bg-transparent"
-            >
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="text-neutral-400">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+      {true && (
+        <Table className="cursor-pointer">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
-                key={row.id}
-                className="border-none hover:bg-neutral-800/50"
+                key={headerGroup.id}
+                className="border-neutral-700 hover:bg-transparent"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="py-4">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="text-neutral-400">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="border-none hover:bg-neutral-800/50"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-4">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 }

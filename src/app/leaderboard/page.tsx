@@ -5,7 +5,7 @@ import { LeaderboardTable } from "@/features/leaderboard/components/leaderboard-
 import Link from "next/link";
 import { StockCard } from "@/features/leaderboard/components/stock-card";
 import { TotalCard } from "@/features/leaderboard/components/price-card";
-import { getWeeklySalesAmount, getTodaySalesAmount, getLeadersAndFollowers } from "@/features/leaderboard/server/db/leaderboard";
+import { getWeeklySalesAmount, getTodaySalesAmount, getLeaderAndFollowers } from "@/features/leaderboard/server/db/leaderboard";
 import {
   getLeaderboardData,
   getLeaderboardDataByRole,
@@ -16,7 +16,7 @@ export default async function LeaderboardPage() {
   const weeklySales = await getWeeklySalesAmount();
   const todaySales = await getTodaySalesAmount();
   const leaderboardData = await getLeaderboardData();
-  const leadersWithFollowers = await getLeadersAndFollowers();
+  const associateDirector = await getLeaderAndFollowers({leaderId: '4a1ba935-f500-4179-b0f1-053028523256'});
   const associateDirectorData =
     await getLeaderboardDataByRole("associate_director");
   const divisionalDirectorData = await getLeaderboardDataByRole(
@@ -62,7 +62,7 @@ export default async function LeaderboardPage() {
         className="pointer-events-none grid w-full grid-cols-1 gap-4 md:gap-6
           lg:grid-cols-2 xl:grid-cols-4"
       >
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
               name: leaderboardData[0]!.name,
@@ -76,7 +76,7 @@ export default async function LeaderboardPage() {
             title="Personal Production"
             data={leaderboardData}
           />
-        </div>
+        </div> */}
         <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
@@ -89,10 +89,10 @@ export default async function LeaderboardPage() {
           />
           <LeaderboardTable
             title="Associate Director"
-            data={associateDirectorData}
+            data={associateDirector}
           />
         </div>
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
               name: divisionalDirectorData[0]!.name,
@@ -106,8 +106,8 @@ export default async function LeaderboardPage() {
             title="Divisional Director"
             data={divisionalDirectorData}
           />
-        </div>
-        {regionalDirectorData.length > 0 && (
+        </div> */}
+        {/* {regionalDirectorData.length > 0 && (
           <div className="flex flex-col gap-4">
             <LeaderboardCard
               user={{
@@ -123,7 +123,7 @@ export default async function LeaderboardPage() {
               data={regionalDirectorData}
             />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
