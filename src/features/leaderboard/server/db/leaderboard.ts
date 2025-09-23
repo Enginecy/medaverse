@@ -207,9 +207,8 @@ export async function getWeeklyDateRange() {
 
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
 
-export async function getLeaderAndFollowers() {
+export async function getLeadersAndFollowers() {
   const db = await createDrizzleSupabaseClient();
-  const requiredRole = "Associate Director";
   const results = await db.rls(async (tx) => {
     return tx.execute(
       sql`SELECT
@@ -248,5 +247,6 @@ export async function getLeaderAndFollowers() {
             profile.avatar_url;`,
     );
   });
-  console.table(results);
 }
+
+export type LeadersAndFollowers = Awaited<ReturnType<typeof getLeadersAndFollowers>>;

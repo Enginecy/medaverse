@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 
 import {
   flexRender,
@@ -16,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { LeaderboardDataSection } from "@/app/leaderboard/server";
+
 const columns: ColumnDef<LeaderboardDataSection>[] = [
   {
     id: "rank",
@@ -71,17 +73,21 @@ export function LeaderboardTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
+  const [isExpanded, setIsExpanded] = useState(false);
+  function toggleExpand() {
+    setIsExpanded(!isExpanded);
+  }
   return (
     <div
-      className="w-full rounded-3xl border border-neutral-800 bg-neutral-900/80
-        p-4"
+      onClick={toggleExpand}
+      className="w-full cursor-pointer rounded-3xl border border-neutral-800
+        bg-neutral-900/80 p-4"
     >
       <div className="mb-4 text-center text-xl font-semibold text-white">
         {title}
       </div>
 
-      <Table>
+      <Table className="cursor-pointer">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
