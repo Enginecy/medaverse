@@ -64,7 +64,7 @@ export function LeaderboardCard({
             className="text-primary-300 text-2xl font-semibold md:text-3xl
               lg:text-4xl"
           >
-            ${user.annualizedVolume == "" ? "0" : user.annualizedVolume}
+            ${user.annualizedVolume || "0"}
           </span>
         </div>
 

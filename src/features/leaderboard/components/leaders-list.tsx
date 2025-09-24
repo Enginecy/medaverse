@@ -38,8 +38,8 @@ function LeaderCard({ leader }: { leader: LeaderAndFollowers }) {
             </Avatar>
             <div>
               <div className="font-semibold">{leader.name}</div>
-              <div className="text-sm text-gray-500">
-                Total Subordinate Sales: ${leader.total_subordinates_sales}
+              <div className="text-xs text-gray-500">
+                Total Sales: ${leader.total_subordinates_sales}
               </div>
             </div>
           </div>
@@ -64,7 +64,7 @@ function LeaderCard({ leader }: { leader: LeaderAndFollowers }) {
                   <span className="text-sm font-medium">{follower.name}</span>
                 </div>
                 <div className="text-xs text-gray-500">
-                  Sales: ${follower.sales} ({follower.sales_count} orders)
+                  Sales: ${follower.sales} ({follower.sales_count} Sales)
                 </div>
               </div>
             ),

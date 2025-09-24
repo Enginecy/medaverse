@@ -215,46 +215,71 @@ export async function getLeaderAndFollowers({
   const db = await createDrizzleSupabaseClient();
   const results = await db.rls(async (tx) => {
     return tx.execute(
-      sql<LeaderAndFollowers[]>`SELECT
-          users.id,
-          profile.name,
-          profile.avatar_url,
-          coalesce(SUM(subordinate.sales), 0) AS total_subordinate_sales,
-          JSON_ARRAYAGG(
-              JSON_OBJECT(ARRAY['id', 'user_id', 'name', 'avatar_url', 'sales', role_name], ARRAY[subordinate.id, subordinate.user_id, subordinate.name, subordinate.avatar_url, COALESCE(subordinate.sales, 0)::TEXT]::text[])
-          ) as subordinates
-          FROM auth.users
-          INNER JOIN profile ON profile.user_id = users.id
-          INNER JOIN user_roles ON users.id = user_roles.user_id
-          INNER JOIN roles ON user_roles.role_id = roles.id
-          INNER JOIN user_hierarchy ON user_hierarchy.leader_id = users.id
-          INNER JOIN (
-            SELECT
-              profile.id,
-              profile.user_id,
-              profile.name,
-              profile.avatar_url,
-              SUM(sales.total_sale_value) * 12 AS sales,
-              Count(sales.id) AS sales_count,
-              roles.name AS role_name
-            FROM profile
-            LEFT JOIN sales ON profile.user_id = sales.user_id
-            INNER JOIN user_roles ON profile.user_id = user_roles.user_id
-            INNER JOIN roles ON user_roles.role_id = roles.id
-            GROUP BY
-              profile.id,
-              profile.user_id,
-              profile.name,
-              profile.avatar_url,
-              roles.name
-          ) AS subordinate ON user_hierarchy.user_id = subordinate.user_id
-          WHERE
-            roles.id = ${leaderId}
-          GROUP BY
-            users.id,
-            profile.name,
-            profile.avatar_url
-            ORDER BY total_subordinate_sales DESC;`,
+      sql<LeaderAndFollowers[]>`select
+                users.id,
+                profile.name,
+                profile.avatar_url,
+                roles.name as role_name,
+                coalesce(SUM(subordinate.sales), 0) as total_subordinate_sales,
+                coalesce(SUM(subordinate.sales_count), 0) as total_subordinate_sales_count,
+                JSON_ARRAYAGG (
+                  JSON_OBJECT(
+                    array[
+                      'id',
+                      'user_id',
+                      'name',
+                      'avatar_url',
+                      'sales',
+                      'role_name',
+                      'sales_count'
+                    ],
+                    array[
+                      subordinate.id,
+                      subordinate.user_id,
+                      subordinate.name,
+                      subordinate.avatar_url,
+                      COALESCE(subordinate.sales, 0)::TEXT,
+                      subordinate.role_name,
+                      subordinate.sales_count
+                    ]::text[]
+                  )
+                ) as subordinates
+              from
+                auth.users
+                inner join profile on profile.user_id = users.id
+                inner join user_roles on users.id = user_roles.user_id
+                inner join roles on user_roles.role_id = roles.id
+                inner join user_hierarchy on user_hierarchy.leader_id = users.id
+                inner join (
+                  select
+                    profile.id,
+                    profile.user_id,
+                    profile.name,
+                    profile.avatar_url,
+                    SUM(sales.total_sale_value) * 12 as sales,
+                    COUNT(sales.id) as sales_count,
+                    roles.name as role_name
+                  from
+                    profile
+                    left join sales on profile.user_id = sales.user_id
+                    inner join user_roles on profile.user_id = user_roles.user_id
+                    inner join roles on user_roles.role_id = roles.id
+                  group by
+                    profile.id,
+                    profile.user_id,
+                    profile.name,
+                    profile.avatar_url,
+                    roles.name
+                ) as subordinate on user_hierarchy.user_id = subordinate.user_id
+              where
+                roles.id = ${leaderId}
+              group by
+                users.id,
+                profile.name,
+                profile.avatar_url,
+                roles.name
+              order by
+                total_subordinate_sales desc;`,
     );
   });
 
@@ -266,12 +291,15 @@ export async function getLeaderAndFollowers({
     id: r.id,
     name: r.name,
     role_name: r.role_name,
+    total_subordinate_sales_count: r.total_subordinate_sales_count,
     avatar_url: r.avatar_url,
     total_subordinates_sales: r.total_subordinate_sales,
     // parse JSON string to array if necessary
     subordinates: r.subordinates ? r.subordinates : [],
   }));
-  console.table(normalized);
+
+  console.log((normalized));
+
   return normalized;
 }
 
@@ -279,6 +307,7 @@ export type LeaderAndFollowers = {
   id: string;
   name: string;
   avatar_url: string;
+  total_subordinate_sales_count: number;
   role_name: string;
   total_subordinates_sales: string;
   subordinates: {
