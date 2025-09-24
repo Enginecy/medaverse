@@ -207,19 +207,21 @@ export async function getWeeklyDateRange() {
 
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
 
-export async function getLeaderAndFollowers(
-  {leaderId} : {leaderId?: string} 
-) {
+export async function getLeaderAndFollowers({
+  leaderId,
+}: {
+  leaderId?: string;
+}) {
   const db = await createDrizzleSupabaseClient();
   const results = await db.rls(async (tx) => {
     return tx.execute(
-      sql <LeaderAndFollowers[]>`SELECT
+      sql<LeaderAndFollowers[]>`SELECT
           users.id,
           profile.name,
           profile.avatar_url,
           coalesce(SUM(subordinate.sales), 0) AS total_subordinate_sales,
           JSON_ARRAYAGG(
-              JSON_OBJECT(ARRAY['id', 'user_id', 'name', 'avatar_url', 'sales'], ARRAY[subordinate.id, subordinate.user_id, subordinate.name, subordinate.avatar_url, COALESCE(subordinate.sales, 0)::TEXT]::text[])
+              JSON_OBJECT(ARRAY['id', 'user_id', 'name', 'avatar_url', 'sales', role_name], ARRAY[subordinate.id, subordinate.user_id, subordinate.name, subordinate.avatar_url, COALESCE(subordinate.sales, 0)::TEXT]::text[])
           ) as subordinates
           FROM auth.users
           INNER JOIN profile ON profile.user_id = users.id
@@ -233,37 +235,58 @@ export async function getLeaderAndFollowers(
               profile.name,
               profile.avatar_url,
               SUM(sales.total_sale_value) * 12 AS sales,
-              Count(sales.id) AS sales_count
+              Count(sales.id) AS sales_count,
+              roles.name AS role_name
             FROM profile
             LEFT JOIN sales ON profile.user_id = sales.user_id
+            INNER JOIN user_roles ON profile.user_id = user_roles.user_id
+            INNER JOIN roles ON user_roles.role_id = roles.id
             GROUP BY
               profile.id,
               profile.user_id,
               profile.name,
-              profile.avatar_url
+              profile.avatar_url,
+              roles.name
           ) AS subordinate ON user_hierarchy.user_id = subordinate.user_id
           WHERE
             roles.id = ${leaderId}
           GROUP BY
             users.id,
             profile.name,
-            profile.avatar_url;`,
+            profile.avatar_url
+            ORDER BY total_subordinate_sales DESC;`,
     );
   });
-  return (results as unknown as { rows: LeaderAndFollowers[] }).rows;
+
+  // const result = (results as unknown as { rows: LeaderAndFollowers[] }).rows;
+
+  // console.log("THIS IS THE RESULT",result);
+
+  const normalized: LeaderAndFollowers[] = (results as any[]).map((r) => ({
+    id: r.id,
+    name: r.name,
+    role_name: r.role_name,
+    avatar_url: r.avatar_url,
+    total_subordinates_sales: r.total_subordinate_sales,
+    // parse JSON string to array if necessary
+    subordinates: r.subordinates ? r.subordinates : [],
+  }));
+  console.table(normalized);
+  return normalized;
 }
 
 export type LeaderAndFollowers = {
   id: string;
   name: string;
   avatar_url: string;
+  role_name: string;
   total_subordinates_sales: string;
-  subordinates: { 
-      id: string;
-      user_id: string;
-      name: string;
-      avatar_url: string;
-      sales: string;
-      sales_count: number;
-    }[]
+  subordinates: {
+    id: string;
+    user_id: string;
+    name: string;
+    avatar_url: string;
+    sales: string;
+    sales_count: number;
+  }[];
 };

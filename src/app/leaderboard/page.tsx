@@ -5,18 +5,36 @@ import { LeaderboardTable } from "@/features/leaderboard/components/leaderboard-
 import Link from "next/link";
 import { StockCard } from "@/features/leaderboard/components/stock-card";
 import { TotalCard } from "@/features/leaderboard/components/price-card";
-import { getWeeklySalesAmount, getTodaySalesAmount, getLeaderAndFollowers } from "@/features/leaderboard/server/db/leaderboard";
+import {
+  getWeeklySalesAmount,
+  getTodaySalesAmount,
+  getLeaderAndFollowers,
+} from "@/features/leaderboard/server/db/leaderboard";
 import {
   getLeaderboardData,
   getLeaderboardDataByRole,
 } from "@/app/leaderboard/server";
 import { LeaderboardCard } from "@/features/leaderboard/components/leaderboard-card";
+import LeaderList from "@/features/leaderboard/components/leaders-list";
 
 export default async function LeaderboardPage() {
   const weeklySales = await getWeeklySalesAmount();
   const todaySales = await getTodaySalesAmount();
   const leaderboardData = await getLeaderboardData();
-  const associateDirector = await getLeaderAndFollowers({leaderId: '4a1ba935-f500-4179-b0f1-053028523256'});
+
+  const associateDirectorLeaders = await getLeaderAndFollowers({
+    leaderId: "4a1ba935-f500-4179-b0f1-053028523256",
+  });
+  const divisionalDirectorLeaders = await getLeaderAndFollowers({
+    leaderId: "e49518bc-995f-4e03-a9a8-c57ad6ab6233",
+  });
+  const NationalDirectorLeaders = await getLeaderAndFollowers({
+    leaderId: "7123105a-26ba-4829-93f3-48924cd921b9",
+  });
+  const regionalDirectorLeaders = await getLeaderAndFollowers({
+    leaderId: "1f4783da-f957-4f41-8019-e0d66191aedf",
+  });
+
   const associateDirectorData =
     await getLeaderboardDataByRole("associate_director");
   const divisionalDirectorData = await getLeaderboardDataByRole(
@@ -59,10 +77,10 @@ export default async function LeaderboardPage() {
       <StockCard />
 
       <div
-        className="pointer-events-none grid w-full grid-cols-1 gap-4 md:gap-6
-          lg:grid-cols-2 xl:grid-cols-4"
+        className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2
+          xl:grid-cols-4"
       >
-        {/* <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
               name: leaderboardData[0]!.name,
@@ -72,25 +90,30 @@ export default async function LeaderboardPage() {
               households: leaderboardData[0]!.salesCount,
             }}
           />
-          <LeaderboardTable
-            title="Personal Production"
-            data={leaderboardData}
-          />
-        </div> */}
+          <LeaderList data={regionalDirectorLeaders ?? []} />
+        </div>
         <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
-              name: associateDirectorData[0]!.name,
-              avatar: associateDirectorData[0]!.avatarUrl,
-              role: associateDirectorData[0]!.role!,
-              annualizedVolume: associateDirectorData[0]!.totalSalesAmount,
-              households: associateDirectorData[0]!.salesCount,
+              // name: associateDirectorLeaders[0]!.name, 
+              // avatar: associateDirectorLeaders[0]!.avatar_url,
+              // role: associateDirectorLeaders[0]!.!,
+              // annualizedVolume: associateDirectorLeaders[0]!.,
+              // households: associateDirectorLeaders[0]!.total_subordinates_sales,
+              name: "", 
+              avatar: "",
+              role: associateDirectorLeaders[0]?.role_name ?? "",
+              annualizedVolume: "",
+              households: 0,
+
+
             }}
           />
-          <LeaderboardTable
+          {/* <LeaderboardTable
             title="Associate Director"
             data={associateDirector}
-          />
+          /> */}
+          <LeaderList data={associateDirectorLeaders ?? []} />
         </div>
         {/* <div className="flex flex-col gap-4">
           <LeaderboardCard
@@ -128,7 +151,6 @@ export default async function LeaderboardPage() {
     </div>
   );
 }
-
 
 function LogoCard() {
   return (
