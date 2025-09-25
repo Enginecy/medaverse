@@ -23,7 +23,8 @@ import type { ActionError } from "@/lib/utils";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin" | "password">("email");
-  const [mode, setMode] = useState<"OTP" | "Password">("OTP");
+  // const [mode, setMode] = useState<"OTP" | "Password">("OTP");
+  const mode = "Password" as const;
   const router = useRouter();
 
   const schema = useMemo(() => createFormSchema(step), [step]);
@@ -143,12 +144,14 @@ export default function Home() {
       className="relative flex min-h-screen w-full max-w-full items-center
         justify-center overflow-hidden p-4 md:justify-end"
     >
-      <div className="absolute inset-0 z-0"><LoginGraphics /></div>
+      <div className="absolute inset-0 z-0">
+        <LoginGraphics />
+      </div>
       <div
-        className="relative z-10 flex h-auto w-full max-w-md flex-col items-center justify-center gap-4
-          overflow-y-auto rounded-3xl border-[12px] border-black bg-[#404552]
-          p-4 backdrop-blur-sm md:h-2/3 md:w-1/3 md:rounded-4xl md:border-[16px]
-          md:gap-6 md:p-6"
+        className="relative z-10 flex h-auto w-full max-w-md flex-col
+          items-center justify-center gap-4 overflow-y-auto rounded-3xl
+          border-[12px] border-black bg-[#404552] p-4 backdrop-blur-sm md:h-2/3
+          md:w-1/3 md:gap-6 md:rounded-4xl md:border-[16px] md:p-6"
       >
         <LoginForm
           form={form}
@@ -158,30 +161,7 @@ export default function Home() {
           onSubmit={onSubmit}
           step={step}
           mode={mode}
-          onModeChange={(next) => {
-            setMode(next);
-            if (next === "Password") {
-              setStep("password");
-            } else {
-              setStep("email");
-            }
-            form.clearErrors();
-          }}
         />
-        {step === "pin" && mode === "OTP" && (
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => {
-              setStep("email");
-              form.setValue("code", "");
-              form.trigger();
-            }}
-            className="min-h-[44px] w-full max-w-md px-4 text-sm text-gray-600"
-          >
-            Back to email
-          </Button>
-        )}
       </div>
     </div>
   );

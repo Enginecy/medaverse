@@ -13,12 +13,10 @@ export function LoginForm({
   form,
   onSubmit,
   isLoading,
-  onModeChange,
   mode,
 }: {
   step: "email" | "pin" | "password";
   mode: "OTP" | "Password";
-  onModeChange: (mode: "OTP" | "Password") => void;
   form: UseFormReturn<z.infer<ReturnType<typeof createFormSchema>>>;
   onSubmit: (values: z.infer<ReturnType<typeof createFormSchema>>) => void;
   isLoading: boolean;
@@ -41,12 +39,6 @@ export function LoginForm({
       >
         Sign in to your account
       </p>
-      <SegmentedButton
-        className="w-full border border-gray-600 bg-gray-800"
-        options={["OTP", "Password"]}
-        value={mode}
-        onChange={(v) => onModeChange(v as "OTP" | "Password")}
-      />
       <p
         className="px-2 text-center text-xs leading-relaxed whitespace-pre-line
           text-gray-400 sm:text-sm md:text-base"
