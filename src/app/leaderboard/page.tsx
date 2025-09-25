@@ -16,10 +16,11 @@ import LeaderList from "@/features/leaderboard/components/leaders-list";
 export default async function LeaderboardPage({
   searchParams,
 }: {
-  searchParams: { period?: string };
+  searchParams: Promise<{ period?: string }>;
 }) {
-  const period = (searchParams.period as 'week' | 'month' | 'all') || 'week';
-  
+  const period =
+    ((await searchParams).period as "week" | "month" | "all") || "week";
+
   const periodSales = await getSalesAmountByPeriod(period);
   const todaySales = await getTodaySalesAmount();
   const leaderboardData = await getLeaderboardDataByPeriod(period);
@@ -51,41 +52,47 @@ export default async function LeaderboardPage({
           lg:grid-cols-4"
       >
         <LogoCard />
-        <TotalCard 
-          week={period === 'week'} 
-          amount={periodSales} 
+        <TotalCard
+          week={period === "week"}
+          amount={periodSales}
           period={period}
         />
         <TotalCard amount={todaySales} />
 
-        <div className="flex h-full w-full flex-col items-stretch justify-between rounded-3xl border border-zinc-800 bg-zinc-900 p-4">
-          <Link 
+        <div
+          className="flex h-full w-full flex-col items-stretch justify-between
+            rounded-3xl border border-zinc-800 bg-zinc-900 p-4"
+        >
+          <Link
             href="/leaderboard?period=week"
-            className={`min-h-[44px] flex items-center justify-center rounded-md transition-colors ${
-              period === 'week' 
-                ? 'bg-primary text-foreground font-medium' 
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-            }`}
+            className={`flex min-h-[44px] items-center justify-center rounded-md
+              transition-colors ${
+              period === "week"
+                  ? "bg-primary text-foreground font-medium"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+              }`}
           >
             This week
           </Link>
-          <Link 
+          <Link
             href="/leaderboard?period=month"
-            className={`min-h-[44px] flex items-center justify-center rounded-md transition-colors ${
-              period === 'month' 
-                ? 'bg-primary text-foreground font-medium' 
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-            }`}
+            className={`flex min-h-[44px] items-center justify-center rounded-md
+              transition-colors ${
+              period === "month"
+                  ? "bg-primary text-foreground font-medium"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+              }`}
           >
             This month
           </Link>
-          <Link 
+          <Link
             href="/leaderboard?period=all"
-            className={`min-h-[44px] flex items-center justify-center rounded-md transition-colors ${
-              period === 'all' 
-                ? 'bg-primary text-foreground font-medium' 
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-            }`}
+            className={`flex min-h-[44px] items-center justify-center rounded-md
+              transition-colors ${
+              period === "all"
+                  ? "bg-primary text-foreground font-medium"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+              }`}
           >
             All time
           </Link>
@@ -120,8 +127,13 @@ export default async function LeaderboardPage({
               annualizedVolume:
                 associateDirectorLeaders[0]?.total_subordinates_sales ?? "",
               households:
-                Number(associateDirectorLeaders[0]?.total_subordinate_sales_count ?? 0) +
-                Number(associateDirectorLeaders[0]?.total_leader_sales_count ?? 0),
+                Number(
+                  associateDirectorLeaders[0]?.total_subordinate_sales_count ??
+                    0,
+                ) +
+                Number(
+                  associateDirectorLeaders[0]?.total_leader_sales_count ?? 0,
+                ),
             }}
           />
           <LeaderList
@@ -138,8 +150,13 @@ export default async function LeaderboardPage({
               annualizedVolume:
                 regionalDirectorLeaders[0]?.total_subordinates_sales ?? "",
               households:
-                Number(regionalDirectorLeaders[0]?.total_subordinate_sales_count ?? 0) +
-                Number(regionalDirectorLeaders[0]?.total_leader_sales_count ?? 0),
+                Number(
+                  regionalDirectorLeaders[0]?.total_subordinate_sales_count ??
+                    0,
+                ) +
+                Number(
+                  regionalDirectorLeaders[0]?.total_leader_sales_count ?? 0,
+                ),
             }}
           />
           <LeaderList
@@ -156,8 +173,13 @@ export default async function LeaderboardPage({
               annualizedVolume:
                 divisionalDirectorLeaders[0]?.total_subordinates_sales ?? "",
               households:
-                Number(divisionalDirectorLeaders[0]?.total_subordinate_sales_count ?? 0) +
-                Number(divisionalDirectorLeaders[0]?.total_leader_sales_count ?? 0),
+                Number(
+                  divisionalDirectorLeaders[0]?.total_subordinate_sales_count ??
+                    0,
+                ) +
+                Number(
+                  divisionalDirectorLeaders[0]?.total_leader_sales_count ?? 0,
+                ),
             }}
           />
           <LeaderList
