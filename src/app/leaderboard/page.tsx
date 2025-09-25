@@ -1,27 +1,46 @@
 import Image from "next/image";
 import logo from "public/meda_health_logo.png";
-import { Tabs, TabsTrigger, TabsList } from "@/components/ui/tabs";
-import { LeaderboardTable } from "@/components/leaderboard-table";
+import { LeaderboardTable } from "@/features/leaderboard/components/leaderboard-table";
 import Link from "next/link";
 import { StockCard } from "@/features/leaderboard/components/stock-card";
 import { TotalCard } from "@/features/leaderboard/components/price-card";
-import { getWeeklySalesAmount, getTodaySalesAmount } from "@/features/leaderboard/server/db/leaderboard";
 import {
-  getLeaderboardData,
-  getLeaderboardDataByRole,
-} from "@/app/leaderboard/server";
+  getTodaySalesAmount,
+  getSalesAmountByPeriod,
+  getLeaderAndFollowersByPeriod,
+} from "@/features/leaderboard/server/db/leaderboard";
+import { getLeaderboardDataByPeriod } from "@/app/leaderboard/server";
+import { LeaderboardCard } from "@/features/leaderboard/components/leaderboard-card";
+import LeaderList from "@/features/leaderboard/components/leaders-list";
 
-export default async function LeaderboardPage() {
-  const weeklySales = await getWeeklySalesAmount();
+export default async function LeaderboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ period?: string }>;
+}) {
+  const period =
+    ((await searchParams).period as "week" | "month" | "all") || "week";
+
+  const periodSales = await getSalesAmountByPeriod(period);
   const todaySales = await getTodaySalesAmount();
-  const leaderboardData = await getLeaderboardData();
-  const associateDirectorData =
-    await getLeaderboardDataByRole("associate_director");
-  const divisionalDirectorData = await getLeaderboardDataByRole(
-    "divisional_director",
-  );
-  const regionalDirectorData =
-    await getLeaderboardDataByRole("regional_director");
+  const leaderboardData = await getLeaderboardDataByPeriod(period);
+
+  const associateDirectorLeaders = await getLeaderAndFollowersByPeriod({
+    leaderId: "4a1ba935-f500-4179-b0f1-053028523256",
+    period,
+  });
+  const divisionalDirectorLeaders = await getLeaderAndFollowersByPeriod({
+    leaderId: "e49518bc-995f-4e03-a9a8-c57ad6ab6233",
+    period,
+  });
+  // const NationalDirectorLeaders = await getLeaderAndFollowersByPeriod({
+  //   leaderId: "7123105a-26ba-4829-93f3-48924cd921b9",
+  //   period,
+  // });
+  const regionalDirectorLeaders = await getLeaderAndFollowersByPeriod({
+    leaderId: "1f4783da-f957-4f41-8019-e0d66191aedf",
+    period,
+  });
 
   return (
     <div
@@ -33,32 +52,58 @@ export default async function LeaderboardPage() {
           lg:grid-cols-4"
       >
         <LogoCard />
-        <TotalCard week amount={weeklySales} />
+        <TotalCard
+          week={period === "week"}
+          amount={periodSales}
+          period={period}
+        />
         <TotalCard amount={todaySales} />
 
-        <Tabs defaultValue="option1" orientation="vertical">
-          <TabsList
-            className="flex h-full w-full flex-col items-stretch justify-between
-              rounded-3xl border border-zinc-800 bg-zinc-900 p-4"
+        <div
+          className="flex h-full w-full flex-col items-stretch justify-between
+            rounded-3xl border border-zinc-800 bg-zinc-900 p-4"
+        >
+          <Link
+            href="/leaderboard?period=week"
+            className={`flex min-h-[44px] items-center justify-center rounded-md
+              transition-colors ${
+              period === "week"
+                  ? "bg-primary text-foreground font-medium"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+              }`}
           >
-            <TabsTrigger value="option1" className="min-h-[44px]">
-              This week
-            </TabsTrigger>
-            <TabsTrigger value="option3" className="min-h-[44px]">
-              This month
-            </TabsTrigger>
-            <TabsTrigger value="option5" className="min-h-[44px]">
-              All time
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+            This week
+          </Link>
+          <Link
+            href="/leaderboard?period=month"
+            className={`flex min-h-[44px] items-center justify-center rounded-md
+              transition-colors ${
+              period === "month"
+                  ? "bg-primary text-foreground font-medium"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+              }`}
+          >
+            This month
+          </Link>
+          <Link
+            href="/leaderboard?period=all"
+            className={`flex min-h-[44px] items-center justify-center rounded-md
+              transition-colors ${
+              period === "all"
+                  ? "bg-primary text-foreground font-medium"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+              }`}
+          >
+            All time
+          </Link>
+        </div>
       </div>
 
       <StockCard />
 
       <div
-        className="pointer-events-none grid w-full grid-cols-1 gap-4 md:gap-6
-          lg:grid-cols-2 xl:grid-cols-4"
+        className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2
+          xl:grid-cols-4"
       >
         <div className="flex flex-col gap-4">
           <LeaderboardCard
@@ -70,145 +115,77 @@ export default async function LeaderboardPage() {
               households: leaderboardData[0]!.salesCount,
             }}
           />
-          <LeaderboardTable
-            title="Personal Production"
-            data={leaderboardData}
-          />
+          <LeaderboardTable title="Personal Record" data={leaderboardData} />
         </div>
+
         <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
-              name: associateDirectorData[0]!.name,
-              avatar: associateDirectorData[0]!.avatarUrl,
-              role: associateDirectorData[0]!.role!,
-              annualizedVolume: associateDirectorData[0]!.totalSalesAmount,
-              households: associateDirectorData[0]!.salesCount,
+              name: associateDirectorLeaders[0]?.name ?? "",
+              avatar: associateDirectorLeaders[0]?.avatar_url ?? "",
+              role: associateDirectorLeaders[0]?.role_name ?? "",
+              annualizedVolume:
+                associateDirectorLeaders[0]?.total_subordinates_sales ?? "",
+              households:
+                Number(
+                  associateDirectorLeaders[0]?.total_subordinate_sales_count ??
+                    0,
+                ) +
+                Number(
+                  associateDirectorLeaders[0]?.total_leader_sales_count ?? 0,
+                ),
             }}
           />
-          <LeaderboardTable
+          <LeaderList
+            data={associateDirectorLeaders ?? []}
             title="Associate Director"
-            data={associateDirectorData}
           />
         </div>
         <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
-              name: divisionalDirectorData[0]!.name,
-              avatar: divisionalDirectorData[0]!.avatarUrl,
-              role: divisionalDirectorData[0]!.role!,
-              annualizedVolume: divisionalDirectorData[0]!.totalSalesAmount,
-              households: divisionalDirectorData[0]!.salesCount,
+              name: regionalDirectorLeaders[0]?.name ?? "",
+              avatar: regionalDirectorLeaders[0]?.avatar_url ?? "",
+              role: regionalDirectorLeaders[0]?.role_name ?? "",
+              annualizedVolume:
+                regionalDirectorLeaders[0]?.total_subordinates_sales ?? "",
+              households:
+                Number(
+                  regionalDirectorLeaders[0]?.total_subordinate_sales_count ??
+                    0,
+                ) +
+                Number(
+                  regionalDirectorLeaders[0]?.total_leader_sales_count ?? 0,
+                ),
             }}
           />
-          <LeaderboardTable
-            title="Divisional Director"
-            data={divisionalDirectorData}
+          <LeaderList
+            data={regionalDirectorLeaders ?? []}
+            title="Regional Director"
           />
         </div>
-        {regionalDirectorData.length > 0 && (
-          <div className="flex flex-col gap-4">
-            <LeaderboardCard
-              user={{
-                name: regionalDirectorData[0]!.name,
-                avatar: regionalDirectorData[0]!.avatarUrl,
-                role: regionalDirectorData[0]!.role!,
-                annualizedVolume: regionalDirectorData[0]!.totalSalesAmount,
-                households: regionalDirectorData[0]!.salesCount,
-              }}
-            />
-            <LeaderboardTable
-              title="Regional Director"
-              data={regionalDirectorData}
-            />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function LeaderboardCard({
-  user,
-}: {
-  user: {
-    name: string;
-    avatar: string;
-    role: string;
-    annualizedVolume: string;
-    households: number;
-  };
-}) {
-  return (
-    <div
-      className="relative flex w-full flex-col gap-4 overflow-hidden rounded-3xl
-        bg-zinc-900 p-4 outline outline-zinc-800 md:gap-8 md:p-6 lg:p-10"
-    >
-      <div
-        className="absolute top-16 left-16 h-40 w-full bg-gradient-to-br
-          from-slate-700/40 via-blue-800/40 to-fuchsia-900/40 blur-2xl md:top-24
-          md:left-24 md:h-60 lg:top-[120px] lg:left-[120px] lg:h-80"
-      />
-
-      <div
-        className="flex w-full flex-col items-center justify-center gap-2
-          md:gap-4"
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          alt="placeholder"
-          className="h-20 w-20 rounded-2xl border md:h-28 md:w-28 md:rounded-3xl
-            lg:h-36 lg:w-36 lg:rounded-4xl"
-          src={user.avatar}
-        />
-
-        <div
-          className="flex flex-col items-center justify-center gap-1 md:gap-1.5"
-        >
-          <div
-            className="text-center text-lg font-semibold text-neutral-200
-              md:text-2xl lg:text-3xl"
-          >
-            {user.name}
-          </div>
-          <div
-            className="text-center text-sm font-semibold text-neutral-400
-              md:text-lg lg:text-xl"
-          >
-            {user.role}
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="flex w-full flex-col items-center justify-between gap-4
-          sm:flex-row sm:gap-0"
-      >
-        <div
-          className="flex flex-col items-center justify-center gap-1 text-center
-            text-sm font-medium text-neutral-400 sm:items-start sm:text-left
-            md:gap-2 md:text-base"
-        >
-          Annualized Volume
-          <span
-            className="text-primary-300 text-2xl font-semibold md:text-3xl
-              lg:text-4xl"
-          >
-            ${user.annualizedVolume}
-          </span>
-        </div>
-
-        <div
-          className="flex flex-col items-center justify-center gap-1 text-center
-            text-sm font-medium text-neutral-400 sm:items-end sm:text-right
-            md:gap-2 md:text-base"
-        >
-          Households
-          <span
-            className="text-primary-300 text-2xl font-semibold md:text-3xl
-              lg:text-4xl"
-          >
-            {user.households}
-          </span>
+        <div className="flex flex-col gap-4">
+          <LeaderboardCard
+            user={{
+              name: divisionalDirectorLeaders[0]?.name ?? "",
+              avatar: divisionalDirectorLeaders[0]?.avatar_url ?? "",
+              role: divisionalDirectorLeaders[0]?.role_name ?? "",
+              annualizedVolume:
+                divisionalDirectorLeaders[0]?.total_subordinates_sales ?? "",
+              households:
+                Number(
+                  divisionalDirectorLeaders[0]?.total_subordinate_sales_count ??
+                    0,
+                ) +
+                Number(
+                  divisionalDirectorLeaders[0]?.total_leader_sales_count ?? 0,
+                ),
+            }}
+          />
+          <LeaderList
+            data={divisionalDirectorLeaders ?? []}
+            title="Divisional Director"
+          />
         </div>
       </div>
     </div>
