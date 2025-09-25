@@ -100,7 +100,7 @@ export default async function LeaderboardPage() {
               avatar: associateDirectorLeaders[0]?.avatar_url ?? "",
               role: associateDirectorLeaders[0]?.role_name ?? "",
               annualizedVolume: ((Number(associateDirectorLeaders[0]?.total_subordinates_sales ?? 0)) * 12).toLocaleString(),
-              households:   associateDirectorLeaders[0]?.sales_count ?? 0,
+              households:   associateDirectorLeaders[0]?.total_subordinate_sales_count ?? 0,
 
 
             }}
