@@ -332,6 +332,7 @@ export async function getLeaderAndFollowersByPeriod({
       profile.avatar_url,
       roles.name AS role_name,
       COALESCE(leader_sales_summary.total_leader_sales, 0) AS total_leader_sales,
+      COALESCE(leader_sales_summary.total_leader_sales_count, 0) AS total_leader_sales_count,
       COALESCE(SUM(subordinate.sales), 0) AS total_subordinate_sales,
       COALESCE(SUM(subordinate.sales_count), 0) AS total_subordinate_sales_count,
       JSON_ARRAYAGG (
@@ -365,7 +366,8 @@ export async function getLeaderAndFollowersByPeriod({
       LEFT JOIN (
         SELECT
           user_id,
-          COALESCE(SUM(total_sale_value) * 12, 0) AS total_leader_sales
+          COALESCE(SUM(total_sale_value) * 12, 0) AS total_leader_sales,
+          COUNT(sales.id) AS total_leader_sales_count
         FROM
           sales
           INNER JOIN date_range ON sales.created_at::date >= date_range.start_date
@@ -404,7 +406,8 @@ export async function getLeaderAndFollowersByPeriod({
       profile.name,
       profile.avatar_url,
       roles.name,
-      leader_sales_summary.total_leader_sales
+      leader_sales_summary.total_leader_sales,
+      leader_sales_summary.total_leader_sales_count
     ORDER BY
       total_leader_sales DESC,
       total_subordinate_sales DESC;`,
@@ -421,6 +424,7 @@ export async function getLeaderAndFollowersByPeriod({
     name: r.name,
     role_name: r.role_name,
     total_subordinate_sales_count: r.total_subordinate_sales_count,
+    total_leader_sales_count: r.total_leader_sales_count ?? 0,
     avatar_url: r.avatar_url,
     total_leader_sales: r.total_leader_sales,
     total_subordinates_sales: r.total_subordinate_sales,
@@ -462,6 +466,7 @@ export type LeaderAndFollowers = {
   name: string;
   avatar_url: string;
   total_subordinate_sales_count: number;
+  total_leader_sales_count: number;
   role_name: string;
   total_leader_sales: string;
   total_subordinates_sales: string;

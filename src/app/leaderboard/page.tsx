@@ -120,7 +120,8 @@ export default async function LeaderboardPage({
               annualizedVolume:
                 associateDirectorLeaders[0]?.total_subordinates_sales ?? "",
               households:
-                associateDirectorLeaders[0]?.total_subordinate_sales_count ?? 0,
+                Number(associateDirectorLeaders[0]?.total_subordinate_sales_count ?? 0) +
+                Number(associateDirectorLeaders[0]?.total_leader_sales_count ?? 0),
             }}
           />
           <LeaderList
@@ -137,7 +138,8 @@ export default async function LeaderboardPage({
               annualizedVolume:
                 regionalDirectorLeaders[0]?.total_subordinates_sales ?? "",
               households:
-                regionalDirectorLeaders[0]?.total_subordinate_sales_count ?? 0,
+                Number(regionalDirectorLeaders[0]?.total_subordinate_sales_count ?? 0) +
+                Number(regionalDirectorLeaders[0]?.total_leader_sales_count ?? 0),
             }}
           />
           <LeaderList
@@ -154,8 +156,8 @@ export default async function LeaderboardPage({
               annualizedVolume:
                 divisionalDirectorLeaders[0]?.total_subordinates_sales ?? "",
               households:
-                divisionalDirectorLeaders[0]?.total_subordinate_sales_count ??
-                0,
+                Number(divisionalDirectorLeaders[0]?.total_subordinate_sales_count ?? 0) +
+                Number(divisionalDirectorLeaders[0]?.total_leader_sales_count ?? 0),
             }}
           />
           <LeaderList
