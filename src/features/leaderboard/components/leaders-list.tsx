@@ -7,11 +7,22 @@ import {
 } from "@/components/ui/collapsible";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import type { LeaderAndFollowers } from "@/features/leaderboard/server/db/leaderboard"; // adjust path if needed
-import { LeaderboardCard } from "@/features/leaderboard/components/leaderboard-card";
 
-export default function LeaderList({ data }: { data: LeaderAndFollowers[] }) {
+export default function LeaderList({
+  data,
+  title,
+}: {
+  data: LeaderAndFollowers[];
+  title: string;
+}) {
   return (
-    <div className="bg-primary-600/20 space-y-4 rounded-3xl p-4">
+    <div
+      className="space-y-4 rounded-3xl border border-neutral-800
+        bg-neutral-900/80 p-4"
+    >
+      <div className="mb-4 text-center text-xl font-semibold text-white">
+        {title}
+      </div>
       {data.map((leader) => (
         <LeaderCard key={leader.id} leader={leader} />
       ))}
@@ -39,7 +50,16 @@ function LeaderCard({ leader }: { leader: LeaderAndFollowers }) {
             <div>
               <div className="font-semibold">{leader.name}</div>
               <div className="text-xs text-gray-500">
-                Total Sales: ${leader.total_subordinates_sales}
+                Total Sales:{" "}
+                <span className="font-semibold text-secondary-foreground/55">
+                  ${leader.total_subordinates_sales}
+                </span>
+              </div>
+              <div className="text-xs text-gray-500">
+                Personal Sales:{" "}
+                <span className="font-semibold text-primary-300">
+                  ${Number(leader.total_leader_sales).toLocaleString()}
+                </span>
               </div>
             </div>
           </div>

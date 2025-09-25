@@ -1,8 +1,23 @@
-export function TotalCard({ week, amount }: { week?: boolean, amount: string }) {
-  const title = week ? "This Week" : "Today";
-  const color = week ? "bg-sky-600/20" : "bg-emerald-500/20";
-  const textColor = week ? "text-blue-500" : "text-emerald-500";
-  const backgroundColor = week ? "bg-sky-600/20" : "bg-emerald-500/20";
+export function TotalCard({ 
+  week, 
+  amount, 
+  period 
+}: { 
+  week?: boolean; 
+  amount: string; 
+  period?: 'week' | 'month' | 'all';
+}) {
+  const getPeriodTitle = () => {
+    if (period === 'month') return "This Month";
+    if (period === 'all') return "All Time";
+    if (period === 'week' || week) return "This Week (Mon-Fri)";
+    return "Today";
+  };
+  
+  const title = getPeriodTitle();
+  const color = week || period ? "bg-sky-600/20" : "bg-emerald-500/20";
+  const textColor = week || period ? "text-blue-500" : "text-emerald-500";
+  const backgroundColor = week || period ? "bg-sky-600/20" : "bg-emerald-500/20";
   return (
     <div
       className="flex flex-col items-center justify-between gap-3.5 rounded-3xl
