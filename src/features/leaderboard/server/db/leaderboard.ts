@@ -488,10 +488,8 @@ export async function getSubordinatesTeams({ userId }: { userId: string | undefi
     );
   });
 
-  console.log("SUBORDINATE TEAMS", result);
+  console.log("Subordinates: ", result);
 
-  return result ;
+  return result as unknown as LeaderAndFollowers ;
 
 }
-
-export type SubordinateTeam = Awaited<ReturnType<typeof getSubordinatesTeams>>[number];
