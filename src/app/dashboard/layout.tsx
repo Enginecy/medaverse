@@ -2,7 +2,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ProfileButton } from "@/features/dashboard/home/components/profile_button";
-import { MailIcon, Newspaper, TrophyIcon, TruckIcon } from "lucide-react";
+import { HelpingHand, MailIcon, Newspaper, TrophyIcon, TruckIcon } from "lucide-react";
 import { ThemeProvider } from "@/providers/theme";
 
 import Link from "next/link";
@@ -34,6 +34,12 @@ const navItems = [
     icon: TruckIcon,
     href: "/dashboard/carriers",
   },
+  {
+    title: "Support",
+    icon: HelpingHand,
+    href: "https://get.enginecymarketing.com/widget/form/g1sf8iX0E5nhj4Sw717j",
+    newWindow: true,
+  }
 ];
 
 export default function RootLayout({

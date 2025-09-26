@@ -20,6 +20,7 @@ import type z from "zod";
 import { env } from "@/env";
 import { showSonnerToast } from "@/lib/react-utils";
 import type { ActionError } from "@/lib/utils";
+import { HelpingHand, Info } from "lucide-react";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin" | "password">("email");
@@ -163,6 +164,20 @@ export default function Home() {
           mode={mode}
         />
       </div>
+      <Button
+        variant={"default"}
+        className="absolute top-0 right-0 z-10 m-4 w-30 
+          rounded-3xl border-1 border-blue-400 bg-transparent px-4"
+        onClick={() => {
+          window.open(
+            "https://get.enginecymarketing.com/widget/form/g1sf8iX0E5nhj4Sw717j",
+            "_blank",
+          );
+        }}
+      >
+        <span className="text-white">Support</span>
+        <Info className="ml-2 h-5 w-5 text-white" />
+      </Button>
     </div>
   );
 }
