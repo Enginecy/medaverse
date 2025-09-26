@@ -12,24 +12,29 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 export function ExpandableTile({ userData }: { userData: LeaderAndFollowers }) {
+  const [open, setOpen] = useState(false);
+
   async function queryFunction() {
     return await getSubordinatesTeams({ userId: userData.id as string });
   }
 
-  
-  const [open, setOpen] = useState(false);
-  function toggleExpand() {
+  function toggleOpen() {
     setOpen(!open);
   }
+
   const { data: queryData, isLoading } = useQuery<LeaderAndFollowers[]>({
     queryKey: ["fetchFollowers", userData.id],
     queryFn: queryFunction as () => Promise<LeaderAndFollowers[]>,
     enabled: open,
   });
-  
+
   return (
-    <Collapsible open={open} onOpenChange={toggleExpand} >
-      <CollapsibleTrigger asChild className={`${open? "bg-primary-600/30" : ""}`}>
+    <Collapsible open={open} onOpenChange={toggleOpen}>
+      <CollapsibleTrigger
+        disabled={isLoading}
+        asChild
+        className={`${open ? "bg-primary-600/30" : null}`}
+      >
         <div
           className="flex cursor-pointer items-center justify-between rounded-xl
             border p-4 shadow-sm hover:bg-gray-600/30"

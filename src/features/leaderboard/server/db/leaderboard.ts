@@ -488,7 +488,7 @@ export async function getSubordinatesTeams({ userId }: { userId: string | undefi
     );
   });
 
-  console.log("Subordinates: ", result);
+  console.group("Subordinates: ", result);
 
   return result as unknown as LeaderAndFollowers ;
 
