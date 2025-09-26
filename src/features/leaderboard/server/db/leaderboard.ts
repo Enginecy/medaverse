@@ -445,9 +445,7 @@ export async function getLeaderAndFollowersByPeriod({
     leader.subordinates = sortedSubordinates;
   });
 
-  
-
-  console.log(normalized);
+  // console.log(normalized);
 
   return normalized;
 }
@@ -479,3 +477,21 @@ export type LeaderAndFollowers = {
     sales_count: number;
   }[];
 };
+
+export async function getSubordinatesTeams({ userId }: { userId: string | undefined}) {
+  if(userId === undefined) return [];
+  const db = await createDrizzleSupabaseClient();
+
+  const result = await db.admin.transaction(async (tx) => {
+    return await tx.execute(
+      sql`SELECT * FROM get_user_sales_with_subordinates(${userId})`,
+    );
+  });
+
+  console.log("SUBORDINATE TEAMS", result);
+
+  return result ;
+
+}
+
+export type SubordinateTeam = Awaited<ReturnType<typeof getSubordinatesTeams>>[number];

@@ -8,10 +8,12 @@ import {
   getTodaySalesAmount,
   getSalesAmountByPeriod,
   getLeaderAndFollowersByPeriod,
+  getSubordinatesTeams,
 } from "@/features/leaderboard/server/db/leaderboard";
 import { getLeaderboardDataByPeriod } from "@/app/leaderboard/server";
 import { LeaderboardCard } from "@/features/leaderboard/components/leaderboard-card";
 import LeaderList from "@/features/leaderboard/components/leaders-list";
+import { ListOfExpandable } from "@/features/leaderboard/components/list_of_expandable";
 
 export default async function LeaderboardPage({
   searchParams,
@@ -33,14 +35,15 @@ export default async function LeaderboardPage({
     leaderId: "e49518bc-995f-4e03-a9a8-c57ad6ab6233",
     period,
   });
-  // const NationalDirectorLeaders = await getLeaderAndFollowersByPeriod({
-  //   leaderId: "7123105a-26ba-4829-93f3-48924cd921b9",
-  //   period,
-  // });
+  const NationalDirectorLeaders = await getLeaderAndFollowersByPeriod({
+    leaderId: "7123105a-26ba-4829-93f3-48924cd921b9",
+    period,
+  });
   const regionalDirectorLeaders = await getLeaderAndFollowersByPeriod({
     leaderId: "1f4783da-f957-4f41-8019-e0d66191aedf",
     period,
   });
+  // const divisionalData = getSubordinatesTeams({userId: divisionalDirectorLeaders[0]?.id} )
 
   return (
     <div
@@ -182,10 +185,16 @@ export default async function LeaderboardPage({
                 ),
             }}
           />
-          <LeaderList
+          {/* <LeaderList
             data={divisionalDirectorLeaders ?? []}
             title="Divisional Director"
-          />
+          /> */}
+          <div
+            className="space-y-4 rounded-3xl border border-neutral-800
+              bg-neutral-900/80 p-4"
+          >
+            <ListOfExpandable data={divisionalDirectorLeaders} />
+          </div>
         </div>
       </div>
     </div>

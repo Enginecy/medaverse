@@ -3,20 +3,24 @@
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ListOfExpandable } from "@/features/leaderboard/components/list_of_expandable";
+import {
+  getSubordinatesTeams,
+  type SubordinateTeam,
+} from "@/features/leaderboard/server/db/leaderboard";
 import { Avatar } from "@radix-ui/react-avatar";
 import { CollapsibleContent } from "@radix-ui/react-collapsible";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-export function ExpandableTile({
-  id,
-  roleName,
-}: {
-  id: string;
-  roleName: string;
-}) {
-  const { data: followersList, isLoading } = useQuery({
-    queryKey: ["fetchFollowers", id],
+export function ExpandableTile({ userId }: { userId: string }) {
+  async function queryFunction() {
+    return await getSubordinatesTeams({ userId: userId });
+  }
+
+  const { data: queryData, isLoading } = useQuery<SubordinateTeam[]>({
+    queryKey: ["fetchFollowers", userId],
+    queryFn: queryFunction,
+    enabled: !!userId,
   });
 
   const [open, setOpen] = useState(false);
@@ -55,8 +59,27 @@ export function ExpandableTile({
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <ListOfExpandable />
+        {isLoading ? (
+        <LoadingList />
+        ) : (
+          <ListOfExpandable data={queryData  as SubordinateTeam[] }/>
+        )}
       </CollapsibleContent>
     </Collapsible>
   );
+}
+
+
+
+function LoadingList () { 
+  return (
+      <div className="flex flex-col gap-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-16 animate-pulse rounded-lg bg-gray-300"
+              />
+            ))}
+          </div>
+  )
 }
