@@ -81,13 +81,15 @@ export async function getLeaderboardDataByPeriod(period: 'week' | 'month' | 'all
     .from(profile)
     .leftJoin(userRoles, eq(profile.userId, userRoles.userId))
     .leftJoin(roles, eq(userRoles.roleId, roles.id))
-    .innerJoin(sales, eq(profile.userId, sales.userId))
+    .innerJoin(sales, eq(profile.userId, sales.userId)) 
     .where(
       sql`${dateFilter} AND ${sales.deletedAt} IS NULL`
     )
     .orderBy(desc(sql<number>`COALESCE(SUM(${sales.totalSaleValue}), 0)`))
     .groupBy(profile.userId, profile.name, profile.avatarUrl, roles.name)
     .having(gt(count(sales.id), 0));
+
+    console.log(results);
 
   return results.map((r) => ({
     ...r,

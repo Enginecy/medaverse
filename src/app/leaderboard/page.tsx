@@ -12,6 +12,7 @@ import {
 import { getLeaderboardDataByPeriod } from "@/app/leaderboard/server";
 import { LeaderboardCard } from "@/features/leaderboard/components/leaderboard-card";
 import LeaderList from "@/features/leaderboard/components/leaders-list";
+import { LeaderboardTableEmptyState } from "@/features/leaderboard/components/leaderboard-table-empty-state";
 
 export default async function LeaderboardPage({
   searchParams,
@@ -106,16 +107,25 @@ export default async function LeaderboardPage({
           xl:grid-cols-4"
       >
         <div className="flex flex-col gap-4">
-          <LeaderboardCard
-            user={{
-              name: leaderboardData[0]!.name,
-              avatar: leaderboardData[0]!.avatarUrl,
-              role: leaderboardData[0]!.role!,
-              annualizedVolume: leaderboardData[0]!.totalSalesAmount,
-              households: leaderboardData[0]!.salesCount,
-            }}
-          />
-          <LeaderboardTable title="Personal Record" data={leaderboardData} />
+          {leaderboardData.length === 0 ? (
+           <LeaderboardTableEmptyState / >
+          ) : (
+            <>
+              <LeaderboardCard
+                user={{
+                  name: leaderboardData[0]!.name,
+                  avatar: leaderboardData[0]!.avatarUrl,
+                  role: leaderboardData[0]!.role!,
+                  annualizedVolume: leaderboardData[0]!.totalSalesAmount,
+                  households: leaderboardData[0]!.salesCount,
+                }}
+              />
+              <LeaderboardTable
+                title="Personal Record"
+                data={leaderboardData}
+              />
+            </>
+          )}
         </div>
 
         <div className="flex flex-col gap-4">

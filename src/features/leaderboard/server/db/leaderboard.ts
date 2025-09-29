@@ -447,7 +447,7 @@ export async function getLeaderAndFollowersByPeriod({
 
   
 
-  console.log(normalized);
+  // console.log(normalized);
 
   return normalized;
 }
