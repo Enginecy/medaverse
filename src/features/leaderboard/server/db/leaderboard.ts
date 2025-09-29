@@ -445,7 +445,7 @@ export async function getLeaderAndFollowersByPeriod({
     leader.subordinates = sortedSubordinates;
   });
 
-  // console.log(normalized);
+  // // console.log(normalized);
 
   return normalized;
 }
