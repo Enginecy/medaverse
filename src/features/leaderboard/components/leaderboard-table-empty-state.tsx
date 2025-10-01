@@ -16,10 +16,7 @@ export function LeaderboardTableEmptyState() {
       className="w-full rounded-3xl border border-neutral-800 bg-neutral-900/80
         p-4"
     >
-      <div className="mb-4 text-center text-xl font-semibold text-white">
-        Leaderboard
-      </div>
-
+      
       <Table>
         <TableHeader>
           <TableRow className="border-neutral-700 hover:bg-transparent">
