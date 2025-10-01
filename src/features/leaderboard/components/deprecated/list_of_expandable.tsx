@@ -6,7 +6,7 @@
 
 "use client";
 
-import { ExpandableTile } from "@/features/leaderboard/components/deprecated/expandable-tile";
+// import { ExpandableTile } from "@/features/leaderboard/components/deprecated/expandable-tile";
 import { type LeaderAndFollowers } from "@/features/leaderboard/server/db/leaderboard";
 
 export function ListOfExpandable({ data }: { data?: LeaderAndFollowers[] }) {
@@ -16,9 +16,9 @@ export function ListOfExpandable({ data }: { data?: LeaderAndFollowers[] }) {
 
   return (
     <div className="flex flex-col gap-4 py-2">
-      {data.map((item, _) => (
+      {/* {data.map((item, _) => (
         <ExpandableTile key={item.id as string} userData={item} />
-      ))}
+      ))} */}
     </div>
   );
 }
