@@ -1,8 +1,14 @@
+//! deprecated
+/*
+ * @deprecated This component is deprecated
+ * use the regular expandable list instead
+ */
+
 "use client";
 
 import { AvatarFallback, AvatarImage, Avatar } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ListOfExpandable } from "@/features/leaderboard/components/list_of_expandable";
+import { ListOfExpandable } from "@/features/leaderboard/components/deprecated/list_of_expandable";
 import {
   getSubordinatesTeams,
   type LeaderAndFollowers,
