@@ -105,27 +105,29 @@ export default async function LeaderboardPage({
         className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2
           xl:grid-cols-4"
       >
-        <div className="flex flex-col gap-4">
-          {leaderboardData.length === 0 ? (
-            <LeaderboardTableEmptyState />
-          ) : (
-            <>
-              <LeaderboardCard
-                user={{
-                  name: leaderboardData[0]!.name,
-                  avatar: leaderboardData[0]!.avatarUrl,
-                  role: leaderboardData[0]!.role!,
-                  annualizedVolume: leaderboardData[0]!.totalSalesAmount,
-                  households: leaderboardData[0]!.salesCount,
-                }}
-              />
-              <LeaderboardTable
-                title="Personal Record"
-                data={leaderboardData}
-              />
-            </>
-          )}
-        </div>
+        {false && (
+          <div className="flex flex-col gap-4">
+            {leaderboardData.length === 0 ? (
+              <LeaderboardTableEmptyState />
+            ) : (
+              <>
+                <LeaderboardCard
+                  user={{
+                    name: leaderboardData[0]!.name,
+                    avatar: leaderboardData[0]!.avatarUrl,
+                    role: leaderboardData[0]!.role!,
+                    annualizedVolume: leaderboardData[0]!.totalSalesAmount,
+                    households: leaderboardData[0]!.salesCount,
+                  }}
+                />
+                <LeaderboardTable
+                  title="Personal Record"
+                  data={leaderboardData}
+                />
+              </>
+            )}
+          </div>
+        )}
 
         <div className="flex flex-col gap-4">
           <LeaderboardCard
@@ -133,7 +135,10 @@ export default async function LeaderboardPage({
               name: associateData[0]?.leader_name ?? "",
               avatar: associateData[0]?.avatar_url ?? "",
               role: "Associate Director",
-              annualizedVolume: (Number(associateData[0]?.full_total_sales) * 12).toLocaleString() ?? "",
+              annualizedVolume:
+                (
+                  Number(associateData[0]?.full_total_sales) * 12
+                ).toLocaleString() ?? "",
               households: associateData[0]?.full_total_sales_count ?? 0,
             }}
           />
@@ -145,10 +150,11 @@ export default async function LeaderboardPage({
               name: divisionalData[0]?.leader_name ?? "",
               avatar: divisionalData[0]?.avatar_url ?? "",
               role: "Divisional Director",
-              annualizedVolume: (Number(divisionalData[0]?.full_total_sales) * 12).toLocaleString() ?? "",
-              households: 
-                divisionalData[0]?.full_total_sales_count ?? 0
-              ,
+              annualizedVolume:
+                (
+                  Number(divisionalData[0]?.full_total_sales) * 12
+                ).toLocaleString() ?? "",
+              households: divisionalData[0]?.full_total_sales_count ?? 0,
             }}
           />
           <LeaderList data={divisionalData ?? []} title="Divisional Director" />
@@ -159,7 +165,10 @@ export default async function LeaderboardPage({
               name: regionalData[0]?.leader_name ?? "",
               avatar: regionalData[0]?.avatar_url ?? "",
               role: "Regional Director",
-              annualizedVolume: (Number(regionalData[0]?.full_total_sales) * 12).toLocaleString() ?? "",
+              annualizedVolume:
+                (
+                  Number(regionalData[0]?.full_total_sales) * 12
+                ).toLocaleString() ?? "",
               households: regionalData[0]?.full_total_sales_count ?? 0,
             }}
           />
@@ -171,8 +180,11 @@ export default async function LeaderboardPage({
               name: nationalData[0]?.leader_name ?? "",
               avatar: nationalData[0]?.avatar_url ?? "",
               role: "National Director",
-              annualizedVolume: (Number(nationalData[0]?.full_total_sales) * 12).toLocaleString() ?? "",
-              households: (nationalData[0]?.full_total_sales_count ?? 0),
+              annualizedVolume:
+                (
+                  Number(nationalData[0]?.full_total_sales) * 12
+                ).toLocaleString() ?? "",
+              households: nationalData[0]?.full_total_sales_count ?? 0,
             }}
           />
           <LeaderList data={nationalData ?? []} title="National Director" />
