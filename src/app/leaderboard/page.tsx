@@ -13,7 +13,7 @@ import {
 import { getLeaderboardDataByPeriod } from "@/app/leaderboard/server";
 import { LeaderboardCard } from "@/features/leaderboard/components/leaderboard-card";
 import LeaderList from "@/features/leaderboard/components/leaders-list";
-import { ListOfExpandable } from "@/features/leaderboard/components/list_of_expandable";
+import { ListOfExpandable } from "@/features/leaderboard/components/deprecated/list_of_expandable";
 import { LeaderboardTableEmptyState } from "@/features/leaderboard/components/leaderboard-table-empty-state";
 
 export default async function LeaderboardPage({

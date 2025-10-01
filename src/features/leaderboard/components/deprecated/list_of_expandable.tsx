@@ -6,7 +6,7 @@
 
 "use client";
 
-import { ExpandableTile } from "@/features/leaderboard/components/expandable_tile";
+import { ExpandableTile } from "@/features/leaderboard/components/deprecated/expandable-tile";
 import { type LeaderAndFollowers } from "@/features/leaderboard/server/db/leaderboard";
 
 export function ListOfExpandable({ data }: { data?: LeaderAndFollowers[] }) {
