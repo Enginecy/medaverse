@@ -1,3 +1,9 @@
+//! deprecated
+/*
+ * @deprecated This component is deprecated
+ * use the regular expandable list instead
+ */
+
 "use client";
 
 import { AvatarFallback, AvatarImage, Avatar } from "@/components/ui/avatar";
