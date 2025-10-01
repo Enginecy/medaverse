@@ -52,13 +52,13 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
               <div className="text-xs text-gray-500">
                 Total Sales:{" "}
                 <span className="font-semibold text-secondary-foreground/55">
-                  ${leader.full_total_sales}
+                  ${(Number(leader.full_total_sales) * 12).toFixed(2) }
                 </span>
               </div>
               <div className="text-xs text-gray-500">
                 Personal Sales:{" "}
                 <span className="font-semibold text-primary-300">
-                  ${Number(leader.total_sales_amount).toLocaleString()}
+                  ${(Number(leader.total_sales_amount) * 12).toFixed(2).toLocaleString()}
                 </span>
               </div>
             </div>
@@ -84,7 +84,7 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
                   <span className="text-sm font-medium">{follower.name}</span>
                 </div>
                 <div className="text-xs text-gray-500">
-                  Sales: ${follower.total_sales_amount} ({follower.total_sales_count} Sales)
+                  Sales: ${(follower.total_sales_amount) * 12} ({follower.total_sales_count} Sales)
                 </div>
               </div>
             ),
