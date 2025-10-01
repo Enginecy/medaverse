@@ -20,7 +20,7 @@ import type z from "zod";
 import { env } from "@/env";
 import { showSonnerToast } from "@/lib/react-utils";
 import type { ActionError } from "@/lib/utils";
-import { HelpingHand, Info } from "lucide-react";
+import { Info } from "lucide-react";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin" | "password">("email");

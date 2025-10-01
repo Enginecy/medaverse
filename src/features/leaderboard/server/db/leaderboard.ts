@@ -1,13 +1,6 @@
 "use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
-import {
-  profile,
-  roles,
-  sales,
-  userHierarchy,
-  userRoles,
-  users,
-} from "@/db/schema";
+import { profile, roles, sales, userRoles } from "@/db/schema";
 import { desc, eq, sum, sql } from "drizzle-orm";
 
 export async function getLastSale() {
@@ -102,8 +95,8 @@ export async function getTodaySalesAmount() {
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
 /**
  * @deprecated
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 export async function getLeaderAndFollowersByPeriod({
   leaderId,
@@ -271,8 +264,8 @@ export async function getLeaderAndFollowersByPeriod({
 }
 /**
  * @deprecated
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 // Keep original function for backward compatibility
 export async function getLeaderAndFollowers({
@@ -335,7 +328,7 @@ export async function getLeadersAndSubordinates({
 }) {
   const db = await createDrizzleSupabaseClient();
 
-  if (!period) period = "week";
+  period ??= period = "week";
 
   const result = await db.admin.transaction(async (tx) => {
     return tx.execute(

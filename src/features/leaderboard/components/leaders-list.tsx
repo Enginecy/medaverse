@@ -6,7 +6,7 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import type { LeaderAndFollowers, LeadersAndSubordinates } from "@/features/leaderboard/server/db/leaderboard"; // adjust path if needed
+import type { LeadersAndSubordinates } from "@/features/leaderboard/server/db/leaderboard"; // adjust path if needed
 
 export default function LeaderList({
   data,
