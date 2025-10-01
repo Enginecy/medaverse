@@ -37,6 +37,10 @@ export default async function LeaderboardPage({
     roleId: "4a1ba935-f500-4179-b0f1-053028523256",
     period,
   });
+  const nationalData = await getLeadersAndSubordinates({
+    roleId: "7123105a-26ba-4829-93f3-48924cd921b9",
+    period,
+  });
 
   return (
     <div
@@ -160,6 +164,30 @@ export default async function LeaderboardPage({
             }}
           />
           <LeaderList data={regionalData ?? []} title="Regional Director" />
+        </div>
+        <div className="flex flex-col gap-4">
+          <LeaderboardCard
+            user={{
+              name: nationalData[0]?.leader_name ?? "",
+              avatar: nationalData[0]?.avatar_url ?? "",
+              role: "National Director",
+              annualizedVolume: nationalData[0]?.full_total_sales ?? "",
+              households: Number(nationalData[0]?.full_total_sales_count ?? 0),
+            }}
+          />
+          <LeaderList data={nationalData ?? []} title="National Director" />
+        </div>
+        <div className="flex flex-col gap-4">
+          <LeaderboardCard
+            user={{
+              name: nationalData[0]?.leader_name ?? "",
+              avatar: nationalData[0]?.avatar_url ?? "",
+              role: "National Director",
+              annualizedVolume: nationalData[0]?.full_total_sales ?? "",
+              households: Number(nationalData[0]?.full_total_sales_count ?? 0),
+            }}
+          />
+          <LeaderList data={nationalData ?? []} title="National Director" />
         </div>
       </div>
     </div>
