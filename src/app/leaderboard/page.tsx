@@ -7,13 +7,11 @@ import { TotalCard } from "@/features/leaderboard/components/price-card";
 import {
   getTodaySalesAmount,
   getSalesAmountByPeriod,
-  getLeaderAndFollowersByPeriod,
-  getSubordinatesTeams,
+  getLeadersAndSubordinates,
 } from "@/features/leaderboard/server/db/leaderboard";
 import { getLeaderboardDataByPeriod } from "@/app/leaderboard/server";
 import { LeaderboardCard } from "@/features/leaderboard/components/leaderboard-card";
 import LeaderList from "@/features/leaderboard/components/leaders-list";
-import { ListOfExpandable } from "@/features/leaderboard/components/deprecated/list_of_expandable";
 import { LeaderboardTableEmptyState } from "@/features/leaderboard/components/leaderboard-table-empty-state";
 
 export default async function LeaderboardPage({
@@ -27,24 +25,18 @@ export default async function LeaderboardPage({
   const periodSales = await getSalesAmountByPeriod(period);
   const todaySales = await getTodaySalesAmount();
   const leaderboardData = await getLeaderboardDataByPeriod(period);
-
-  const associateDirectorLeaders = await getLeaderAndFollowersByPeriod({
-    leaderId: "4a1ba935-f500-4179-b0f1-053028523256",
+  const regionalData = await getLeadersAndSubordinates({
+    roleId: "1f4783da-f957-4f41-8019-e0d66191aedf",
     period,
   });
-  const divisionalDirectorLeaders = await getLeaderAndFollowersByPeriod({
-    leaderId: "e49518bc-995f-4e03-a9a8-c57ad6ab6233",
+  const divisionalData = await getLeadersAndSubordinates({
+    roleId: "e49518bc-995f-4e03-a9a8-c57ad6ab6233",
     period,
   });
-  const NationalDirectorLeaders = await getLeaderAndFollowersByPeriod({
-    leaderId: "7123105a-26ba-4829-93f3-48924cd921b9",
+  const associateData = await getLeadersAndSubordinates({
+    roleId: "4a1ba935-f500-4179-b0f1-053028523256",
     period,
   });
-  const regionalDirectorLeaders = await getLeaderAndFollowersByPeriod({
-    leaderId: "1f4783da-f957-4f41-8019-e0d66191aedf",
-    period,
-  });
-  // const divisionalData = getSubordinatesTeams({userId: divisionalDirectorLeaders[0]?.id} )
 
   return (
     <div
@@ -111,7 +103,7 @@ export default async function LeaderboardPage({
       >
         <div className="flex flex-col gap-4">
           {leaderboardData.length === 0 ? (
-           <LeaderboardTableEmptyState / >
+            <LeaderboardTableEmptyState />
           ) : (
             <>
               <LeaderboardCard
@@ -134,77 +126,40 @@ export default async function LeaderboardPage({
         <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
-              name: associateDirectorLeaders[0]?.name ?? "",
-              avatar: associateDirectorLeaders[0]?.avatar_url ?? "",
-              role: associateDirectorLeaders[0]?.role_name ?? "",
-              annualizedVolume:
-                associateDirectorLeaders[0]?.total_subordinates_sales ?? "",
-              households:
-                Number(
-                  associateDirectorLeaders[0]?.total_subordinate_sales_count ??
-                    0,
-                ) +
-                Number(
-                  associateDirectorLeaders[0]?.total_leader_sales_count ?? 0,
-                ),
+              name: associateData[0]?.leader_name ?? "",
+              avatar: associateData[0]?.avatar_url ?? "",
+              role: "Associate Director",
+              annualizedVolume: associateData[0]?.full_total_sales ?? "",
+              households: Number(associateData[0]?.full_total_sales_count ?? 0),
             }}
           />
-          <LeaderList
-            data={associateDirectorLeaders ?? []}
-            title="Associate Director"
-          />
+          <LeaderList data={associateData ?? []} title="Associate Director" />
         </div>
         <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
-              name: regionalDirectorLeaders[0]?.name ?? "",
-              avatar: regionalDirectorLeaders[0]?.avatar_url ?? "",
-              role: regionalDirectorLeaders[0]?.role_name ?? "",
-              annualizedVolume:
-                regionalDirectorLeaders[0]?.total_subordinates_sales ?? "",
-              households:
-                Number(
-                  regionalDirectorLeaders[0]?.total_subordinate_sales_count ??
-                    0,
-                ) +
-                Number(
-                  regionalDirectorLeaders[0]?.total_leader_sales_count ?? 0,
-                ),
+              name: divisionalData[0]?.leader_name ?? "",
+              avatar: divisionalData[0]?.avatar_url ?? "",
+              role: "Divisional Director",
+              annualizedVolume: divisionalData[0]?.full_total_sales ?? "",
+              households: Number(
+                divisionalData[0]?.full_total_sales_count ?? 0,
+              ),
             }}
           />
-          <LeaderList
-            data={regionalDirectorLeaders ?? []}
-            title="Regional Director"
-          />
+          <LeaderList data={divisionalData ?? []} title="Divisional Director" />
         </div>
         <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
-              name: divisionalDirectorLeaders[0]?.name ?? "",
-              avatar: divisionalDirectorLeaders[0]?.avatar_url ?? "",
-              role: divisionalDirectorLeaders[0]?.role_name ?? "",
-              annualizedVolume:
-                divisionalDirectorLeaders[0]?.total_subordinates_sales ?? "",
-              households:
-                Number(
-                  divisionalDirectorLeaders[0]?.total_subordinate_sales_count ??
-                    0,
-                ) +
-                Number(
-                  divisionalDirectorLeaders[0]?.total_leader_sales_count ?? 0,
-                ),
+              name: regionalData[0]?.leader_name ?? "",
+              avatar: regionalData[0]?.avatar_url ?? "",
+              role: "Regional Director",
+              annualizedVolume: regionalData[0]?.full_total_sales ?? "",
+              households: Number(regionalData[0]?.full_total_sales_count ?? 0),
             }}
           />
-          {/* <LeaderList
-            data={divisionalDirectorLeaders ?? []}
-            title="Divisional Director"
-          /> */}
-          <div
-            className="space-y-4 rounded-3xl border border-neutral-800
-              bg-neutral-900/80 p-4"
-          >
-            <ListOfExpandable data={divisionalDirectorLeaders} />
-          </div>
+          <LeaderList data={regionalData ?? []} title="Regional Director" />
         </div>
       </div>
     </div>

@@ -284,7 +284,11 @@ export async function getWeeklyDateRange() {
 }
 
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
-
+/**
+ * @deprecated
+ * @param param0 
+ * @returns 
+ */
 export async function getLeaderAndFollowersByPeriod({
   leaderId,
   period = "week",
@@ -449,7 +453,11 @@ export async function getLeaderAndFollowersByPeriod({
 
   return normalized;
 }
-
+/**
+ * @deprecated
+ * @param param0 
+ * @returns 
+ */
 // Keep original function for backward compatibility
 export async function getLeaderAndFollowers({
   leaderId,
@@ -478,8 +486,17 @@ export type LeaderAndFollowers = {
   }[];
 };
 
-export async function getSubordinatesTeams({ userId }: { userId: string | undefined}) {
-  if(userId === undefined) return [];
+/**
+ * @deprecated
+ * @param param0
+ * @returns
+ */
+export async function getSubordinatesTeams({
+  userId,
+}: {
+  userId: string | undefined;
+}) {
+  if (userId === undefined) return [];
   const db = await createDrizzleSupabaseClient();
 
   const result = await db.admin.transaction(async (tx) => {
@@ -490,6 +507,43 @@ export async function getSubordinatesTeams({ userId }: { userId: string | undefi
 
   console.group("Subordinates: ", result);
 
-  return result as unknown as LeaderAndFollowers ;
-
+  return result as unknown as LeaderAndFollowers;
 }
+
+export async function getLeadersAndSubordinates({
+  period,
+  roleId,
+}: {
+  period?: "week" | "month" | "all";
+  roleId: string;
+}) {
+  const db = await createDrizzleSupabaseClient();
+
+  if (!period) period = "week";
+
+  const result = await db.admin.transaction(async (tx) => {
+    return tx.execute(
+      sql` SELECT * FROM get_leader_sales_summary(${period}, null, null, ${roleId})`,
+    );
+  });
+  console.log("Leaders and Subordinates: ", result[0]!.subordinates);
+
+  return result as unknown as LeadersAndSubordinates[];
+}
+
+export type LeadersAndSubordinates = {
+  leader_id: string;
+  leader_name: string;
+  total_sales_count: number;
+  total_sales_amount: string;
+  full_total_sales: string;
+  full_total_sales_count: number;
+  avatar_url: string;
+  subordinates: {
+    id: string;
+    name: string;
+    avatar_url: string;
+    total_sales_count: number;
+    total_sales_amount: number;
+  }[];
+};
