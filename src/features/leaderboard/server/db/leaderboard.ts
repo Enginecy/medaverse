@@ -65,62 +65,17 @@ export async function getSalesAmountByPeriod(
   let dateFilter = sql`1=1`; // Default: no filter for 'all'
 
   if (period === "week") {
-    // WEEKLY ALGORITHM (existing logic)
-    const now = new Date();
-    const currentDay = now.getDay();
-
-    let monday: Date;
-    let friday: Date;
-
-    if (currentDay === 0 || currentDay === 6) {
-      if (currentDay === 0) {
-        monday = new Date(now);
-        monday.setDate(now.getDate() - 6);
-      } else {
-        monday = new Date(now);
-        monday.setDate(now.getDate() - 5);
-      }
-      monday.setHours(0, 0, 0, 0);
-
-      friday = new Date(monday);
-      friday.setDate(monday.getDate() + 4);
-      friday.setHours(23, 59, 59, 999);
-    } else {
-      if (currentDay === 1) {
-        monday = new Date(now);
-        monday.setHours(0, 0, 0, 0);
-      } else {
-        const daysToMonday = currentDay - 1;
-        monday = new Date(now);
-        monday.setDate(now.getDate() - daysToMonday);
-        monday.setHours(0, 0, 0, 0);
-      }
-
-      friday = new Date(monday);
-      friday.setDate(monday.getDate() + 4);
-      friday.setHours(23, 59, 59, 999);
-    }
-
-    const mondayStr =
-      currentDay === 1
-        ? now.toISOString().split("T")[0]
-        : monday.toISOString().split("T")[0];
-
-    const fridayStr = friday.toISOString().split("T")[0];
-
-    dateFilter = sql`DATE(${sales.createdAt}) >= ${mondayStr} 
-        AND DATE(${sales.createdAt}) <= ${fridayStr}`;
+    // Use DATE_TRUNC for current week calculation (Monday to Sunday)
+    dateFilter = sql`
+      ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()))::date
+      AND ${sales.createdAt}::date < (DATE_TRUNC('week', NOW()) + INTERVAL '1 week')::date
+    `;
   } else if (period === "month") {
-    // MONTHLY ALGORITHM
-    const now = new Date();
-    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-    const startDateStr = firstDayOfMonth.toISOString().split("T")[0];
-    const endDateStr = lastDayOfMonth.toISOString().split("T")[0];
-
-    dateFilter = sql`DATE(${sales.createdAt}) >= ${startDateStr} 
-        AND DATE(${sales.createdAt}) <= ${endDateStr}`;
+    // Use DATE_TRUNC for month calculation
+    dateFilter = sql`
+      ${sales.createdAt}::date >= (DATE_TRUNC('month', NOW()))::date
+      AND ${sales.createdAt}::date <= (DATE_TRUNC('month', NOW()) + INTERVAL '1 month' - INTERVAL '1 day')::date
+    `;
   }
   // 'all' period uses no date filter (dateFilter = sql`1=1`)
 
