@@ -84,7 +84,7 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
                   <span className="text-sm font-medium">{follower.name}</span>
                 </div>
                 <div className="text-xs text-gray-500">
-                  Sales: ${(follower.total_sales_amount) * 12} ({follower.total_sales_count} Sales)
+                  Sales: ${((follower.total_sales_amount) * 12).toFixed(2)} ({follower.total_sales_count} Sales)
                 </div>
               </div>
             ),
