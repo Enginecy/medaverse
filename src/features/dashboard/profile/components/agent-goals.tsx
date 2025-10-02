@@ -1,4 +1,3 @@
-import { ChartRadialText } from "@/components/radial-chart";
 import {
   Card,
   CardAction,
@@ -8,9 +7,6 @@ import {
 } from "@/components/ui/card";
 import { getUserGoalsAction } from "../server/actions/goals";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import type { Goal } from "../server/db/goals";
-import { format } from "date-fns";
 import { Suspense } from "react";
 import { AddGoalButton } from "@/features/dashboard/home/components/add-goal-button";
 import { HomeGoalCard } from "@/app/dashboard/home/page";
@@ -104,62 +100,6 @@ function GoalCardSkeleton() {
       </div>
       <div className="flex items-center justify-center">
         <Skeleton className="h-16 w-16 rounded-full" />
-      </div>
-    </div>
-  );
-}
-
-function GoalCard({ goal }: { goal: Goal }) {
-  const target = parseFloat(goal.target ?? "0");
-  const achieved = parseFloat(goal.achieved ?? "0");
-  const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
-
-  const getGoalPeriod = () => {
-    if (goal.endDate) {
-      return `Ends ${format(new Date(goal.endDate), "MMM d, yyyy")}`;
-    }
-    if (goal.recurringDuration) {
-      return `${goal.recurringDuration.charAt(0).toUpperCase() + goal.recurringDuration.slice(1)} Goal`;
-    }
-    return "One-time Goal";
-  };
-
-  const getGoalTypeColor = (type: string | null) => {
-    switch (type) {
-      case "sales":
-        return "bg-blue-100 text-blue-800";
-      case "revenue":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  return (
-    <div
-      className="flex min-h-[150px] w-full min-w-[260px] flex-col items-center
-        justify-between gap-4 rounded-2xl border border-[#E5ECF6] bg-white p-6
-        shadow-sm md:flex-row"
-    >
-      <div className="flex flex-1 flex-col items-start gap-1">
-        <div className="mb-1 flex items-center gap-2">
-          <span className="text-md font-medium text-gray-500">
-            {goal.label}
-          </span>
-          <Badge className={`text-xs ${getGoalTypeColor(goal.goalType)}`}>
-            {goal.goalType?.toUpperCase()}
-          </Badge>
-        </div>
-        <span className="text-3xl font-bold text-gray-900">
-          {achieved.toLocaleString()}
-        </span>
-        <span className="text-sm font-normal text-gray-700">
-          of target ${target.toLocaleString()}
-        </span>
-        <span className="text-xs text-gray-500">{getGoalPeriod()}</span>
-      </div>
-      <div className="flex items-center justify-center">
-        <ChartRadialText title={`${percent}%`} value={percent} />
       </div>
     </div>
   );

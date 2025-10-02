@@ -1,13 +1,6 @@
 "use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
-import {
-  profile,
-  roles,
-  sales,
-  userHierarchy,
-  userRoles,
-  users,
-} from "@/db/schema";
+import { profile, roles, sales, userRoles } from "@/db/schema";
 import { desc, eq, sum, sql } from "drizzle-orm";
 
 export async function getLastSale() {
@@ -45,18 +38,6 @@ export async function getLastSale() {
   };
 }
 
-export async function getTotalSalesAmount() {
-  const db = await createDrizzleSupabaseClient();
-  const [totalSales] = await db.admin
-    .select({ total: sum(sales.totalSaleValue) })
-    .from(sales);
-
-  if (totalSales?.total === null) {
-    return "$0";
-  }
-  return "$" + Number(totalSales!.total!).toLocaleString();
-}
-
 export async function getSalesAmountByPeriod(
   period: "week" | "month" | "all" = "week",
 ) {
@@ -65,62 +46,17 @@ export async function getSalesAmountByPeriod(
   let dateFilter = sql`1=1`; // Default: no filter for 'all'
 
   if (period === "week") {
-    // WEEKLY ALGORITHM (existing logic)
-    const now = new Date();
-    const currentDay = now.getDay();
-
-    let monday: Date;
-    let friday: Date;
-
-    if (currentDay === 0 || currentDay === 6) {
-      if (currentDay === 0) {
-        monday = new Date(now);
-        monday.setDate(now.getDate() - 6);
-      } else {
-        monday = new Date(now);
-        monday.setDate(now.getDate() - 5);
-      }
-      monday.setHours(0, 0, 0, 0);
-
-      friday = new Date(monday);
-      friday.setDate(monday.getDate() + 4);
-      friday.setHours(23, 59, 59, 999);
-    } else {
-      if (currentDay === 1) {
-        monday = new Date(now);
-        monday.setHours(0, 0, 0, 0);
-      } else {
-        const daysToMonday = currentDay - 1;
-        monday = new Date(now);
-        monday.setDate(now.getDate() - daysToMonday);
-        monday.setHours(0, 0, 0, 0);
-      }
-
-      friday = new Date(monday);
-      friday.setDate(monday.getDate() + 4);
-      friday.setHours(23, 59, 59, 999);
-    }
-
-    const mondayStr =
-      currentDay === 1
-        ? now.toISOString().split("T")[0]
-        : monday.toISOString().split("T")[0];
-
-    const fridayStr = friday.toISOString().split("T")[0];
-
-    dateFilter = sql`DATE(${sales.createdAt}) >= ${mondayStr} 
-        AND DATE(${sales.createdAt}) <= ${fridayStr}`;
+    // Use DATE_TRUNC for current week calculation (Monday to Sunday)
+    dateFilter = sql`
+      ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()))::date
+      AND ${sales.createdAt}::date < (DATE_TRUNC('week', NOW()) + INTERVAL '1 week')::date
+    `;
   } else if (period === "month") {
-    // MONTHLY ALGORITHM
-    const now = new Date();
-    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-    const startDateStr = firstDayOfMonth.toISOString().split("T")[0];
-    const endDateStr = lastDayOfMonth.toISOString().split("T")[0];
-
-    dateFilter = sql`DATE(${sales.createdAt}) >= ${startDateStr} 
-        AND DATE(${sales.createdAt}) <= ${endDateStr}`;
+    // Use DATE_TRUNC for month calculation
+    dateFilter = sql`
+      ${sales.createdAt}::date >= (DATE_TRUNC('month', NOW()))::date
+      AND ${sales.createdAt}::date <= (DATE_TRUNC('month', NOW()) + INTERVAL '1 month' - INTERVAL '1 day')::date
+    `;
   }
   // 'all' period uses no date filter (dateFilter = sql`1=1`)
 
@@ -133,71 +69,6 @@ export async function getSalesAmountByPeriod(
     return "$0";
   }
   return "$" + (Number(salesResult!.total!) * 12).toLocaleString();
-}
-
-export async function getWeeklySalesAmount() {
-  const db = await createDrizzleSupabaseClient();
-  const now = new Date();
-  const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-
-  let monday: Date;
-  let friday: Date;
-
-  if (currentDay === 0 || currentDay === 6) {
-    // Saturday (6) or Sunday (0): Show previous week's Monday-Friday
-    if (currentDay === 0) {
-      // Sunday: go back 6 days to get last Monday
-      monday = new Date(now);
-      monday.setDate(now.getDate() - 6);
-    } else {
-      // Saturday: go back 5 days to get this week's Monday
-      monday = new Date(now);
-      monday.setDate(now.getDate() - 5);
-    }
-    monday.setHours(0, 0, 0, 0);
-
-    friday = new Date(monday);
-    friday.setDate(monday.getDate() + 4);
-    friday.setHours(23, 59, 59, 999);
-  } else {
-    // Monday-Friday: Show current week starting from THIS Monday
-    if (currentDay === 1) {
-      // If today is Monday, start from today (fresh start)
-      monday = new Date(now);
-      monday.setHours(0, 0, 0, 0);
-    } else {
-      // If today is Tue-Fri, find this week's Monday
-      const daysToMonday = currentDay - 1; // Monday is 1, so subtract 1
-      monday = new Date(now);
-      monday.setDate(now.getDate() - daysToMonday);
-      monday.setHours(0, 0, 0, 0);
-    }
-
-    friday = new Date(monday);
-    friday.setDate(monday.getDate() + 4); // Set to Friday for the upper bound
-    friday.setHours(23, 59, 59, 999);
-  }
-
-  const mondayStr =
-    currentDay === 1
-      ? now.toISOString().split("T")[0] // If today is Monday, use today
-      : monday.toISOString().split("T")[0]; // Otherwise use calculated Monday
-
-  const fridayStr = friday.toISOString().split("T")[0];
-
-  const [weeklySales] = await db.admin
-    .select({ total: sum(sales.totalSaleValue) })
-    .from(sales)
-    .where(
-      sql`DATE(${sales.createdAt}) >= ${mondayStr} 
-          AND DATE(${sales.createdAt}) <= ${fridayStr}
-          AND ${sales.deletedAt} IS NULL`,
-    );
-
-  if (weeklySales?.total === null) {
-    return "$0";
-  }
-  return "$" + (Number(weeklySales!.total!) * 12).toLocaleString();
 }
 
 export async function getTodaySalesAmount() {
@@ -221,70 +92,12 @@ export async function getTodaySalesAmount() {
   return "$" + (Number(todaySales!.total!) * 12).toLocaleString();
 }
 
-/**
- * Get the current week date range being used for weekly sales calculation
- * Useful for debugging and displaying to users
- */
-export async function getWeeklyDateRange() {
-  const now = new Date();
-  const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-
-  let monday: Date;
-  let friday: Date;
-
-  if (currentDay === 0 || currentDay === 6) {
-    // Saturday (6) or Sunday (0): Show previous week's Monday-Friday
-    if (currentDay === 0) {
-      // Sunday: go back 6 days to get last Monday
-      monday = new Date(now);
-      monday.setDate(now.getDate() - 6);
-    } else {
-      // Saturday: go back 5 days to get this week's Monday
-      monday = new Date(now);
-      monday.setDate(now.getDate() - 5);
-    }
-    monday.setHours(0, 0, 0, 0);
-
-    friday = new Date(monday);
-    friday.setDate(monday.getDate() + 4);
-    friday.setHours(23, 59, 59, 999);
-  } else {
-    // Monday-Friday: Show current week starting from THIS Monday
-    if (currentDay === 1) {
-      // If today is Monday, start from today (fresh start)
-      monday = new Date(now);
-      monday.setHours(0, 0, 0, 0);
-    } else {
-      // If today is Tue-Fri, find this week's Monday
-      const daysToMonday = currentDay - 1; // Monday is 1, so subtract 1
-      monday = new Date(now);
-      monday.setDate(now.getDate() - daysToMonday);
-      monday.setHours(0, 0, 0, 0);
-    }
-
-    friday = new Date(monday);
-    friday.setDate(monday.getDate() + 4); // Set to Friday for the upper bound
-    friday.setHours(23, 59, 59, 999);
-  }
-
-  return {
-    monday: monday.toISOString().split("T")[0],
-    friday: friday.toISOString().split("T")[0],
-    isWeekend: currentDay === 0 || currentDay === 6,
-    currentDay: [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ][currentDay],
-  };
-}
-
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
-
+/**
+ * @deprecated
+ * @param param0
+ * @returns
+ */
 export async function getLeaderAndFollowersByPeriod({
   leaderId,
   period = "week",
@@ -445,13 +258,15 @@ export async function getLeaderAndFollowersByPeriod({
     leader.subordinates = sortedSubordinates;
   });
 
-  
-
-  // console.log(normalized);
+  // // console.log(normalized);
 
   return normalized;
 }
-
+/**
+ * @deprecated
+ * @param param0
+ * @returns
+ */
 // Keep original function for backward compatibility
 export async function getLeaderAndFollowers({
   leaderId,
@@ -477,5 +292,67 @@ export type LeaderAndFollowers = {
     avatar_url: string;
     sales: string;
     sales_count: number;
+  }[];
+};
+
+/**
+ * @deprecated
+ * @param param0
+ * @returns
+ */
+export async function getSubordinatesTeams({
+  userId,
+}: {
+  userId: string | undefined;
+}) {
+  if (userId === undefined) return [];
+  const db = await createDrizzleSupabaseClient();
+
+  const result = await db.admin.transaction(async (tx) => {
+    return await tx.execute(
+      sql`SELECT * FROM get_user_sales_with_subordinates(${userId})`,
+    );
+  });
+
+  console.group("Subordinates: ", result);
+
+  return result as unknown as LeaderAndFollowers;
+}
+
+export async function getLeadersAndSubordinates({
+  period,
+  roleId,
+}: {
+  period?: "week" | "month" | "all";
+  roleId: string;
+}) {
+  const db = await createDrizzleSupabaseClient();
+
+  period ??= period = "week";
+
+  const result = await db.admin.transaction(async (tx) => {
+    return tx.execute(
+      sql` SELECT * FROM get_leader_sales_summary(${period}, null, null, ${roleId})`,
+    );
+  });
+  console.log("Leaders and Subordinates: ", result[0]!.subordinates);
+
+  return result as unknown as LeadersAndSubordinates[];
+}
+
+export type LeadersAndSubordinates = {
+  leader_id: string;
+  leader_name: string;
+  total_sales_count: number;
+  total_sales_amount: string;
+  full_total_sales: string;
+  full_total_sales_count: number;
+  avatar_url: string;
+  subordinates: {
+    id: string;
+    name: string;
+    avatar_url: string;
+    total_sales_count: number;
+    total_sales_amount: number;
   }[];
 };

@@ -2,7 +2,6 @@ import * as React from "react";
 import { salesColumnsDef } from "@/features/dashboard/sales/components/datatable/columns";
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
 import { DataTable } from "@/components/data-table";
-import { getUser } from "@/lib/supabase/server";
 import { getUserProfile } from "@/features/dashboard/home/server/db/home";
 import { ErrorComponent } from "@/components/ui/error-component";
 

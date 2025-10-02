@@ -6,7 +6,6 @@ import { type UseFormReturn } from "react-hook-form";
 import type { createFormSchema } from "@/features/login/schemas/login-form-schema";
 import type z from "zod";
 import { env } from "@/env";
-import { SegmentedButton } from "@/components/ui/segmented-button";
 import { PasswordFormField } from "./password-field";
 export function LoginForm({
   step,

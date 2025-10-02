@@ -6,8 +6,7 @@ import { RecentSales } from "@/features/dashboard/profile/components/recent-sale
 import { getSales } from "@/features/dashboard/sales/server/db/sales";
 import type { Metadata } from "next";
 import { getUser } from "@/lib/supabase/server";
-import { getUserProfile } from "@/features/dashboard/home/server/db/home";
-import { ErrorComponent } from "@/components/ui/error-component";
+
 export const metadata: Metadata = {
   title: "Profile",
   description:
@@ -21,14 +20,12 @@ export default async function Profile() {
     <div className="flex h-auto w-full flex-col gap-4 md:gap-6">
       <div className="flex w-full flex-col gap-4 md:gap-6 lg:flex-row">
         <ProfilePersonalInfoCard />
-
         <div className="w-full">
           <StatesCard states={states} />
         </div>
       </div>
       <div className="flex w-full flex-col gap-4 md:gap-6 xl:flex-row">
         <AgentGoals />
-
         <RecentSales sales={sales} />
       </div>
     </div>
