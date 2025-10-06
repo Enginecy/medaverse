@@ -102,7 +102,7 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-primary text-sm font-bold">
+                    <div className="text-primary-300 text-sm font-bold">
                       $
                       {(
                         Number(follower.total_sales_amount) * 12
