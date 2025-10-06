@@ -105,30 +105,6 @@ export default async function LeaderboardPage({
         className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2
           xl:grid-cols-4"
       >
-        {false && (
-          <div className="flex flex-col gap-4">
-            {leaderboardData.length === 0 ? (
-              <LeaderboardTableEmptyState />
-            ) : (
-              <>
-                <LeaderboardCard
-                  user={{
-                    name: leaderboardData[0]!.name,
-                    avatar: leaderboardData[0]!.avatarUrl,
-                    role: leaderboardData[0]!.role!,
-                    annualizedVolume: leaderboardData[0]!.totalSalesAmount,
-                    households: leaderboardData[0]!.salesCount,
-                  }}
-                />
-                <LeaderboardTable
-                  title="Personal Record"
-                  data={leaderboardData}
-                />
-              </>
-            )}
-          </div>
-        )}
-
         <div className="flex flex-col gap-4">
           <LeaderboardCard
             user={{
@@ -189,6 +165,29 @@ export default async function LeaderboardPage({
           />
           <LeaderList data={nationalData ?? []} title="National Director" />
         </div>
+        {true && (
+          <div className="flex flex-col gap-4">
+            {leaderboardData.length === 0 ? (
+              <LeaderboardTableEmptyState />
+            ) : (
+              <>
+                <LeaderboardCard
+                  user={{
+                    name: leaderboardData[0]!.name,
+                    avatar: leaderboardData[0]!.avatarUrl,
+                    role: leaderboardData[0]!.role!,
+                    annualizedVolume: leaderboardData[0]!.totalSalesAmount,
+                    households: leaderboardData[0]!.salesCount,
+                  }}
+                />
+                <LeaderboardTable
+                  title="Personal Record"
+                  data={leaderboardData}
+                />
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
