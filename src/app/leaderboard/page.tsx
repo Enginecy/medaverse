@@ -103,89 +103,99 @@ export default async function LeaderboardPage({
 
       <div
         className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2
-          xl:grid-cols-4"
+          xl:grid-cols-5"
       >
         <div className="flex flex-col gap-4">
-          <LeaderboardCard
-            user={{
-              name: associateData[0]?.leader_name ?? "",
-              avatar: associateData[0]?.avatar_url ?? "",
-              role: "Associate Director",
-              annualizedVolume:
-                (
-                  Number(associateData[0]?.full_total_sales) * 12
-                ).toLocaleString() ?? "",
-              households: associateData[0]?.full_total_sales_count ?? 0,
-            }}
-          />
-          <LeaderList data={associateData ?? []} title="Associate Director" />
+          {leaderboardData?.length === 0 ? (
+            <LeaderboardTableEmptyState />
+          ) : (
+            <>
+              <LeaderboardCard
+                user={{
+                  name: leaderboardData[0]!.name,
+                  avatar: leaderboardData[0]!.avatarUrl,
+                  role: leaderboardData[0]!.role!,
+                  annualizedVolume: leaderboardData[0]!.totalSalesAmount,
+                  households: leaderboardData[0]!.salesCount,
+                }}
+              />
+              <LeaderboardTable
+                title="Personal Record"
+                data={leaderboardData}
+              />
+            </>
+          )}
         </div>
-        <div className="flex flex-col gap-4">
-          <LeaderboardCard
-            user={{
-              name: divisionalData[0]?.leader_name ?? "",
-              avatar: divisionalData[0]?.avatar_url ?? "",
-              role: "Divisional Director",
-              annualizedVolume:
-                (
-                  Number(divisionalData[0]?.full_total_sales) * 12
-                ).toLocaleString() ?? "",
-              households: divisionalData[0]?.full_total_sales_count ?? 0,
-            }}
-          />
-          <LeaderList data={divisionalData ?? []} title="Divisional Director" />
-        </div>
-        <div className="flex flex-col gap-4">
-          <LeaderboardCard
-            user={{
-              name: regionalData[0]?.leader_name ?? "",
-              avatar: regionalData[0]?.avatar_url ?? "",
-              role: "Regional Director",
-              annualizedVolume:
-                (
-                  Number(regionalData[0]?.full_total_sales) * 12
-                ).toLocaleString() ?? "",
-              households: regionalData[0]?.full_total_sales_count ?? 0,
-            }}
-          />
-          <LeaderList data={regionalData ?? []} title="Regional Director" />
-        </div>
-        <div className="flex flex-col gap-4">
-          <LeaderboardCard
-            user={{
-              name: nationalData[0]?.leader_name ?? "",
-              avatar: nationalData[0]?.avatar_url ?? "",
-              role: "National Director",
-              annualizedVolume:
-                (
-                  Number(nationalData[0]?.full_total_sales) * 12
-                ).toLocaleString() ?? "",
-              households: nationalData[0]?.full_total_sales_count ?? 0,
-            }}
-          />
-          <LeaderList data={nationalData ?? []} title="National Director" />
-        </div>
-        {true && (
+
+        {associateData.length > 0 && (
           <div className="flex flex-col gap-4">
-            {leaderboardData.length === 0 ? (
-              <LeaderboardTableEmptyState />
-            ) : (
-              <>
-                <LeaderboardCard
-                  user={{
-                    name: leaderboardData[0]!.name,
-                    avatar: leaderboardData[0]!.avatarUrl,
-                    role: leaderboardData[0]!.role!,
-                    annualizedVolume: leaderboardData[0]!.totalSalesAmount,
-                    households: leaderboardData[0]!.salesCount,
-                  }}
-                />
-                <LeaderboardTable
-                  title="Personal Record"
-                  data={leaderboardData}
-                />
-              </>
-            )}
+            <LeaderboardCard
+              user={{
+                name: associateData[0]?.leader_name ?? "",
+                avatar: associateData[0]?.avatar_url ?? "",
+                role: "Associate Director",
+                annualizedVolume:
+                  (
+                    Number(associateData[0]?.full_total_sales) * 12
+                  ).toLocaleString() ?? "",
+                households: associateData[0]?.full_total_sales_count ?? 0,
+              }}
+            />
+            <LeaderList data={associateData ?? []} title="Associate Director" />
+          </div>
+        )}
+        {divisionalData.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <LeaderboardCard
+              user={{
+                name: divisionalData[0]?.leader_name ?? "",
+                avatar: divisionalData[0]?.avatar_url ?? "",
+                role: "Divisional Director",
+                annualizedVolume:
+                  (
+                    Number(divisionalData[0]?.full_total_sales) * 12
+                  ).toLocaleString() ?? "",
+                households: divisionalData[0]?.full_total_sales_count ?? 0,
+              }}
+            />
+            <LeaderList
+              data={divisionalData ?? []}
+              title="Divisional Director"
+            />
+          </div>
+        )}
+        {regionalData.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <LeaderboardCard
+              user={{
+                name: regionalData[0]?.leader_name ?? "",
+                avatar: regionalData[0]?.avatar_url ?? "",
+                role: "Regional Director",
+                annualizedVolume:
+                  (
+                    Number(regionalData[0]?.full_total_sales) * 12
+                  ).toLocaleString() ?? "",
+                households: regionalData[0]?.full_total_sales_count ?? 0,
+              }}
+            />
+            <LeaderList data={regionalData ?? []} title="Regional Director" />
+          </div>
+        )}
+        {nationalData.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <LeaderboardCard
+              user={{
+                name: nationalData[0]?.leader_name ?? "",
+                avatar: nationalData[0]?.avatar_url ?? "",
+                role: "National Director",
+                annualizedVolume:
+                  (
+                    Number(nationalData[0]?.full_total_sales) * 12
+                  ).toLocaleString() ?? "",
+                households: nationalData[0]?.full_total_sales_count ?? 0,
+              }}
+            />
+            <LeaderList data={nationalData ?? []} title="National Director" />
           </div>
         )}
       </div>

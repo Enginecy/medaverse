@@ -49,13 +49,11 @@ export async function getSalesAmountByPeriod(
     // Use DATE_TRUNC for current week calculation (Monday to Sunday)
     dateFilter = sql`
       ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()))::date
-      AND ${sales.createdAt}::date < (DATE_TRUNC('week', NOW()) + INTERVAL '1 week')::date
     `;
   } else if (period === "month") {
     // Use DATE_TRUNC for month calculation
     dateFilter = sql`
       ${sales.createdAt}::date >= (DATE_TRUNC('month', NOW()))::date
-      AND ${sales.createdAt}::date <= (DATE_TRUNC('month', NOW()) + INTERVAL '1 month' - INTERVAL '1 day')::date
     `;
   }
   // 'all' period uses no date filter (dateFilter = sql`1=1`)
@@ -332,12 +330,13 @@ export async function getLeadersAndSubordinates({
 
   const result = await db.admin.transaction(async (tx) => {
     return tx.execute(
-      sql` SELECT * FROM get_leader_sales_summary(${period}, null, null, ${roleId})`,
+      sql` SELECT * FROM get_leader_sales_summary2(${period}, null, null, ${roleId})`,
     );
   });
-  console.log("Leaders and Subordinates: ", result[0]!.subordinates);
-
-  return result as unknown as LeadersAndSubordinates[];
+  if (!result) return [];
+  return (result as unknown as LeadersAndSubordinates[]).sort((a, b) => 
+    Number(b.full_total_sales) - Number(a.full_total_sales)
+  );
 }
 
 export type LeadersAndSubordinates = {
@@ -351,6 +350,7 @@ export type LeadersAndSubordinates = {
   subordinates: {
     id: string;
     name: string;
+    role: string;
     avatar_url: string;
     total_sales_count: number;
     total_sales_amount: number;

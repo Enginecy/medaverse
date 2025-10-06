@@ -15,13 +15,11 @@ export async function getLeaderboardDataByPeriod(
     // Use DATE_TRUNC for current week calculation (Monday to Sunday)
     dateFilter = sql`
       ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()))::date
-      AND ${sales.createdAt}::date < (DATE_TRUNC('week', NOW()) + INTERVAL '1 week')::date
     `;
   } else if (period === "month") {
     // Use DATE_TRUNC for month calculation
     dateFilter = sql`
       ${sales.createdAt}::date >= (DATE_TRUNC('month', NOW()))::date
-      AND ${sales.createdAt}::date <= (DATE_TRUNC('month', NOW()) + INTERVAL '1 month' - INTERVAL '1 day')::date
     `;
   }
   // 'all' period uses no date filter
