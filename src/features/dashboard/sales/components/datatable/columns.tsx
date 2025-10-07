@@ -57,15 +57,4 @@ export const salesColumnsDef: ColumnDef<Sale>[] = [
     filterFn: multiSelectFilter,
     id: "createdAt",
   },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: () =>
-      // { row }
-      {
-        // const sale = row.original;
-        return <p>Actions</p>;
-        // return <RowActionsDropdown sale={sale} />;
-      },
-  },
 ];
