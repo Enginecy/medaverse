@@ -25,7 +25,6 @@ export function UpLineField({
   upLines?: Superior[];
 }) {
   const roleField = form.watch("role");
-  console.log("upLines", upLines, roleField);
   return (
     <FormField
       control={form.control}
@@ -35,7 +34,7 @@ export function UpLineField({
           <FormLabel>UpLine</FormLabel>
           <Select
             onValueChange={field.onChange}
-            defaultValue={field.value ?? ""}
+            value={field.value ?? ""}
             disabled={
               roleField == null ||
               roleField == undefined ||
@@ -56,7 +55,7 @@ export function UpLineField({
             </FormControl>
             <SelectContent>
               {upLines!.map((upLine) => (
-                <SelectItem key={upLine.id} value={upLine.id}>
+                <SelectItem key={upLine.userId} value={upLine.userId}>
                   {upLine.name}
                 </SelectItem>
               ))}

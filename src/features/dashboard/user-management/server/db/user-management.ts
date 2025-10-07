@@ -15,17 +15,13 @@ export async function getUsers() {
         ...getTableColumns(profile),
         email: users.email,
         role: roles,
-        upline: sql<string>`leader_profile.id`.as("upline"),
+        upline: sql<string>`user_hierarchy.leader_id`.as("upline"),
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
       .leftJoin(userRoles, eq(userRoles.userId, profile.userId))
       .leftJoin(roles, eq(userRoles.roleId, roles.id))
       .leftJoin(userHierarchy, eq(userHierarchy.userId, profile.userId))
-      .leftJoin(
-        sql`${profile} as leader_profile`,
-        eq(userHierarchy.leaderId, sql`leader_profile.user_id`)
-      )
       .orderBy(desc(profile.createdAt));
   });
   return profiles;
