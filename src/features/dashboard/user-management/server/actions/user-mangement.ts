@@ -124,39 +124,35 @@ export async function createAgent(
 
     // Step 5: Database operations in transaction
     await db.rls(async (tx) => {
-      await tx
-        .insert(profile)
-        .values({
-          name: data.fullName,
-          username: data.username,
-          office: data.office,
-          dob: data.dateOfBirth,
-          phoneNumber: data.phoneNumber,
-          npnNumber: data.npnNumber,
-          states: data.states ?? ([] as State[]),
-          status: "active",
-          ...(avatarUrl ? { avatarUrl } : {}),
-          userId: user.id,
-        });
-       await tx
-        .insert(userRoles)
-        .values({
-          roleId: data.role,
-          userId: user.id,
-          assignedBy: currentUser.data.user?.id,
-        });
+      await tx.insert(profile).values({
+        name: data.fullName,
+        username: data.username,
+        office: data.office,
+        dob: data.dateOfBirth,
+        phoneNumber: data.phoneNumber,
+        npnNumber: data.npnNumber,
+        states: data.states ?? ([] as State[]),
+        status: "active",
+        ...(avatarUrl ? { avatarUrl } : {}),
+        userId: user.id,
+      });
+      await tx.insert(userRoles).values({
+        roleId: data.role,
+        userId: user.id,
+        assignedBy: currentUser.data.user?.id,
+      });
 
-        if (data.upLine) {
-          const [uplineProfile] = await tx
-            .select({ userId: profile.userId })
-            .from(profile)
-            .where(eq(profile.id, data.upLine));
+      if (data.upLine) {
+        const [uplineProfile] = await tx
+          .select({ userId: profile.userId })
+          .from(profile)
+          .where(eq(profile.id, data.upLine));
 
-          await tx.insert(userHierarchy).values({
-            userId: user.id,
-            leaderId: uplineProfile?.userId,
-          });
-        }
+        await tx.insert(userHierarchy).values({
+          userId: user.id,
+          leaderId: uplineProfile?.userId,
+        });
+      }
     });
 
     return { success: true, data: undefined };
@@ -291,8 +287,11 @@ export async function updateAgent(
 
     const profileUrlSql =
       profileUrl === null ? sql`NULL` : sql`${profileUrl}::text`;
-    const uplineSql = data.upLine === null ? sql`NULL` : sql`${data.upLine}::uuid`;
-    const statesJson = data.states?.map((value) => `'${JSON.stringify(value)}'::jsonb`).join(', ');
+    console.log("data.upLine", data.upLine);
+    const uplineSql = !data.upLine ? sql`NULL` : sql`${data.upLine}::uuid`;
+    const statesJson = data.states
+      ?.map((value) => `'${JSON.stringify(value)}'::jsonb`)
+      .join(", ");
     const profileData = await db.rls((tx) =>
       tx.execute(sql`
     select public.update_agent_profile(
