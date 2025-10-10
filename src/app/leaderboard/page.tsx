@@ -120,7 +120,7 @@ export default async function LeaderboardPage({
                 }}
               />
               <LeaderboardTable
-                title="Personal Record"
+                title="Personal Production"
                 data={leaderboardData}
               />
             </>
