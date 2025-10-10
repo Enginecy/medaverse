@@ -10,7 +10,7 @@ export function TotalCard({
   const getPeriodTitle = () => {
     if (period === 'month') return "This Month";
     if (period === 'all') return "All Time";
-    if (period === 'week' || week) return "This Week (Mon-Fri)";
+    if (period === 'week' || week) return "This Week";
     return "Today";
   };
   
