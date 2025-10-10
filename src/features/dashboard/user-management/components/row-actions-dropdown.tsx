@@ -19,7 +19,7 @@ import {
   useShowDrawer,
 } from "@/lib/react-utils";
 import { useQueryClient } from "@tanstack/react-query"; // Import useQueryClient
-import { Copy, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
+import { Copy, LockIcon, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 
 export function RowActionsDropdown({ user }: { user: User }) {
   const showDialog = useShowDialog();
@@ -48,7 +48,7 @@ export function RowActionsDropdown({ user }: { user: User }) {
               ));
             }}
           >
-            <SquarePen className="text-black" />
+            <LockIcon className="text-black" />
             Update Password
           </DropdownMenuItem>
         )}
