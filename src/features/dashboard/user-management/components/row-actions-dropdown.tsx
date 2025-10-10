@@ -26,6 +26,11 @@ export function RowActionsDropdown({ user }: { user: User }) {
   const showDrawer = useShowDrawer();
   const queryClient = useQueryClient(); // Initialize useQueryClient
   const { user: currentUser } = useAuth();
+
+  const canUpdatePassword =
+    currentUser?.user?.id == user.userId ||
+    currentUser?.user?.user_metadata.is_admin;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -35,7 +40,7 @@ export function RowActionsDropdown({ user }: { user: User }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="rounded-2xl p-2">
-        {currentUser?.user?.user_metadata.is_admin && (
+        {canUpdatePassword && (
           <DropdownMenuItem
             onClick={() => {
               showDrawer(() => (
