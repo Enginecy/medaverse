@@ -8,7 +8,6 @@ import { LoginForm } from "@/features/login/components/form/login-form";
 import { LoginGraphics } from "@/features/login/components/login-graphics";
 import { createFormSchema } from "@/features/login/schemas/login-form-schema";
 import {
-  debugLoginWithPassword,
   sendEmailOTP,
   verifyEmailOtp,
   loginWithPassword,
@@ -17,7 +16,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type z from "zod";
-import { env } from "@/env";
 import { showSonnerToast } from "@/lib/react-utils";
 import type { ActionError } from "@/lib/utils";
 import { Info } from "lucide-react";
@@ -79,24 +77,6 @@ export default function Home() {
     },
   });
 
-  const { mutate: debugLogin, isPending: isLoggingIn } = useMutation({
-    mutationFn: async (data: { email: string }) => {
-      const result = await debugLoginWithPassword(data);
-      if (!result.success) {
-        throw result.error;
-      }
-      return result.data;
-    },
-    onSuccess: router.refresh,
-    onError: (error: ActionError) => {
-      showSonnerToast({
-        message: error.message,
-        description: error.details,
-        type: "error",
-      });
-    },
-  });
-
   const { mutate: passwordLogin, isPending: isPasswordLoggingIn } = useMutation(
     {
       mutationFn: async (data: { email: string; password: string }) => {
@@ -119,11 +99,6 @@ export default function Home() {
 
   // Unified form submission handler
   const onSubmit = (values: z.infer<ReturnType<typeof createFormSchema>>) => {
-    if (env.NODE_ENV === "development") {
-      debugLogin({ email: values.email });
-      return;
-    }
-
     if (mode === "Password") {
       setStep("password");
       passwordLogin({ email: values.email, password: values.password! });
@@ -156,9 +131,7 @@ export default function Home() {
       >
         <LoginForm
           form={form}
-          isLoading={
-            isSendingOtp || isVerifyingOtp || isLoggingIn || isPasswordLoggingIn
-          }
+          isLoading={isSendingOtp || isVerifyingOtp || isPasswordLoggingIn}
           onSubmit={onSubmit}
           step={step}
           mode={mode}
@@ -166,8 +139,8 @@ export default function Home() {
       </div>
       <Button
         variant={"default"}
-        className="absolute top-0 right-0 z-10 m-4 w-30 
-          rounded-3xl border-1 border-blue-400 bg-transparent px-4"
+        className="absolute top-0 right-0 z-10 m-4 w-30 rounded-3xl border-1
+          border-blue-400 bg-transparent px-4"
         onClick={() => {
           window.open(
             "https://api.leadconnectorhq.com/widget/form/9iGj1DgBj0lIfXkEG8kQ",

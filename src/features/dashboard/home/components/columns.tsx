@@ -43,8 +43,8 @@ export const recentSalesColumns: ColumnDef<
       return (
         <span>
           {row.original.saleDate.toLocaleDateString("en-US", {
-            weekday: "short",
-            day: "numeric",
+            month: "2-digit",
+            day: "2-digit",
             year: "numeric",
           })}
         </span>

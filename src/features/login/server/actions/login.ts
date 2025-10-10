@@ -1,5 +1,4 @@
 "use server";
-import { env } from "@/env";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionResult } from "@/lib/utils";
 
@@ -68,32 +67,6 @@ export async function verifyEmailOtp({
   };
 }
 
-export async function debugLoginWithPassword({
-  email,
-}: {
-  email: string;
-}): Promise<ActionResult<typeof data>> {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password: env.AUTOMATIC_LOGIN_PASSWORD,
-  });
-
-  if (error) {
-    return {
-      success: false,
-      error: {
-        message: error.message,
-        statusCode: 400,
-        details: error.cause?.toString() ?? "Unknown error",
-      },
-    };
-  }
-  return {
-    success: true,
-    data,
-  };
-}
 
 export async function loginWithPassword({
   email,

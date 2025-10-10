@@ -9,22 +9,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AddUserDrawer } from "@/features/dashboard/user-management/components/form/add-user-drawer";
+import { UpdateUserPasswordDialog } from "@/features/dashboard/user-management/components/form/update-password-dialog";
 import { deleteAgent } from "@/features/dashboard/user-management/server/actions/user-mangement";
 import type { User } from "@/features/dashboard/user-management/server/db/user-management";
+import { useAuth } from "@/hooks/auth";
 import {
   showSonnerToast,
   useShowDialog,
   useShowDrawer,
 } from "@/lib/react-utils";
-import {  useQueryClient } from "@tanstack/react-query"; // Import useQueryClient
+import { useQueryClient } from "@tanstack/react-query"; // Import useQueryClient
 import { Copy, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 
 export function RowActionsDropdown({ user }: { user: User }) {
   const showDialog = useShowDialog();
   const showDrawer = useShowDrawer();
   const queryClient = useQueryClient(); // Initialize useQueryClient
-
-
+  const { user: currentUser } = useAuth();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,6 +35,18 @@ export function RowActionsDropdown({ user }: { user: User }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="rounded-2xl p-2">
+        {currentUser?.user?.user_metadata.is_admin && (
+          <DropdownMenuItem
+            onClick={() => {
+              showDrawer(() => (
+                <UpdateUserPasswordDialog userId={user.userId} />
+              ));
+            }}
+          >
+            <SquarePen className="text-black" />
+            Update Password
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem
           onClick={() => {
             showDrawer((resolve) => (
@@ -78,7 +91,8 @@ export function RowActionsDropdown({ user }: { user: User }) {
                 variables={user.id}
               />
             ));
-          }} disabled={user.status != "active"}
+          }}
+          disabled={user.status != "active"}
         >
           <Trash2 className="text-destructive" />
           <span className="text-destructive">Delete</span>

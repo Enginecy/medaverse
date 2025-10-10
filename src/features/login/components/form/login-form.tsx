@@ -54,31 +54,14 @@ export function LoginForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex w-full min-w-0 flex-col items-center gap-3 sm:gap-4"
         >
-          {env.NODE_ENV === "development" ? (
-            <div className="flex w-full min-w-0 flex-col gap-3 sm:gap-4">
-              <div className="px-2 text-center text-red-400">
-                <p className="text-sm">
-                  Development Mode: Automatic login will be enabled.
-                </p>
-                <p>
-                  <span className="text-xs text-gray-500">
-                    Please Refer to the README.md file for more information.
-                  </span>
-                </p>
-              </div>
-              <EmailFormField step={isOtp ? step : "password"} form={form} />
-              {!isOtp && <PasswordFormField form={form} />}
-            </div>
-          ) : (
-            <div className="flex w-full min-w-0 flex-col gap-3 sm:gap-4">
-              <EmailFormField step={isOtp ? step : "password"} form={form} />
-              {isOtp ? (
-                <OTPFormField step={step as "email" | "pin"} form={form} />
-              ) : (
-                <PasswordFormField form={form} />
-              )}
-            </div>
-          )}
+          <div className="flex w-full min-w-0 flex-col gap-3 sm:gap-4">
+            <EmailFormField step={isOtp ? step : "password"} form={form} />
+            {isOtp ? (
+              <OTPFormField step={step as "email" | "pin"} form={form} />
+            ) : (
+              <PasswordFormField form={form} />
+            )}
+          </div>
           <SubmitButton
             step={isOtp ? step : "password"}
             isLoading={isLoading}

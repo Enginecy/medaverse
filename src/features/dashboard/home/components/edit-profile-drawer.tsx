@@ -31,7 +31,7 @@ import {
 import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { updateAgent } from "@/features/dashboard/user-management/server/actions/user-mangement";
 import { PulseMultiple } from "react-svg-spinners";
 import { showSonnerToast } from "@/lib/react-utils";
@@ -51,8 +51,6 @@ import { EmailField } from "@/features/dashboard/user-management/components/form
 import { PhoneField } from "@/features/dashboard/user-management/components/form/phone-field";
 import { UsernameField } from "@/features/dashboard/user-management/components/form/username-field";
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
-import { getAboveSuperiors } from "@/features/dashboard/user-management/server/db/user-management";
-import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import type { UserProfile } from "@/features/dashboard/home/server/db/home";
 
 export function EditProfileDrawer({
@@ -96,21 +94,6 @@ export function EditProfileDrawer({
     defaultValues,
   });
 
-  const { data: roles, isPending: isLoadingRoles } = useQuery({
-    queryKey: ["roles"],
-    queryFn: getRoles,
-  });
-  const selectedRole = roles?.find((role) => role.id === form.watch("role"));
-  const getSuperiorsQueryOptions = queryOptions({
-    queryKey: ["superiors", selectedRole?.id],
-    queryFn: () => getAboveSuperiors(selectedRole!),
-    enabled: !!selectedRole,
-    refetchOnWindowFocus: false,
-  });
-  const { data: aboveSuperiors, isLoading: isLoadingSuperiors } = useQuery(
-    getSuperiorsQueryOptions,
-  );
-
   const { mutate: submitUpdateAgent, isPending: isUpdating } = useMutation({
     mutationFn: async (data: AddUserFormData) => {
       const result = await updateAgent(data, user!.id!);
@@ -127,6 +110,13 @@ export function EditProfileDrawer({
       form.reset();
       window.location.reload();
       resolve(true);
+    },
+    onError: (error) => {
+      showSonnerToast({
+        message: "Error updating agent",
+        description: error.message,
+        type: "error",
+      });
     },
   });
 

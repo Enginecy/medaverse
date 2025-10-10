@@ -613,3 +613,28 @@ async function createUsersBulk(
 
   return [];
 }
+
+export async function updatePassword({
+  password,
+  userId,
+}: {
+  password: string;
+  userId: string;
+}): Promise<ActionResult<void>> {
+  const { auth } = createAdminClient();
+  const { error: updateError } = await auth.admin.updateUserById(userId, {
+    password,
+  });
+  if (updateError) {
+    console.error("Error updating password:", updateError);
+    return {
+      success: false,
+      error: {
+        message: updateError.message,
+        statusCode: 400,
+        details: updateError.cause?.toString() ?? "Unknown error",
+      },
+    };
+  }
+  return { success: true, data: undefined };
+}
