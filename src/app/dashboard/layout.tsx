@@ -37,7 +37,7 @@ const navItems = [
   {
     title: "Support",
     icon: HelpingHand,
-    href: "https://get.enginecymarketing.com/widget/form/g1sf8iX0E5nhj4Sw717j",
+    href: "https://api.leadconnectorhq.com/widget/form/9iGj1DgBj0lIfXkEG8kQ",
     newWindow: true,
   }
 ];
