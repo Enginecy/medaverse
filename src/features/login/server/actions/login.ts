@@ -67,7 +67,6 @@ export async function verifyEmailOtp({
   };
 }
 
-
 export async function loginWithPassword({
   email,
   password,
@@ -133,5 +132,77 @@ export async function updatePasswordAndClearFlag({
       },
     };
   }
+  return { success: true, data: undefined };
+}
+
+export async function sendPasswordResetEmail(
+  email: string,
+): Promise<ActionResult<void>> {
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/reset-password`,
+  });
+
+  if (error) {
+    if (error.code === "over_email_send_rate_limit") {
+      return {
+        success: false,
+        error: {
+          message: "Too many requests",
+          statusCode: 429,
+          details: "Please wait a few minutes before trying again",
+        },
+      };
+    }
+    return {
+      success: false,
+      error: {
+        message: "Failed to send reset email",
+        statusCode: 400,
+        details: error.message,
+      },
+    };
+  }
+
+  return { success: true, data: undefined };
+}
+
+export async function resetPassword(
+  newPassword: string,
+): Promise<ActionResult<void>> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: getUserError,
+  } = await supabase.auth.getUser();
+
+  if (getUserError || !user) {
+    return {
+      success: false,
+      error: {
+        message: "Invalid or expired reset link",
+        statusCode: 401,
+        details: "Please request a new password reset link",
+      },
+    };
+  }
+
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+
+  if (updateError) {
+    return {
+      success: false,
+      error: {
+        message: "Failed to update password",
+        statusCode: 400,
+        details: updateError.message,
+      },
+    };
+  }
+
   return { success: true, data: undefined };
 }

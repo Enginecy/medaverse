@@ -6,6 +6,7 @@ import {
   Settings,
   Users,
   File,
+  LockIcon,
 } from "lucide-react";
 import Image from "next/image";
 import logo from "public/meda_health_logo.png";
@@ -24,6 +25,7 @@ import {
 import { usePathname } from "next/navigation";
 import { Logout } from "./logout";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 // Menu items.
 const items = [
@@ -57,11 +59,7 @@ const items = [
 export function AppSidebar() {
   const pathName = usePathname();
   return (
-    <Sidebar
-      collapsible="icon"
-      variant="inset"
-      className="bg-transparent"
-    >
+    <Sidebar collapsible="icon" variant="inset" className="bg-transparent">
       <SidebarHeader className="py-4 md:py-[22.5px]">
         <Image
           className="mx-auto w-32 md:w-40"
@@ -83,7 +81,7 @@ export function AppSidebar() {
                       asChild
                       size="lg"
                       className={cn(
-                        "rounded-full p-4 hover:bg-primary-200",
+                        "hover:bg-primary-200 rounded-full p-4",
                         isSelected && "bg-primary text-primary-foreground",
                       )}
                     >
@@ -104,6 +102,17 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        <Link href="/auth/reset-password">
+          <SidebarMenuButton
+            size="lg"
+            className="hover:bg-primary-400 hover:text-primary-foreground
+              active:bg-primary-200 active:text-primary-foreground min-h-[48px]
+              transition-colors md:min-h-auto"
+          >
+            <span>Update Password</span>
+            <LockIcon className="ml-auto h-5 w-5 md:h-4 md:w-4" />
+          </SidebarMenuButton>
+        </Link>
         <Logout>
           <SidebarMenuButton
             size="lg"

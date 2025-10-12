@@ -5,20 +5,23 @@ import { Form } from "@/components/ui/form";
 import { type UseFormReturn } from "react-hook-form";
 import type { createFormSchema } from "@/features/login/schemas/login-form-schema";
 import type z from "zod";
-import { env } from "@/env";
 import { PasswordFormField } from "./password-field";
+import { Button } from "@/components/ui/button";
+
 export function LoginForm({
   step,
   form,
   onSubmit,
   isLoading,
   mode,
+  onForgotPassword,
 }: {
   step: "email" | "pin" | "password";
   mode: "OTP" | "Password";
   form: UseFormReturn<z.infer<ReturnType<typeof createFormSchema>>>;
   onSubmit: (values: z.infer<ReturnType<typeof createFormSchema>>) => void;
   isLoading: boolean;
+  onForgotPassword?: () => void;
 }) {
   const isOtp = mode === "OTP";
   return (
@@ -59,7 +62,22 @@ export function LoginForm({
             {isOtp ? (
               <OTPFormField step={step as "email" | "pin"} form={form} />
             ) : (
-              <PasswordFormField form={form} />
+              <>
+                <PasswordFormField form={form} />
+                {onForgotPassword && (
+                  <div className="flex w-full justify-end">
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="h-auto p-0 text-xs text-gray-300
+                        hover:text-white sm:text-sm"
+                      onClick={onForgotPassword}
+                    >
+                      Forgot Password?
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
           <SubmitButton

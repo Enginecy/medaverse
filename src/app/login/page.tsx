@@ -16,15 +16,17 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type z from "zod";
-import { showSonnerToast } from "@/lib/react-utils";
+import { showSonnerToast, useShowDialog } from "@/lib/react-utils";
 import type { ActionError } from "@/lib/utils";
 import { Info } from "lucide-react";
+import { ForgotPasswordDialog } from "@/features/login/components/modals/forgot-password-dialog";
 
 export default function Home() {
   const [step, setStep] = useState<"email" | "pin" | "password">("email");
   // const [mode, setMode] = useState<"OTP" | "Password">("OTP");
   const mode = "Password" as const;
   const router = useRouter();
+  const showDialog = useShowDialog();
 
   const schema = useMemo(() => createFormSchema(step), [step]);
 
@@ -115,6 +117,12 @@ export default function Home() {
     }
   };
 
+  const handleForgotPassword = () => {
+    showDialog((resolve) => (
+      <ForgotPasswordDialog resolve={resolve} />
+    ));
+  };
+
   return (
     <div
       className="relative flex min-h-screen w-full max-w-full items-center
@@ -135,6 +143,7 @@ export default function Home() {
           onSubmit={onSubmit}
           step={step}
           mode={mode}
+          onForgotPassword={handleForgotPassword}
         />
       </div>
       <Button
