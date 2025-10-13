@@ -14,7 +14,7 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    AUTOMATIC_LOGIN_PASSWORD: z.string().min(32),
+    AUTOMATIC_LOGIN_PASSWORD: z.string(),
     DATABASE_URL: z.string(),
     DIRECT_URL: z.string(),
     SUPABASE_SERVICE_ROLE_KEY: z.string(),
