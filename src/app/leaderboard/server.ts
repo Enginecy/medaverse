@@ -46,7 +46,9 @@ export async function getLeaderboardDataByPeriod(
 
   return results.map((r) => ({
     ...r,
-    totalSalesAmount: (Number(r.totalSalesAmount ?? 0) * 12).toLocaleString(),
+    totalSalesAmount: Math.ceil(
+      Number(r.totalSalesAmount ?? 0) * 12,
+    ).toLocaleString(),
     salesCount: Number(r.salesCount ?? 0),
   }));
 }
@@ -80,7 +82,9 @@ export async function getLeaderboardData() {
 
   return results.map((r) => ({
     ...r,
-    totalSalesAmount: (Number(r.totalSalesAmount ?? 0) * 12).toLocaleString(),
+    totalSalesAmount: Math.ceil(
+      Number(r.totalSalesAmount ?? 0) * 12,
+    ).toLocaleString(),
     salesCount: Number(r.salesCount ?? 0),
   }));
 }

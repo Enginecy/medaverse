@@ -52,13 +52,19 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
               <div className="text-xs text-gray-500">
                 Total Sales:{" "}
                 <span className="text-secondary-foreground/55 font-semibold">
-                  ${(Number(leader.full_total_sales) * 12).toLocaleString()}
+                  $
+                  {Math.ceil(
+                    Number(leader.full_total_sales) * 12,
+                  ).toLocaleString()}
                 </span>
               </div>
               <div className="text-xs text-gray-500">
                 Personal Sales:{" "}
                 <span className="text-primary-300 font-semibold">
-                  ${(Number(leader.total_sales_amount) * 12).toLocaleString()}
+                  $
+                  {Math.ceil(
+                    Number(leader.total_sales_amount) * 12,
+                  ).toLocaleString()}
                 </span>
               </div>
             </div>
@@ -81,7 +87,10 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
                 <div className="flex w-full items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Avatar className="ring-primary/20 h-8 w-8 ring-2">
-                      <AvatarImage src={follower.avatar_url} className="object-cover" />
+                      <AvatarImage
+                        src={follower.avatar_url}
+                        className="object-cover"
+                      />
                       <AvatarFallback
                         className="from-primary/20 to-primary/10 text-primary
                           bg-gradient-to-br font-semibold"
@@ -104,8 +113,8 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
                   <div className="text-right">
                     <div className="text-primary-300 text-sm font-bold">
                       $
-                      {(
-                        Number(follower.total_sales_amount) * 12
+                      {Math.ceil(
+                        Number(follower.total_sales_amount) * 12,
                       ).toLocaleString()}
                     </div>
                     <div className="text-muted-foreground text-xs">

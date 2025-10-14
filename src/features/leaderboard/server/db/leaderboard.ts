@@ -66,7 +66,7 @@ export async function getSalesAmountByPeriod(
   if (salesResult?.total === null) {
     return "$0";
   }
-  return "$" + (Number(salesResult!.total!) * 12).toLocaleString();
+  return "$" + Math.ceil(Number(salesResult!.total!) * 12).toLocaleString();
 }
 
 export async function getTodaySalesAmount() {
@@ -87,7 +87,7 @@ export async function getTodaySalesAmount() {
   if (todaySales?.total === null) {
     return "$0";
   }
-  return "$" + (Number(todaySales!.total!) * 12).toLocaleString();
+  return "$" + Math.ceil(Number(todaySales!.total!) * 12).toLocaleString();
 }
 
 export type LastSale = Awaited<ReturnType<typeof getLastSale>>;
@@ -334,8 +334,8 @@ export async function getLeadersAndSubordinates({
     );
   });
   if (!result) return [];
-  return (result as unknown as LeadersAndSubordinates[]).sort((a, b) => 
-    Number(b.full_total_sales) - Number(a.full_total_sales)
+  return (result as unknown as LeadersAndSubordinates[]).sort(
+    (a, b) => Number(b.full_total_sales) - Number(a.full_total_sales),
   );
 }
 
