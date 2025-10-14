@@ -3,6 +3,7 @@ import type { Sale } from "@/features/dashboard/sales/server/db/sales";
 import type { ColumnDef } from "@tanstack/react-table";
 import { generateFriendlyId } from "@/lib/utils";
 import { multiSelectFilter } from "@/components/data-table/utils";
+import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 
 export const salesColumnsDef: ColumnDef<Sale>[] = [
   {
@@ -14,6 +15,13 @@ export const salesColumnsDef: ColumnDef<Sale>[] = [
     id: "id",
   },
   {
+    accessorKey: "agent",
+    header: "Agent",
+    cell: ({ row }) => <UserChip user={row.original.user} size="sm" />,
+    filterFn: multiSelectFilter,
+    id: "agent",
+  },
+  {
     accessorKey: "customerName",
     header: "Client Name",
     cell: ({ row }) => {
@@ -21,20 +29,6 @@ export const salesColumnsDef: ColumnDef<Sale>[] = [
     },
     filterFn: multiSelectFilter,
     id: "customerName",
-  },
-  {
-    accessorKey: "productName",
-    header: "Product",
-    cell: ({ row }) => <p>{row.original.productName}</p>,
-    filterFn: multiSelectFilter,
-    id: "productName",
-  },
-  {
-    accessorKey: "companyName",
-    header: "Company",
-    cell: ({ row }) => <p>{row.original.companyName}</p>,
-    filterFn: multiSelectFilter,
-    id: "companyName",
   },
   {
     accessorKey: "totalAmount",

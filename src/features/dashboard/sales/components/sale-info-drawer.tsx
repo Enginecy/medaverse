@@ -1,11 +1,11 @@
 "use client";
 
 import type { Sale } from "@/features/dashboard/sales/server/db/sales";
-import Image from "next/image";
 import { ProductExpandContainer } from "@/features/dashboard/sales/components/expandable-container";
 import { DataTile } from "@/features/dashboard/sales/components/data-tile";
 import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Accordion } from "@/components/ui/accordion";
+import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 
 export function SaleInfoDrawer({
   // closeDrawer,
@@ -15,18 +15,13 @@ export function SaleInfoDrawer({
 
   selectedRow: Sale;
 }) {
-  console.log("Selected Row:", selectedRow.products[0]?.productName);
   return (
     <SheetContent className="overflow-auto p-5">
       <SheetHeader>
         <SheetTitle>Sale Info</SheetTitle>
       </SheetHeader>
       <div className="flex flex-col gap-2">
-        <AgentTile
-          agentName={selectedRow.user.name}
-          agentRole={"selectedRow.user.role"} //TODO: replace with actual role
-          avatarUlr={selectedRow.user.avatar || "/public/profile.jpg"}
-        />
+        <UserChip user={selectedRow.user} size="sm" />
         <DataTile title="Client Name" content={selectedRow.customerName} />
         <DataTile
           title="Submitted Date"
@@ -50,31 +45,5 @@ export function SaleInfoDrawer({
         </Accordion>
       </div>
     </SheetContent>
-  );
-}
-
-function AgentTile({
-  avatarUlr,
-  agentName,
-  agentRole,
-}: {
-  avatarUlr: string;
-  agentName: string;
-  agentRole: string;
-}) {
-  return (
-    <div className="flex flex-row gap-3 border-b-1 py-2">
-      <Image
-        src={avatarUlr}
-        alt={"Agent Avatar"}
-        className="rounded-full"
-        width={50}
-        height={50}
-      />
-      <div className="flex flex-col">
-        <p>{agentName} </p>
-        <p className="text-muted-foreground text-sm">{agentRole}</p>
-      </div>
-    </div>
   );
 }

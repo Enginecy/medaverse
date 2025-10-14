@@ -7,7 +7,6 @@ import {
   profile,
   saleItems,
   sales,
-  users,
 } from "@/db/schema";
 import { getUserProfile } from "@/features/dashboard/home/server/db/home";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -42,14 +41,12 @@ export async function getSales() {
         customerName: sales.customerName,
         products: sql<SaleItem[]>`json_agg(
           json_build_object(
-            'productId', ${insuranceProducts.id},
             'productName', ${insuranceProducts.name},
+            'companyName', ${insuranceCompanies.name},
             'premiumAmount', ${saleItems.premiumAmount},
             'policyNumber', ${saleItems.policyNumber}
           )
         )`.as("products"),
-        productName: insuranceProducts.name,
-        companyName: insuranceCompanies.name,
         createdAt: sales.createdAt,
         updatedAt: sales.updatedAt,
         _count: sql<number>`${_count[0]?.count}`,
@@ -64,15 +61,8 @@ export async function getSales() {
         insuranceCompanies,
         eq(saleItems.companyId, insuranceCompanies.id),
       )
-      .innerJoin(users, eq(sales.userId, users.id))
-      .innerJoin(profile, eq(users.id, profile.userId))
-      .groupBy(
-        sales.id,
-        insuranceProducts.name,
-        insuranceCompanies.name,
-        profile.name,
-        profile.avatarUrl,
-      )
+      .innerJoin(profile, eq(sales.userId, profile.userId))
+      .groupBy(sales.id, profile.name, profile.avatarUrl)
       .orderBy(desc(sales.createdAt));
     return baseQuery;
   });
@@ -80,8 +70,8 @@ export async function getSales() {
   return salesData;
 }
 export type SaleItem = {
-  productId: string;
   productName: string;
+  companyName: string;
   premiumAmount: number;
   policyNumber: string;
 };

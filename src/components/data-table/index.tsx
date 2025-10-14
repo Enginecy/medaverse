@@ -126,6 +126,10 @@ interface DataTableProps<TData, TValue> {
    * Enable pagination functionality
    */
   enablePagination?: boolean;
+  /**
+   * Callback function when a row is clicked
+   */
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataTableSkeleton() {
@@ -187,6 +191,7 @@ export function DataTable<TData, TValue>({
   dateFilterKey = "createdAt" as keyof TData,
   enableColumnFilter = true,
   enablePagination = true,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -353,9 +358,10 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className="data-[state=selected]:bg-primary/10"
+                  className={`data-[state=selected]:bg-primary/10 ${onRowClick ? "cursor-pointer hover:bg-muted/50" : ""}`}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => onRowClick?.(row.original)}
                 >
                   {hasSelectionEnabled && (
                     <TableCell className="w-[50px] sticky left-0 bg-background p-1 md:p-2 text-xs md:text-sm">

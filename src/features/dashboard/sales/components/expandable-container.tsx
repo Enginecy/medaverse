@@ -29,8 +29,8 @@ export function ProductExpandContainer({
       </AccordionTrigger>
       <AccordionContent
         className="flex flex-col gap-4 p-2"
-        aria-controls={"panel1-content " + details.productId.toString()}
-        id={"panel1-header" + details.productId.toString()}
+        aria-controls={"panel1-content " + details.policyNumber.toString()}
+        id={"panel1-header" + details.policyNumber.toString()}
       >
         <DataTile title="Product" content={details.productName} />
         <DataTile

@@ -5,7 +5,7 @@ import type { Sale } from "@/features/dashboard/sales/server/db/sales";
 import Image from "next/image";
 
 export const recentSalesColumns: ColumnDef<
-  Pick<Sale, "user" | "saleDate" | "totalAmount" | "productName">
+  Pick<Sale, "user" | "saleDate" | "totalAmount">
 >[] = [
   {
     accessorKey: "agent",
@@ -49,13 +49,6 @@ export const recentSalesColumns: ColumnDef<
           })}
         </span>
       );
-    },
-  },
-  {
-    accessorKey: "product",
-    header: "Product",
-    cell: ({ row }) => {
-      return <span>{row.original.productName}</span>;
     },
   },
   {
