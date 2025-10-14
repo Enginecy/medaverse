@@ -26,6 +26,9 @@ export function createDrizzle<
         async (tx) => {
           try {
             await tx.execute(sql`
+          -- set timezone
+          SET TIME ZONE 'America/New_York';
+          
           -- auth.jwt()
           select set_config('request.jwt.claims', '${sql.raw(
             JSON.stringify(token),
