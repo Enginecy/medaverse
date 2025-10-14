@@ -44,7 +44,7 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
         >
           <div className="flex items-center space-x-3">
             <Avatar>
-              <AvatarImage src={leader.avatar_url} />
+              <AvatarImage src={leader.avatar_url} className="object-cover" />
               <AvatarFallback>{leader.leader_name[0]}</AvatarFallback>
             </Avatar>
             <div>
@@ -81,7 +81,7 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
                 <div className="flex w-full items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Avatar className="ring-primary/20 h-8 w-8 ring-2">
-                      <AvatarImage src={follower.avatar_url} />
+                      <AvatarImage src={follower.avatar_url} className="object-cover" />
                       <AvatarFallback
                         className="from-primary/20 to-primary/10 text-primary
                           bg-gradient-to-br font-semibold"
