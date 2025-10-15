@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { generateFriendlyId } from "@/lib/utils";
 import { multiSelectFilter } from "@/components/data-table/utils";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
+import { DeleteSaleAction } from "@/features/dashboard/sales/components/datatable/delete-sale-action";
 
 export const salesColumnsDef: ColumnDef<Sale>[] = [
   {
@@ -50,5 +51,11 @@ export const salesColumnsDef: ColumnDef<Sale>[] = [
     cell: ({ row }) => <p>{row.original.createdAt?.toLocaleDateString()}</p>,
     filterFn: multiSelectFilter,
     id: "createdAt",
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => <DeleteSaleAction saleId={row.original.id} />,
+    enableHiding: false,
   },
 ];

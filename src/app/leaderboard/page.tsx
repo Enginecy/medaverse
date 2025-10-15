@@ -135,8 +135,8 @@ export default async function LeaderboardPage({
                 avatar: associateData[0]?.avatar_url ?? "",
                 role: "Associate Director",
                 annualizedVolume:
-                  (
-                    Number(associateData[0]?.full_total_sales) * 12
+                  Math.ceil(
+                    Number(associateData[0]?.full_total_sales) * 12,
                   ).toLocaleString() ?? "",
                 households: associateData[0]?.full_total_sales_count ?? 0,
               }}
@@ -152,8 +152,8 @@ export default async function LeaderboardPage({
                 avatar: divisionalData[0]?.avatar_url ?? "",
                 role: "Divisional Director",
                 annualizedVolume:
-                  (
-                    Number(divisionalData[0]?.full_total_sales) * 12
+                  Math.ceil(
+                    Number(divisionalData[0]?.full_total_sales) * 12,
                   ).toLocaleString() ?? "",
                 households: divisionalData[0]?.full_total_sales_count ?? 0,
               }}
@@ -172,8 +172,8 @@ export default async function LeaderboardPage({
                 avatar: regionalData[0]?.avatar_url ?? "",
                 role: "Regional Director",
                 annualizedVolume:
-                  (
-                    Number(regionalData[0]?.full_total_sales) * 12
+                  Math.ceil(
+                    Number(regionalData[0]?.full_total_sales) * 12,
                   ).toLocaleString() ?? "",
                 households: regionalData[0]?.full_total_sales_count ?? 0,
               }}
@@ -189,8 +189,8 @@ export default async function LeaderboardPage({
                 avatar: nationalData[0]?.avatar_url ?? "",
                 role: "National Director",
                 annualizedVolume:
-                  (
-                    Number(nationalData[0]?.full_total_sales) * 12
+                  Math.ceil(
+                    Number(nationalData[0]?.full_total_sales) * 12,
                   ).toLocaleString() ?? "",
                 households: nationalData[0]?.full_total_sales_count ?? 0,
               }}

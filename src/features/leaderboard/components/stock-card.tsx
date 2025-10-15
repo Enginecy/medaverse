@@ -28,7 +28,7 @@ export function StockCard() {
         { event: "*", schema: "public", table: "sales" },
         () => {
           refetch();
-        },  
+        },
       )
       .subscribe();
     console.log("sub:", subscription);
@@ -103,7 +103,7 @@ export function StockCard() {
             bg-slate-800 px-6 py-2 outline outline-offset-[-1px]"
         >
           <div className="justify-start text-3xl font-semibold text-blue-400">
-            ${(Number(lastSale.amount) * 12).toLocaleString()}
+            ${Math.ceil(Number(lastSale.amount) * 12).toLocaleString()}
           </div>
         </div>
 

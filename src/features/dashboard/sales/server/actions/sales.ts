@@ -3,6 +3,8 @@ import { createDrizzleSupabaseClient } from "@/db/db";
 import { saleItems, sales } from "@/db/schema";
 import type { AddSaleFormData } from "@/features/dashboard/sales/schemas/add-sale-schema";
 import type { ActionResult } from "@/lib/utils";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function addSale(
   userId: string,
@@ -62,4 +64,39 @@ export async function addSale(
     };
   }
   return { success: true, data: undefined };
+}
+
+export async function deleteSale(
+  saleId: string,
+): Promise<ActionResult<void>> {
+  try {
+    const db = await createDrizzleSupabaseClient();
+
+    await db.rls(async (tx) => {
+      // First delete all sale items associated with this sale
+      await tx.delete(saleItems).where(eq(saleItems.saleId, saleId));
+
+      // Then delete the sale itself
+      await tx.delete(sales).where(eq(sales.id, saleId));
+    });
+
+    revalidatePath("/dashboard/sales");
+
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        message: "Failed to delete sale",
+        statusCode: 500,
+        details:
+          error instanceof Error
+            ? error.message
+            : "An error occurred while deleting the sale. Please try again later.",
+      },
+    };
+  }
 }

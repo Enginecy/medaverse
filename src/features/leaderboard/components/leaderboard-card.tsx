@@ -28,7 +28,7 @@ export function LeaderboardCard({
         <img
           alt="placeholder"
           className="h-20 w-20 rounded-2xl border md:h-28 md:w-28 md:rounded-3xl
-            lg:h-36 lg:w-36 lg:rounded-4xl"
+            lg:h-36 lg:w-36 lg:rounded-4xl object-cover"
           src={user.avatar}
         />
 

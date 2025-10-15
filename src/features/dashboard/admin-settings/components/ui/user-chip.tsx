@@ -38,7 +38,7 @@ export function UserChip({ user, size = "md" }: UserChipProps) {
         ${animate ? "animate-bottom-to-top" : ""}`}
     >
       <Avatar className={sizeClass[size]}>
-        <AvatarImage src={user.avatar} />
+        <AvatarImage src={user.avatar} className="object-cover" />
       </Avatar>
       <div>
         <div className="font-medium">{user.name}</div>
