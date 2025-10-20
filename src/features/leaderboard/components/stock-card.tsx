@@ -25,7 +25,14 @@ export function StockCard() {
       .channel("sales-changes")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "sales" },
+        { event: "INSERT", schema: "public", table: "sales" },
+        () => {
+          refetch();
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "sales" },
         () => {
           refetch();
         },
@@ -34,7 +41,7 @@ export function StockCard() {
     console.log("sub:", subscription);
     return () => {
       void subscription.unsubscribe();
-      void supabase.removeAllChannels();
+      void supabase.removeChannel(subscription);
     };
   }, [supabase, refetch]);
 
