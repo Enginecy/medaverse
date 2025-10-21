@@ -5,8 +5,9 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { LeadersAndSubordinates } from "@/features/leaderboard/server/db/leaderboard"; // adjust path if needed
+import Image from "next/image";
 
 export default function LeaderList({
   data,
@@ -44,7 +45,12 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
         >
           <div className="flex items-center space-x-3">
             <Avatar>
-              <AvatarImage src={leader.avatar_url} className="object-cover" />
+              <Image
+                src={leader.avatar_url}
+                alt={leader.leader_name}
+                fill
+                className="object-cover"
+              />
               <AvatarFallback>{leader.leader_name[0]}</AvatarFallback>
             </Avatar>
             <div>
@@ -87,8 +93,10 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
                 <div className="flex w-full items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Avatar className="ring-primary/20 h-8 w-8 ring-2">
-                      <AvatarImage
+                      <Image
                         src={follower.avatar_url}
+                        alt={follower.name}
+                        fill
                         className="object-cover"
                       />
                       <AvatarFallback
