@@ -30,18 +30,11 @@ export function StockCard() {
           refetch();
         },
       )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "sales" },
-        () => {
-          refetch();
-        },
-      )
       .subscribe();
     console.log("sub:", subscription);
     return () => {
       void subscription.unsubscribe();
-      void supabase.removeChannel(subscription);
+      void supabase.removeAllChannels();
     };
   }, []);
 
