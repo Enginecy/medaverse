@@ -43,7 +43,7 @@ export function StockCard() {
       void subscription.unsubscribe();
       void supabase.removeChannel(subscription);
     };
-  }, [supabase, refetch]);
+  }, []);
 
   const [animate, setAnimate] = useState(false);
 
