@@ -73,8 +73,15 @@ export async function getTodaySalesAmount() {
   const db = await createDrizzleSupabaseClient();
 
   // Get today's date
-  const today = new Date();
-  const todayStr = today.toISOString().split("T")[0];
+  const today = new Date(
+    new Intl.DateTimeFormat("en-US", {
+      timeStyle: "medium",
+      dateStyle: "short",
+      timeZone: "America/New_York",
+    }).format(),
+  ).toISOString();
+
+  const todayStr = today.split("T")[0];
 
   const [todaySales] = await db.admin
     .select({ total: sum(sales.totalSaleValue) })
