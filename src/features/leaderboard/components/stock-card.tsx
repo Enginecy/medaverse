@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from "react";
 
 export function StockCard() {
   const supabase = useSupabase();
-  
+
   const queryClient = useQueryClient();
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
@@ -29,12 +29,16 @@ export function StockCard() {
     const channel = supabase
       .channel("sales-changes-stock-card")
       .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "sales" },
-        () => {
-          void queryClient.invalidateQueries({ queryKey: ["last-sale"] });
-        },
+        "broadcast",
+        { event: "INSERT" },
+        () => void queryClient.invalidateQueries({ queryKey: ["last-sale"] }),
       )
+      .on(
+        "broadcast",
+        { event: "DELETE" },
+        () => void queryClient.invalidateQueries({ queryKey: ["last-sale"] }),
+      )
+
       .subscribe();
 
     channelRef.current = channel;
