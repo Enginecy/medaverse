@@ -6,12 +6,19 @@ import { count, eq, sql, desc, gt } from "drizzle-orm";
 
 export async function getLeaderboardDataByPeriod(
   period: "week" | "month" | "all" = "week",
+  customDateRange?: { from: string; to: string },
 ) {
   const db = await createDrizzleSupabaseClient();
 
   let dateFilter = sql`1=1`; // Default: no filter for 'all'
 
-  if (period === "week") {
+  if (customDateRange?.from && customDateRange?.to) {
+    // Use custom date range if provided
+    dateFilter = sql`
+      ${sales.createdAt}::date >= ${customDateRange.from}::date
+      AND ${sales.createdAt}::date <= ${customDateRange.to}::date
+    `;
+  } else if (period === "week") {
     // Use DATE_TRUNC for current week calculation (Monday to Sunday)
     dateFilter = sql`
       ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()) - INTERVAL '2 days')::date

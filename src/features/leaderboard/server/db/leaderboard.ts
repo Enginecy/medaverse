@@ -40,12 +40,19 @@ export async function getLastSale() {
 
 export async function getSalesAmountByPeriod(
   period: "week" | "month" | "all" = "week",
+  customDateRange?: { from: string; to: string },
 ) {
   const db = await createDrizzleSupabaseClient();
 
   let dateFilter = sql`1=1`; // Default: no filter for 'all'
 
-  if (period === "week") {
+  if (customDateRange?.from && customDateRange?.to) {
+    // Use custom date range if provided
+    dateFilter = sql`
+      ${sales.createdAt}::date >= ${customDateRange.from}::date
+      AND ${sales.createdAt}::date <= ${customDateRange.to}::date
+    `;
+  } else if (period === "week") {
     // Use DATE_TRUNC for current week calculation (Monday to Sunday)
     dateFilter = sql`
       ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()) - INTERVAL '2 days')::date
@@ -69,27 +76,40 @@ export async function getSalesAmountByPeriod(
   return "$" + Math.ceil(Number(salesResult!.total!) * 12).toLocaleString();
 }
 
-export async function getTodaySalesAmount() {
+export async function getTodaySalesAmount(
+  customDateRange?: { from: string; to: string },
+) {
   const db = await createDrizzleSupabaseClient();
 
-  // Get today's date
-  const today = new Date(
-    new Intl.DateTimeFormat("en-US", {
-      timeStyle: "medium",
-      dateStyle: "short",
-      timeZone: "America/New_York",
-    }).format(),
-  ).toISOString();
+  let dateFilter;
 
-  const todayStr = today.split("T")[0];
+  if (customDateRange?.from && customDateRange?.to) {
+    // Use custom date range if provided
+    dateFilter = sql`
+      ${sales.createdAt}::date >= ${customDateRange.from}::date
+      AND ${sales.createdAt}::date <= ${customDateRange.to}::date
+      AND ${sales.deletedAt} IS NULL
+    `;
+  } else {
+    // Get today's date
+    const today = new Date(
+      new Intl.DateTimeFormat("en-US", {
+        timeStyle: "medium",
+        dateStyle: "short",
+        timeZone: "America/New_York",
+      }).format(),
+    ).toISOString();
+
+    const todayStr = today.split("T")[0];
+
+    dateFilter = sql`DATE(${sales.createdAt}) = ${todayStr}
+        AND ${sales.deletedAt} IS NULL`;
+  }
 
   const [todaySales] = await db.admin
     .select({ total: sum(sales.totalSaleValue) })
     .from(sales)
-    .where(
-      sql`DATE(${sales.createdAt}) = ${todayStr}
-          AND ${sales.deletedAt} IS NULL`,
-    );
+    .where(dateFilter);
 
   if (todaySales?.total === null) {
     return "$0";
@@ -143,17 +163,22 @@ export async function getSubordinatesTeams({
 export async function getLeadersAndSubordinates({
   period,
   roleId,
+  customDateRange,
 }: {
   period?: "week" | "month" | "all";
   roleId: string;
+  customDateRange?: { from: string; to: string };
 }) {
   const db = await createDrizzleSupabaseClient();
 
   period ??= period = "week";
 
+  const fromDate = customDateRange?.from ?? null;
+  const toDate = customDateRange?.to ?? null;
+
   const result = await db.admin.transaction(async (tx) => {
     return tx.execute(
-      sql` SELECT * FROM get_leader_sales_summary2(${period}, null, null, ${roleId})`,
+      sql` SELECT * FROM get_leader_sales_summary2(${period}, ${fromDate}, ${toDate}, ${roleId})`,
     );
   });
   if (!result) return [];

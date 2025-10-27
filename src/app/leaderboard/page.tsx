@@ -13,33 +13,46 @@ import { getLeaderboardDataByPeriod } from "@/app/leaderboard/server";
 import { LeaderboardCard } from "@/features/leaderboard/components/leaderboard-card";
 import LeaderList from "@/features/leaderboard/components/leaders-list";
 import { LeaderboardTableEmptyState } from "@/features/leaderboard/components/leaderboard-table-empty-state";
+import { DateRangeSelector } from "@/features/leaderboard/components/date-range-selector";
+import { PeriodSelector } from "@/features/leaderboard/components/period-selector";
 
 export default async function LeaderboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ period?: string }>;
+  searchParams: Promise<{ period?: string; from?: string; to?: string }>;
 }) {
-  const period =
-    ((await searchParams).period as "week" | "month" | "all") || "week";
+  const params = await searchParams;
+  const period = (params.period as "week" | "month" | "all") || "week";
+  const customDateRange =
+    params.from && params.to
+      ? { from: params.from, to: params.to }
+      : undefined;
 
-  const periodSales = await getSalesAmountByPeriod(period);
-  const todaySales = await getTodaySalesAmount();
-  const leaderboardData = await getLeaderboardDataByPeriod(period);
+  const periodSales = await getSalesAmountByPeriod(period, customDateRange);
+  const todaySales = await getTodaySalesAmount(customDateRange);
+  const leaderboardData = await getLeaderboardDataByPeriod(
+    period,
+    customDateRange,
+  );
   const regionalData = await getLeadersAndSubordinates({
     roleId: "1f4783da-f957-4f41-8019-e0d66191aedf",
     period,
+    customDateRange,
   });
   const divisionalData = await getLeadersAndSubordinates({
     roleId: "e49518bc-995f-4e03-a9a8-c57ad6ab6233",
     period,
+    customDateRange,
   });
   const associateData = await getLeadersAndSubordinates({
     roleId: "4a1ba935-f500-4179-b0f1-053028523256",
     period,
+    customDateRange,
   });
   const nationalData = await getLeadersAndSubordinates({
     roleId: "7123105a-26ba-4829-93f3-48924cd921b9",
     period,
+    customDateRange,
   });
 
   return (
@@ -47,6 +60,11 @@ export default async function LeaderboardPage({
       className="bg-background flex min-h-screen flex-col items-center gap-4 p-2
         md:p-4 lg:p-6"
     >
+      {/* Header with Date Range Picker */}
+      <div className="flex w-full items-end justify-end sm:flex-row sm:items-center">
+        <DateRangeSelector />
+      </div>
+
       <div
         className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6
           lg:grid-cols-4"
@@ -55,48 +73,12 @@ export default async function LeaderboardPage({
         <TotalCard
           week={period === "week"}
           amount={periodSales}
-          period={period}
+          period={customDateRange ? undefined : period}
+          customRange={!!customDateRange}
         />
-        <TotalCard amount={todaySales} />
+        <TotalCard amount={todaySales} customRange={!!customDateRange} />
 
-        <div
-          className="flex h-full w-full flex-col items-stretch justify-between
-            rounded-3xl border border-zinc-800 bg-zinc-900 p-4"
-        >
-          <Link
-            href="/leaderboard?period=week"
-            className={`flex min-h-[44px] items-center justify-center rounded-md
-              transition-colors ${
-              period === "week"
-                  ? "bg-primary text-foreground font-medium"
-                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
-              }`}
-          >
-            This week
-          </Link>
-          <Link
-            href="/leaderboard?period=month"
-            className={`flex min-h-[44px] items-center justify-center rounded-md
-              transition-colors ${
-              period === "month"
-                  ? "bg-primary text-foreground font-medium"
-                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
-              }`}
-          >
-            This month
-          </Link>
-          <Link
-            href="/leaderboard?period=all"
-            className={`flex min-h-[44px] items-center justify-center rounded-md
-              transition-colors ${
-              period === "all"
-                  ? "bg-primary text-foreground font-medium"
-                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
-              }`}
-          >
-            All time
-          </Link>
-        </div>
+        <PeriodSelector customDateRange={customDateRange} />
       </div>
 
       <StockCard />
