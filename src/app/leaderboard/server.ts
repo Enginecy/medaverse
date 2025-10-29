@@ -6,15 +6,22 @@ import { count, eq, sql, desc, gt } from "drizzle-orm";
 
 export async function getLeaderboardDataByPeriod(
   period: "week" | "month" | "all" = "week",
+  customDateRange?: { from: string; to: string },
 ) {
   const db = await createDrizzleSupabaseClient();
 
   let dateFilter = sql`1=1`; // Default: no filter for 'all'
 
-  if (period === "week") {
+  if (customDateRange?.from && customDateRange?.to) {
+    // Use custom date range if provided
+    dateFilter = sql`
+      ${sales.createdAt}::date >= ${customDateRange.from}::date
+      AND ${sales.createdAt}::date <= ${customDateRange.to}::date
+    `;
+  } else if (period === "week") {
     // Use DATE_TRUNC for current week calculation (Monday to Sunday)
     dateFilter = sql`
-      ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()))::date
+      ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()) - INTERVAL '2 days')::date
     `;
   } else if (period === "month") {
     // Use DATE_TRUNC for month calculation
@@ -53,42 +60,6 @@ export async function getLeaderboardDataByPeriod(
   }));
 }
 
-export async function getLeaderboardData() {
-  const db = await createDrizzleSupabaseClient();
-
-  // Use DATE_TRUNC for current week calculation (Monday to Sunday)
-  const dateFilter = sql`
-    ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()))::date
-    AND ${sales.createdAt}::date < (DATE_TRUNC('week', NOW()) + INTERVAL '1 week')::date
-  `;
-
-  const results = await db.admin
-    .select({
-      userId: profile.userId,
-      name: profile.name,
-      role: roles.name,
-      avatarUrl: profile.avatarUrl,
-      totalSalesAmount: sql<number>`COALESCE(SUM(${sales.totalSaleValue}), 0)`,
-      salesCount: count(sales.id),
-    })
-    .from(profile)
-    .leftJoin(userRoles, eq(profile.userId, userRoles.userId))
-    .leftJoin(roles, eq(userRoles.roleId, roles.id))
-    .innerJoin(sales, eq(profile.userId, sales.userId))
-    .where(sql`${dateFilter} AND ${sales.deletedAt} IS NULL`)
-    .orderBy(desc(sql<number>`COALESCE(SUM(${sales.totalSaleValue}), 0)`))
-    .groupBy(profile.userId, profile.name, profile.avatarUrl, roles.name)
-    .having(gt(count(sales.id), 0));
-
-  return results.map((r) => ({
-    ...r,
-    totalSalesAmount: Math.ceil(
-      Number(r.totalSalesAmount ?? 0) * 12,
-    ).toLocaleString(),
-    salesCount: Number(r.salesCount ?? 0),
-  }));
-}
-
 export type LeaderboardDataSection = Awaited<
-  ReturnType<typeof getLeaderboardData>
+  ReturnType<typeof getLeaderboardDataByPeriod>
 >[number];

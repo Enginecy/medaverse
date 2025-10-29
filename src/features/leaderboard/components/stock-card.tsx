@@ -2,18 +2,20 @@
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 import { getLastSale } from "@/features/leaderboard/server/db/leaderboard";
 import { useSupabase } from "@/lib/supabase/provider";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChartSplineIcon, ClockIcon } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function StockCard() {
   const supabase = useSupabase();
+
+  const queryClient = useQueryClient();
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   const {
     data: lastSale,
     isPending,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ["last-sale"],
     queryFn: getLastSale,
@@ -21,22 +23,33 @@ export function StockCard() {
   });
 
   useEffect(() => {
-    const subscription = supabase
-      .channel("sales-changes")
+    // Prevent duplicate subscriptions
+    if (channelRef.current) return;
+
+    const channel = supabase
+      .channel("sales-changes-stock-card")
       .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "sales" },
-        () => {
-          refetch();
-        },
+        "broadcast",
+        { event: "INSERT" },
+        () => void queryClient.invalidateQueries({ queryKey: ["last-sale"] }),
       )
+      .on(
+        "broadcast",
+        { event: "DELETE" },
+        () => void queryClient.invalidateQueries({ queryKey: ["last-sale"] }),
+      )
+
       .subscribe();
-    console.log("sub:", subscription);
+
+    channelRef.current = channel;
+
     return () => {
-      void subscription.unsubscribe();
-      void supabase.removeAllChannels();
+      if (channelRef.current) {
+        void channelRef.current.unsubscribe();
+        channelRef.current = null;
+      }
     };
-  }, [supabase, refetch]);
+  }, [queryClient, supabase]);
 
   const [animate, setAnimate] = useState(false);
 

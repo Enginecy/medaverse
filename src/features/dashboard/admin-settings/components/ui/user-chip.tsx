@@ -1,5 +1,6 @@
 "use client";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type UserChipProps = {
@@ -38,7 +39,12 @@ export function UserChip({ user, size = "md" }: UserChipProps) {
         ${animate ? "animate-bottom-to-top" : ""}`}
     >
       <Avatar className={sizeClass[size]}>
-        <AvatarImage src={user.avatar} className="object-cover" />
+        <Image
+          src={user.avatar!}
+          alt={user.name}
+          fill
+          className="object-cover"
+        />
       </Avatar>
       <div>
         <div className="font-medium">{user.name}</div>

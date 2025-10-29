@@ -6,7 +6,7 @@
 
 "use client";
 
-import { AvatarFallback, AvatarImage, Avatar } from "@/components/ui/avatar";
+import { AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ListOfExpandable } from "@/features/leaderboard/components/deprecated/list_of_expandable";
 import {
@@ -15,6 +15,7 @@ import {
 } from "@/features/leaderboard/server/db/leaderboard";
 import { CollapsibleContent } from "@radix-ui/react-collapsible";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import { useState } from "react";
 
 export function ExpandableTile({ userData }: { userData: LeaderAndFollowers }) {
@@ -47,7 +48,12 @@ export function ExpandableTile({ userData }: { userData: LeaderAndFollowers }) {
         >
           <div className="flex items-center space-x-3">
             <Avatar>
-              <AvatarImage src={userData.avatar_url} />
+              <Image
+                src={userData.avatar_url}
+                alt={userData.name}
+                fill
+                className="object-cover"
+              />
               <AvatarFallback>{userData.name}</AvatarFallback>
             </Avatar>
             <div>

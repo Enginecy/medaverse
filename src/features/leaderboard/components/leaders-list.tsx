@@ -5,8 +5,9 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { LeadersAndSubordinates } from "@/features/leaderboard/server/db/leaderboard"; // adjust path if needed
+import Image from "next/image";
 
 export default function LeaderList({
   data,
@@ -20,7 +21,7 @@ export default function LeaderList({
       className="space-y-4 rounded-3xl border border-neutral-800
         bg-neutral-900/80 p-4"
     >
-      <div className="mb-4 text-center text-xl font-semibold text-white">
+      <div className="mb-4 text-center text-2xl font-semibold text-white">
         {title}
       </div>
       {data.map((leader) => (
@@ -43,13 +44,18 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
             border p-4 shadow-sm hover:bg-gray-600/30"
         >
           <div className="flex items-center space-x-3">
-            <Avatar>
-              <AvatarImage src={leader.avatar_url} className="object-cover" />
-              <AvatarFallback>{leader.leader_name[0]}</AvatarFallback>
+            <Avatar className="h-12 w-12">
+              <Image
+                src={leader.avatar_url}
+                alt={leader.leader_name}
+                fill
+                className="object-cover"
+              />
+              <AvatarFallback className="text-lg">{leader.leader_name[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-semibold">{leader.leader_name}</div>
-              <div className="text-xs text-gray-500">
+              <div className="text-lg font-semibold">{leader.leader_name}</div>
+              <div className="text-sm text-gray-500">
                 Total Sales:{" "}
                 <span className="text-secondary-foreground/55 font-semibold">
                   $
@@ -58,7 +64,7 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
                   ).toLocaleString()}
                 </span>
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-sm text-gray-500">
                 Personal Sales:{" "}
                 <span className="text-primary-300 font-semibold">
                   $
@@ -70,7 +76,7 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
             </div>
           </div>
           {leader.subordinates.length > 0 && (
-            <span className="text-gray-400">{open ? "▲" : "▼"}</span>
+            <span className="text-lg text-gray-400">{open ? "▲" : "▼"}</span>
           )}
         </div>
       </CollapsibleTrigger>
@@ -86,38 +92,40 @@ function LeaderCard({ leader }: { leader: LeadersAndSubordinates }) {
               >
                 <div className="flex w-full items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <Avatar className="ring-primary/20 h-8 w-8 ring-2">
-                      <AvatarImage
+                    <Avatar className="ring-primary/20 h-10 w-10 ring-2">
+                      <Image
                         src={follower.avatar_url}
+                        alt={follower.name}
+                        fill
                         className="object-cover"
                       />
                       <AvatarFallback
                         className="from-primary/20 to-primary/10 text-primary
-                          bg-gradient-to-br font-semibold"
+                          bg-gradient-to-br text-base font-semibold"
                       >
                         {follower.name[0]}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col items-start">
-                      <span className="text-foreground text-sm font-semibold">
+                      <span className="text-foreground text-base font-semibold">
                         {follower.name}
                       </span>
                       <span
                         className="text-muted-foreground bg-secondary/50
-                          rounded-full px-2 py-0.5 text-xs font-medium"
+                          rounded-full px-2 py-0.5 text-sm font-medium"
                       >
                         {follower.role}
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-primary-300 text-sm font-bold">
+                    <div className="text-primary-300 text-base font-bold">
                       $
                       {Math.ceil(
                         Number(follower.total_sales_amount) * 12,
                       ).toLocaleString()}
                     </div>
-                    <div className="text-muted-foreground text-xs">
+                    <div className="text-muted-foreground text-sm">
                       {follower.total_sales_count} sales
                     </div>
                   </div>

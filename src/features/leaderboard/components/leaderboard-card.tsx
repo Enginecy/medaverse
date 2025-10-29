@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function LeaderboardCard({
   user,
 }: {
@@ -24,13 +26,15 @@ export function LeaderboardCard({
         className="flex w-full flex-col items-center justify-center gap-2
           md:gap-4"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          alt="placeholder"
-          className="h-20 w-20 rounded-2xl border md:h-28 md:w-28 md:rounded-3xl
-            lg:h-36 lg:w-36 lg:rounded-4xl object-cover"
-          src={user.avatar}
-        />
+        <div className="relative h-20 w-20 md:h-28 md:w-28 lg:h-36 lg:w-36">
+          <Image
+            src={user.avatar}
+            alt={user.name}
+            fill
+            className="rounded-2xl border object-cover md:rounded-3xl
+              lg:rounded-4xl"
+          />
+        </div>
 
         <div
           className="flex flex-col items-center justify-center gap-1 md:gap-1.5"
