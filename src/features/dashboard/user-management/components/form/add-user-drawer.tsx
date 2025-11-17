@@ -31,7 +31,7 @@ import {
 } from "@/features/dashboard/user-management/schemas/add-user-schema";
 import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, isTargetLevel } from "@/lib/utils";
 import {
   queryOptions,
   useMutation,
@@ -68,7 +68,6 @@ import { RoleField } from "@/features/dashboard/user-management/components/form/
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { UpLineField } from "@/features/dashboard/user-management/components/form/upline-field";
 import { getUserProfile } from "@/features/dashboard/home/server/db/home";
-import { isSuperAdminRole } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 
@@ -88,7 +87,9 @@ export function AddUserDrawer({
       try {
         const currentUserProfile = await getUserProfile();
         if (currentUserProfile) {
-          setIsSuperAdmin(isSuperAdminRole(currentUserProfile.role));
+          setIsSuperAdmin(
+            isTargetLevel(9, currentUserProfile.role?.level ?? 0),
+          );
         }
       } catch (error) {
         console.error("Error checking super admin status:", error);
@@ -111,7 +112,8 @@ export function AddUserDrawer({
         upLine: user!.upline ?? "",
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
-        isFirst90: (user as unknown as { isFirst90?: boolean })?.isFirst90 ?? false,
+        isFirst90:
+          (user as unknown as { isFirst90?: boolean })?.isFirst90 ?? false,
       }
     : {
         fullName: "",
@@ -438,7 +440,10 @@ export function AddUserDrawer({
               control={form.control}
               name="isFirst90"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem
+                  className="flex flex-row items-start space-y-0 space-x-3
+                    rounded-md border p-4"
+                >
                   <FormControl>
                     <Checkbox
                       checked={field.value ?? false}

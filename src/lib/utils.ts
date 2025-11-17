@@ -60,3 +60,10 @@ export function generateFriendlyId(prefix: string, id: string) {
 export function isSuperAdminRole(role?: { code?: string } | null): boolean {
   return role?.code === "super_admin";
 }
+
+export function isTargetLevel(
+  targetLevel: number,
+  level: number,
+): boolean {
+  return level >= targetLevel;
+}

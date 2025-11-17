@@ -30,7 +30,7 @@ import {
 } from "@/features/dashboard/user-management/schemas/add-user-schema";
 import { DropzoneImageFormField } from "@/features/dashboard/user-management/components/form/dropzone-image-form-field";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, isTargetLevel } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { updateAgent } from "@/features/dashboard/user-management/server/actions/user-mangement";
 import { PulseMultiple } from "react-svg-spinners";
@@ -53,7 +53,6 @@ import { UsernameField } from "@/features/dashboard/user-management/components/f
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
 import type { UserProfile } from "@/features/dashboard/home/server/db/home";
 import { getUserProfile } from "@/features/dashboard/home/server/db/home";
-import { isSuperAdminRole } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 
@@ -73,7 +72,9 @@ export function EditProfileDrawer({
       try {
         const currentUserProfile = await getUserProfile();
         if (currentUserProfile) {
-          setIsSuperAdmin(isSuperAdminRole(currentUserProfile.role));
+          setIsSuperAdmin(
+            isTargetLevel(9, currentUserProfile.role?.level ?? 0),
+          );
         }
       } catch (error) {
         console.error("Error checking super admin status:", error);
@@ -353,7 +354,10 @@ export function EditProfileDrawer({
               control={form.control}
               name="isFirst90"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem
+                  className="flex flex-row items-start space-y-0 space-x-3
+                    rounded-md border p-4"
+                >
                   <FormControl>
                     <Checkbox
                       checked={field.value ?? false}
