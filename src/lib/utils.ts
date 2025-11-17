@@ -51,3 +51,12 @@ export function generateFriendlyId(prefix: string, id: string) {
   const firstPart = splitId[0];
   return `${prefix}-${firstPart}`;
 }
+
+/**
+ * Check if a user profile has a super admin role
+ * @param role - The role object with a code property
+ * @returns true if the role code is 'super_admin'
+ */
+export function isSuperAdminRole(role?: { code?: string } | null): boolean {
+  return role?.code === "super_admin";
+}

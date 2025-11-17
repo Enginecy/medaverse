@@ -126,6 +126,7 @@ export const profile = pgTable(
     phoneNumber: varchar("phone_number"), //TODO: Add notNull before deploying
     npnNumber: varchar("npn_number"), //TODO: Add notNull before deploying
     states: jsonb("states").array().$type<State[]>(), //TODO: Add notNull before deploying
+    isFirst90: boolean("is_first90").default(false),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
     deletedAt: timestamp("deleted_at", { mode: "date" }),

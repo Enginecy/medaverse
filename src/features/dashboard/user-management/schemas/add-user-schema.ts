@@ -31,6 +31,7 @@ export const addUserSchema = z.object({
     .union([z.instanceof(File), z.string().url()])
     .optional()
     .nullable(),
+  isFirst90: z.boolean(),
 });
 
 export type AddUserFormData = z.infer<typeof addUserSchema>;

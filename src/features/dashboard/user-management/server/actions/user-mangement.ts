@@ -133,6 +133,7 @@ export async function createAgent(
         npnNumber: data.npnNumber,
         states: data.states ?? ([] as State[]),
         status: "active",
+        isFirst90: data.isFirst90 ?? false,
         ...(avatarUrl ? { avatarUrl } : {}),
         userId: user.id,
       });
@@ -292,6 +293,7 @@ export async function updateAgent(
     const statesJson = data.states
       ?.map((value) => `'${JSON.stringify(value)}'::jsonb`)
       .join(", ");
+    const isFirst90Sql = sql`${data.isFirst90 ?? false}::boolean`;
     const profileData = await db.rls((tx) =>
       tx.execute(sql`
     select public.update_agent_profile(
@@ -306,7 +308,8 @@ export async function updateAgent(
       ${profileUrlSql}, 
       ${currentUser!.data!.user!.id}::uuid,
       ${sql.raw(`ARRAY[${statesJson}]::jsonb[]`)},
-      ${uplineSql}
+      ${uplineSql},
+      ${isFirst90Sql}
     )
   `),
     );

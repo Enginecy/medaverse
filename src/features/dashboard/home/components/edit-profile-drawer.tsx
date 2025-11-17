@@ -52,6 +52,10 @@ import { PhoneField } from "@/features/dashboard/user-management/components/form
 import { UsernameField } from "@/features/dashboard/user-management/components/form/username-field";
 import { FullNameField } from "@/features/dashboard/user-management/components/form/full-name-field";
 import type { UserProfile } from "@/features/dashboard/home/server/db/home";
+import { getUserProfile } from "@/features/dashboard/home/server/db/home";
+import { isSuperAdminRole } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect, useState } from "react";
 
 export function EditProfileDrawer({
   resolve,
@@ -62,6 +66,22 @@ export function EditProfileDrawer({
 }) {
   const isEditing = !!user;
   console.log(user?.npnNumber);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkSuperAdmin = async () => {
+      try {
+        const currentUserProfile = await getUserProfile();
+        if (currentUserProfile) {
+          setIsSuperAdmin(isSuperAdminRole(currentUserProfile.role));
+        }
+      } catch (error) {
+        console.error("Error checking super admin status:", error);
+        setIsSuperAdmin(false);
+      }
+    };
+    checkSuperAdmin();
+  }, []);
 
   const defaultValues: DefaultValues<AddUserFormData> = isEditing
     ? {
@@ -75,6 +95,7 @@ export function EditProfileDrawer({
         role: user!.role?.id ?? "",
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
+        isFirst90: user!.isFirst90!,
       }
     : {
         fullName: "",
@@ -87,6 +108,7 @@ export function EditProfileDrawer({
         states: [],
         profileImage: new File([], ""),
         dateOfBirth: new Date(),
+        isFirst90: false,
       };
 
   const form = useForm<AddUserFormData>({
@@ -326,6 +348,28 @@ export function EditProfileDrawer({
               );
             }}
           />
+          {isSuperAdmin && (
+            <FormField
+              control={form.control}
+              name="isFirst90"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value ?? false}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>First 90 Days</FormLabel>
+                    <FormDescription>
+                      Mark this user as being in their first 90 days
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+          )}
           <SheetFooter className="w-auto p-0">
             <Button
               variant={"default"}

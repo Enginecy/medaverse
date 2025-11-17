@@ -140,3 +140,38 @@ export async function getCurrentUserPermissions(): Promise<string[]> {
 
   return data || [];
 }
+
+export async function isCurrentUserSuperAdmin(): Promise<boolean> {
+  const { user } = await getUser();
+  const drizzle = await createDrizzleSupabaseClient();
+
+  const { data, error } = await tryCatch(
+    drizzle.rls(async (tx) => {
+      const result = await tx
+        .select({
+          roleCode: roles.code,
+        })
+        .from(userRoles)
+        .innerJoin(roles, eq(userRoles.roleId, roles.id))
+        .where(
+          sql`${userRoles.userId} = ${user.id} 
+              AND ${userRoles.status} = 'active' 
+              AND ${roles.status} = 'active'
+              AND ${roles.code} = 'super_admin'
+              AND (${userRoles.expiresAt} IS NULL OR ${userRoles.expiresAt} > NOW())
+              AND ${userRoles.deletedAt} IS NULL
+              AND ${roles.deletedAt} IS NULL`
+        )
+        .limit(1);
+
+      return result.length > 0;
+    })
+  );
+
+  if (error) {
+    console.error("Error checking super admin status:", error);
+    return false;
+  }
+
+  return data ?? false;
+}

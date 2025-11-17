@@ -67,6 +67,10 @@ import {
 import { RoleField } from "@/features/dashboard/user-management/components/form/role-field";
 import { getRoles } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { UpLineField } from "@/features/dashboard/user-management/components/form/upline-field";
+import { getUserProfile } from "@/features/dashboard/home/server/db/home";
+import { isSuperAdminRole } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect, useState } from "react";
 
 export function AddUserDrawer({
   user,
@@ -77,6 +81,22 @@ export function AddUserDrawer({
 }) {
   console.log("user", user);
   const isEditing = !!user;
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkSuperAdmin = async () => {
+      try {
+        const currentUserProfile = await getUserProfile();
+        if (currentUserProfile) {
+          setIsSuperAdmin(isSuperAdminRole(currentUserProfile.role));
+        }
+      } catch (error) {
+        console.error("Error checking super admin status:", error);
+        setIsSuperAdmin(false);
+      }
+    };
+    checkSuperAdmin();
+  }, []);
 
   const defaultValues: DefaultValues<AddUserFormData> = isEditing
     ? {
@@ -91,6 +111,7 @@ export function AddUserDrawer({
         upLine: user!.upline ?? "",
         profileImage: user!.avatarUrl!,
         dateOfBirth: new Date(user!.dob!),
+        isFirst90: (user as unknown as { isFirst90?: boolean })?.isFirst90 ?? false,
       }
     : {
         fullName: "",
@@ -103,6 +124,7 @@ export function AddUserDrawer({
         states: [],
         profileImage: new File([], ""),
         dateOfBirth: new Date(),
+        isFirst90: false,
       };
   const queryClient = useQueryClient();
 
@@ -411,6 +433,28 @@ export function AddUserDrawer({
               );
             }}
           />
+          {isSuperAdmin && (
+            <FormField
+              control={form.control}
+              name="isFirst90"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value ?? false}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>First 90 Days</FormLabel>
+                    <FormDescription>
+                      Mark this user as being in their first 90 days
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+          )}
           <SheetFooter className="w-auto p-0">
             <Button
               variant={"default"}
