@@ -17,7 +17,7 @@ export async function NewsList() {
         lg:grid-cols-3 xl:grid-cols-4"
     >
       {news.map((news) => (
-        <NewsCard key={news.id} title={news.title} file={news.file_path!} />
+        <NewsCard key={news.id} title={news.title!} file={news.file_path!} />
       ))}
     </div>
   );

@@ -1,20 +1,41 @@
 "use server";
 import { createDrizzleSupabaseClient } from "@/db/db";
+import { documents, profile, users } from "@/db/schema";
 import { createClient } from "@/lib/supabase/server";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 
 export async function getNews() {
   const db = await createDrizzleSupabaseClient();
 
   // call db function public.get_user_accessible_documents
   const result = await db.rls(async (tx) => {
-    return tx.execute<NewsDocument>(
-      sql`SELECT * FROM public.get_user_accessible_documents(
-          p_category => 'news',
-          p_limit => 100,
-          p_offset => 0
-        )`,
-    );
+    return tx
+      .select({
+        id: documents.id,
+        file_name: documents.fileName,
+        original_file_name: documents.originalFileName,
+        file_type: documents.fileType,
+        file_size: documents.fileSize,
+        file_path: documents.filePath,
+        category: documents.category,
+        title: documents.title,
+        uploaded_by: sql`jsonb_build_object(
+        'id', ${documents.uploadedBy},
+        'email', ${users.email},
+        'name', ${profile.name},
+        'avatar', ${profile.avatarUrl}
+      )`,
+        created_at: documents.createdAt,
+        updated_at: documents.updatedAt,
+      })
+      .from(documents)
+      .leftJoin(users, eq(documents.uploadedBy, users.id))
+      .leftJoin(profile, eq(users.id, profile.userId))
+      .where(
+        sql`${documents.deletedAt} IS NULL AND ${documents.category} = 'news'`,
+      )
+      .limit(100)
+      .offset(0);
   });
 
   // for each result, get the download link
