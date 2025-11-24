@@ -7,6 +7,7 @@ import {
   Users,
   File,
   LockIcon,
+  CalendarDays,
 } from "lucide-react";
 import Image from "next/image";
 import logo from "public/meda_health_logo.png";
@@ -38,6 +39,11 @@ const items = [
     title: "User Management",
     url: "/dashboard/user-management",
     icon: Users,
+  },
+  {
+    title: "First 90",
+    url: "/dashboard/first90",
+    icon: CalendarDays,
   },
   {
     title: "Sales",
