@@ -79,6 +79,7 @@ export async function getFirst90Users() {
 
   // Transform the result to match TypeScript types
   // execute() returns an array of rows directly
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return first90Data.map((row: any) => ({
     name: row.name as string,
     avatarUrl: row.avatar_url as string,
