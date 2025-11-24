@@ -27,6 +27,9 @@ import { usePathname } from "next/navigation";
 import { Logout } from "./logout";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useAuth } from "@/hooks/auth";
+import { useEffect, useState } from "react";
+import { getCurrentUserRoleLevel } from "@/lib/supabase/server";
 
 // Menu items.
 const items = [
@@ -34,36 +37,74 @@ const items = [
     title: "Dashboard",
     url: "/dashboard/home",
     icon: Grid2x2,
+    requiresLevel: null,
   },
   {
     title: "User Management",
     url: "/dashboard/user-management",
     icon: Users,
+    requiresLevel: null,
   },
   {
     title: "First 90",
     url: "/dashboard/first90",
     icon: CalendarDays,
+    requiresLevel: 9,
   },
   {
     title: "Sales",
     url: "/dashboard/sales",
     icon: DollarSign,
+    requiresLevel: null,
   },
   {
     title: "Documents Management",
     url: "/dashboard/docs-management",
     icon: File,
+    requiresLevel: null,
   },
   {
     title: "Admin Settings",
     url: "/dashboard/admin-settings",
     icon: Settings,
+    requiresLevel: 9,
   },
 ];
 
 export function AppSidebar() {
   const pathName = usePathname();
+  const { user } = useAuth();
+  const [userRoleLevel, setUserRoleLevel] = useState<number | null>(null);
+  const [isLoadingRole, setIsLoadingRole] = useState(true);
+
+  useEffect(() => {
+    if (!user?.user?.id) {
+      setIsLoadingRole(false);
+      return;
+    }
+
+    const fetchRoleLevel = async () => {
+      try {
+        const level = await getCurrentUserRoleLevel();
+        setUserRoleLevel(level);
+      } catch (error) {
+        console.error("Error fetching user role level:", error);
+        setUserRoleLevel(null);
+      } finally {
+        setIsLoadingRole(false);
+      }
+    };
+
+    fetchRoleLevel();
+  }, [user?.user?.id]);
+
+  // Filter items based on role level requirement
+  const visibleItems = items.filter((item) => {
+    if (item.requiresLevel === null) return true;
+    if (isLoadingRole || userRoleLevel === null) return false;
+    return userRoleLevel >= item.requiresLevel;
+  });
+
   return (
     <Sidebar collapsible="icon" variant="inset" className="bg-transparent">
       <SidebarHeader className="py-4 md:py-[22.5px]">
@@ -79,7 +120,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => {
+              {visibleItems.map((item) => {
                 const isSelected = pathName.includes(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>

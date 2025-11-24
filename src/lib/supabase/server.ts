@@ -175,3 +175,77 @@ export async function isCurrentUserSuperAdmin(): Promise<boolean> {
 
   return data ?? false;
 }
+
+export async function isCurrentUserNationalDirector(): Promise<boolean> {
+  const { user } = await getUser();
+  const drizzle = await createDrizzleSupabaseClient();
+
+  const { data, error } = await tryCatch(
+    drizzle.rls(async (tx) => {
+      const result = await tx
+        .select({
+          roleLevel: roles.level,
+        })
+        .from(userRoles)
+        .innerJoin(roles, eq(userRoles.roleId, roles.id))
+        .where(
+          sql`${userRoles.userId} = ${user.id} 
+              AND ${userRoles.status} = 'active' 
+              AND ${roles.status} = 'active'
+              AND ${roles.level} >= 9
+              AND (${userRoles.expiresAt} IS NULL OR ${userRoles.expiresAt} > NOW())
+              AND ${userRoles.deletedAt} IS NULL
+              AND ${roles.deletedAt} IS NULL`
+        )
+        .limit(1);
+
+      return result.length > 0;
+    })
+  );
+
+  if (error) {
+    console.error("Error checking national director status:", error);
+    return false;
+  }
+
+  return data ?? false;
+}
+
+export async function getCurrentUserRoleLevel(): Promise<number | null> {
+  try {
+    const { user } = await getUser();
+    const drizzle = await createDrizzleSupabaseClient();
+
+    const { data, error } = await tryCatch(
+      drizzle.rls(async (tx) => {
+        const result = await tx
+          .select({
+            roleLevel: roles.level,
+          })
+          .from(userRoles)
+          .innerJoin(roles, eq(userRoles.roleId, roles.id))
+          .where(
+            sql`${userRoles.userId} = ${user.id} 
+                AND ${userRoles.status} = 'active' 
+                AND ${roles.status} = 'active'
+                AND (${userRoles.expiresAt} IS NULL OR ${userRoles.expiresAt} > NOW())
+                AND ${userRoles.deletedAt} IS NULL
+                AND ${roles.deletedAt} IS NULL`
+          )
+          .orderBy(sql`${roles.level} DESC`)
+          .limit(1);
+
+        return result[0]?.roleLevel ?? null;
+      })
+    );
+
+    if (error) {
+      console.error("Error fetching user role level:", error);
+      return null;
+    }
+
+    return data ?? null;
+  } catch {
+    return null;
+  }
+}
