@@ -86,9 +86,9 @@ export async function getFirst90Users() {
     uplineAvatarUrl: row.upline_avatar_url as string,
     fnb: row.fnb ? new Date(row.fnb) : null,
     endDate: row.end_date ? new Date(row.end_date) : null,
-    submittedAv: parseFloat(String(row.submitted_av || 0)),
-    goalRemaining: parseFloat(String(row.goal_remaining || 0)),
-    weeksLeft: parseFloat(String(row.weeks_left || 0)),
+    submittedAv: parseFloat(String(row.submitted_av ?? 0)),
+    goalRemaining: parseFloat(String(row.goal_remaining ?? 0)),
+    weeksLeft: parseFloat(String(row.weeks_left ?? 0)),
   }));
 }
 
