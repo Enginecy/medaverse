@@ -8,6 +8,7 @@ import {
   File,
   LockIcon,
   CalendarDays,
+  TrophyIcon,
 } from "lucide-react";
 import Image from "next/image";
 import logo from "public/meda_health_logo.png";
@@ -50,6 +51,12 @@ const items = [
     url: "/dashboard/first90",
     icon: CalendarDays,
     requiresLevel: 9,
+  },
+  {
+    title: "First 90 Leaderboard",
+    url: "/first90-leaderboard",
+    icon: TrophyIcon,
+    requiresLevel: null,
   },
   {
     title: "Sales",
