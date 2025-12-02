@@ -41,6 +41,21 @@ const columns: ColumnDef<First90LeaderboardDataSection>[] = [
     },
   },
   {
+    id: "upline",
+    header: "Upline",
+    cell: ({ row }) => {
+      return (
+        <UserChip
+          size="sm"
+          user={{
+            name: row.original.upline,
+            avatar: row.original.uplineAvatarUrl,
+          }}
+        />
+      );
+    },
+  },
+  {
     accessorKey: "submittedAv",
     header: "Submitted AV",
     cell: ({ row }) => (
@@ -67,10 +82,7 @@ const columns: ColumnDef<First90LeaderboardDataSection>[] = [
       return (
         <div
           className={`font-semibold ${
-            isNegative
-              ? "text-emerald-400 drop-shadow-lg"
-              : "text-blue-300"
-          }`}
+            isNegative ? "text-emerald-400 drop-shadow-lg" : "text-blue-300" }`}
         >
           ${Math.ceil(Math.abs(remaining)).toLocaleString()}
           {isNegative && " ✓"}
@@ -94,9 +106,26 @@ const columns: ColumnDef<First90LeaderboardDataSection>[] = [
                 : weeks <= 8
                   ? "text-yellow-400 drop-shadow-lg"
                   : "text-cyan-300"
-          }`}
+            }`}
         >
           {weeks.toFixed(1)}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "completionDate",
+    header: "Completed On",
+    cell: ({ row }) => {
+      const completionDate = row.original.completionDate;
+      if (!completionDate) return <div className="text-slate-500">-</div>;
+      return (
+        <div className="font-semibold text-emerald-400">
+          {completionDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
         </div>
       );
     },
@@ -106,15 +135,55 @@ const columns: ColumnDef<First90LeaderboardDataSection>[] = [
 export function First90LeaderboardTable({
   title,
   data,
+  criteria,
 }: {
   title: string;
   data: First90LeaderboardDataSection[];
   criteria: "submitted_av" | "time_efficiency" | "goal_remaining";
 }) {
-  // Show all columns - they're all relevant for first90 leaderboard
+  // Filter columns based on criteria
+  const visibleColumns = columns.filter((col) => {
+    // Always show rank, agent name, and upline
+    if (col.id === "rank" || col.id === "agent" || col.id === "upline") {
+      return true;
+    }
+
+    // First tile (Submitted AV): Show only Submitted AV
+    if (criteria === "submitted_av") {
+      if ("accessorKey" in col && col.accessorKey === "submittedAv") {
+        return true;
+      }
+      return false;
+    }
+
+    // Second tile (Time Efficiency): Show only AV/Week
+    if (criteria === "time_efficiency") {
+      if ("accessorKey" in col && col.accessorKey === "timeEfficiency") {
+        return true;
+      }
+      return false;
+    }
+
+    // Third tile (Who Finished First): Show Submitted AV, Completed On
+    if (criteria === "goal_remaining") {
+      if ("accessorKey" in col) {
+        if (
+          col.accessorKey === "submittedAv" ||
+          col.accessorKey === "completionDate"
+        ) {
+          return true;
+        }
+        return false;
+      }
+      return false;
+    }
+
+    return true;
+  });
+
   const table = useReactTable({
     data,
-    columns,
+    columns: visibleColumns,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -126,8 +195,8 @@ export function First90LeaderboardTable({
         hover:shadow-cyan-500/20"
     >
       <div
-        className="mb-4 text-center text-xl font-semibold bg-gradient-to-r
-          from-cyan-400 via-blue-400 to-cyan-500 bg-clip-text text-transparent
+        className="mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500
+          bg-clip-text text-center text-xl font-semibold text-transparent
           drop-shadow-lg"
       >
         {title}
@@ -158,8 +227,9 @@ export function First90LeaderboardTable({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="border-none hover:bg-cyan-500/10 hover:bg-gradient-to-r
-                  hover:from-cyan-500/5 hover:to-blue-500/5 transition-all"
+                className="border-none transition-all hover:bg-cyan-500/10
+                  hover:bg-gradient-to-r hover:from-cyan-500/5
+                  hover:to-blue-500/5"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="py-4">
@@ -171,7 +241,7 @@ export function First90LeaderboardTable({
           ) : (
             <TableRow>
               <TableCell
-                colSpan={columns.length}
+                colSpan={visibleColumns.length}
                 className="h-24 text-center"
               >
                 No results.
@@ -183,4 +253,3 @@ export function First90LeaderboardTable({
     </div>
   );
 }
-

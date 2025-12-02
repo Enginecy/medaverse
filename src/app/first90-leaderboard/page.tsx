@@ -93,23 +93,33 @@ export default async function First90LeaderboardPage() {
               />
             </div>
             <div className="flex flex-col gap-4">
-              <First90LeaderboardCard
-                user={{
-                  name: goalRemainingData[0]!.name,
-                  avatar: goalRemainingData[0]!.avatarUrl,
-                  submittedAv: goalRemainingData[0]!.submittedAv,
-                  goalRemaining: goalRemainingData[0]!.goalRemaining,
-                  weeksLeft: goalRemainingData[0]!.weeksLeft,
-                  goalProgress: goalRemainingData[0]!.goalProgress,
-                  timeEfficiency: goalRemainingData[0]!.timeEfficiency,
-                }}
-                criteria="goal_remaining"
-              />
-              <First90LeaderboardTable
-                title="Goal Remaining"
-                data={goalRemainingData}
-                criteria="goal_remaining"
-              />
+              {goalRemainingData.length > 0 ? (
+                <>
+                  <First90LeaderboardCard
+                    user={{
+                      name: goalRemainingData[0]!.name,
+                      avatar: goalRemainingData[0]!.avatarUrl,
+                      submittedAv: goalRemainingData[0]!.submittedAv,
+                      goalRemaining: goalRemainingData[0]!.goalRemaining,
+                      weeksLeft: goalRemainingData[0]!.weeksLeft,
+                      goalProgress: goalRemainingData[0]!.goalProgress,
+                      timeEfficiency: goalRemainingData[0]!.timeEfficiency,
+                    }}
+                    criteria="goal_remaining"
+                  />
+                  <First90LeaderboardTable
+                    title="Who Finished First"
+                    data={goalRemainingData}
+                    criteria="goal_remaining"
+                  />
+                </>
+              ) : (
+                <First90LeaderboardTable
+                  title="Who Finished First"
+                  data={[]}
+                  criteria="goal_remaining"
+                />
+              )}
             </div>
           </>
         )}

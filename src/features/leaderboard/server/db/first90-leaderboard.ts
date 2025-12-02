@@ -17,6 +17,7 @@ export type First90LeaderboardUser = {
   weeksElapsed: number;
   timeEfficiency: number; // submitted_av / weeks_elapsed
   goalProgress: number; // percentage of $150k goal
+  completionDate: Date | null; // Date when goal was reached (goalRemaining <= 0)
 };
 
 export async function getFirst90LeaderboardDataByCriteria(
@@ -69,7 +70,25 @@ export async function getFirst90LeaderboardDataByCriteria(
               AND s.created_at < fsd.time + INTERVAL '3 months'
               AND s.deleted_at IS NULL
           ) as submitted_av,
-          GREATEST(1, ROUND(DATE_PART('day', NOW()::timestamp - fsd.time::timestamp) / 7)) as weeks_elapsed
+          GREATEST(1, ROUND(DATE_PART('day', NOW()::timestamp - fsd.time::timestamp) / 7)) as weeks_elapsed,
+          (
+            SELECT MIN(cumulative.created_at)::date
+            FROM (
+              SELECT 
+                s2.created_at,
+                SUM(s2.total_sale_value * 12) OVER (
+                  ORDER BY s2.created_at 
+                  ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                ) as running_total
+              FROM sales s2
+              WHERE s2.user_id = fsd.user_id
+                AND s2.created_at >= fsd.time
+                AND s2.created_at < fsd.time + INTERVAL '3 months'
+                AND s2.deleted_at IS NULL
+            ) cumulative
+            WHERE cumulative.running_total >= 150000
+            LIMIT 1
+          ) as completion_date
         FROM
           FirstSaleDates fsd
         WHERE
@@ -90,7 +109,8 @@ export async function getFirst90LeaderboardDataByCriteria(
         CASE 
           WHEN weeks_elapsed > 0 THEN submitted_av / weeks_elapsed
           ELSE 0
-        END as time_efficiency
+        END as time_efficiency,
+        completion_date
       FROM 
         SalesSummary
       WHERE 
@@ -106,6 +126,9 @@ export async function getFirst90LeaderboardDataByCriteria(
     const timeEfficiency = parseFloat(String(row.time_efficiency ?? 0));
     const goalRemaining = parseFloat(String(row.goal_remaining ?? 150000));
     const goalProgress = (submittedAv / 150000) * 100;
+    const completionDate = row.completion_date
+      ? new Date(row.completion_date)
+      : null;
 
     return {
       userId: row.user_id as string,
@@ -121,6 +144,7 @@ export async function getFirst90LeaderboardDataByCriteria(
       weeksElapsed,
       timeEfficiency,
       goalProgress,
+      completionDate,
     };
   });
 
@@ -136,10 +160,15 @@ export async function getFirst90LeaderboardDataByCriteria(
       );
       break;
     case "goal_remaining":
-      // Sort by lowest remaining (negative = exceeded goal, so they come first)
-      sortedUsers = [...users].sort(
-        (a, b) => a.goalRemaining - b.goalRemaining,
-      );
+      // Sort by completion date (who finished first)
+      // Only show users who have completed (goalRemaining <= 0)
+      // Sort by completion date ascending (earliest completion first)
+      sortedUsers = [...users]
+        .filter((user) => user.goalRemaining <= 0 && user.completionDate !== null)
+        .sort((a, b) => {
+          if (!a.completionDate || !b.completionDate) return 0;
+          return a.completionDate.getTime() - b.completionDate.getTime();
+        });
       break;
     default:
       sortedUsers = users;
