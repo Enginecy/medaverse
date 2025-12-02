@@ -79,7 +79,7 @@ export const first90Columns: ColumnDef<First90User>[] = [
   },
   {
     accessorKey: "goalRemaining",
-    header: "Goal Remaining",
+    header: "First Finisher",
     cell: ({ row }) => {
       const value = row.original.goalRemaining;
       const isNegative = value < 0;

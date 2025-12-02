@@ -23,7 +23,7 @@ export function First90LeaderboardTableEmptyState() {
             <TableHead className="text-neutral-400">Agent Name</TableHead>
             <TableHead className="text-neutral-400">Submitted AV</TableHead>
             <TableHead className="text-neutral-400">AV/Week</TableHead>
-            <TableHead className="text-neutral-400">Goal Remaining</TableHead>
+            <TableHead className="text-neutral-400">First Finisher</TableHead>
             <TableHead className="text-neutral-400">Weeks Left</TableHead>
           </TableRow>
         </TableHeader>

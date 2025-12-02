@@ -33,7 +33,7 @@ export function First90CriteriaSelector() {
       case "time_efficiency":
         return "Time Efficiency";
       case "goal_remaining":
-        return "Goal Remaining";
+        return "First Finisher";
       default:
         return criteria;
     }

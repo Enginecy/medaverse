@@ -75,7 +75,7 @@ const columns: ColumnDef<First90LeaderboardDataSection>[] = [
   },
   {
     accessorKey: "goalRemaining",
-    header: "Goal Remaining",
+    header: "Goal Surpassed",
     cell: ({ row }) => {
       const remaining = row.original.goalRemaining;
       const isNegative = remaining < 0;
@@ -85,7 +85,7 @@ const columns: ColumnDef<First90LeaderboardDataSection>[] = [
             isNegative ? "text-emerald-400 drop-shadow-lg" : "text-blue-300" }`}
         >
           ${Math.ceil(Math.abs(remaining)).toLocaleString()}
-          {isNegative && " ✓"}
+          {isNegative && " +"}
         </div>
       );
     },

@@ -31,9 +31,9 @@ export function First90LeaderboardCard({
         const remaining = user.goalRemaining;
         const isNegative = remaining < 0;
         return {
-          label: "Goal Remaining",
+          label: "Goal Surpassed",
           value: `$${Math.ceil(Math.abs(remaining)).toLocaleString()}${
-            isNegative ? " ✓" : ""
+            isNegative ? " +" : ""
           }`,
         };
     }
