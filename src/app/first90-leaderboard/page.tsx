@@ -87,7 +87,7 @@ export default async function First90LeaderboardPage() {
                 criteria="time_efficiency"
               />
               <First90LeaderboardTable
-                title="Time Efficiency"
+                title="Average Weekly AV"
                 data={timeEfficiencyData}
                 criteria="time_efficiency"
               />
@@ -108,14 +108,14 @@ export default async function First90LeaderboardPage() {
                     criteria="goal_remaining"
                   />
                   <First90LeaderboardTable
-                    title="Who Finished First"
+                    title="First 90 Champions"
                     data={goalRemainingData}
                     criteria="goal_remaining"
                   />
                 </>
               ) : (
                 <First90LeaderboardTable
-                  title="Who Finished First"
+                  title="First 90 Champions"
                   data={[]}
                   criteria="goal_remaining"
                 />
