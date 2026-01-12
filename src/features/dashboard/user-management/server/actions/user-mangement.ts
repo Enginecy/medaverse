@@ -5,6 +5,7 @@ import { profile, userHierarchy, userRoles } from "@/db/schema";
 import type { AddUserFormData } from "@/features/dashboard/user-management/schemas/add-user-schema";
 
 import { eq, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -445,7 +446,104 @@ export async function deleteAgent(id: string): Promise<ActionResult<void>> {
       .where(eq(profile.id, id));
   });
 
+  revalidatePath("/dashboard/user-management");
+
   return { success: true, data: undefined };
+}
+
+export async function reEnableAgent(id: string): Promise<ActionResult<void>> {
+  const { auth } = createAdminClient();
+  const supabase = await createClient();
+  const db = await createDrizzleSupabaseClient();
+
+  // Check if current user is authorized
+  const {
+    data: { user: currentUser },
+    error: currentUserError,
+  } = await supabase.auth.getUser();
+
+  if (currentUserError || !currentUser) {
+    return {
+      success: false,
+      error: {
+        message: "Not Authorized",
+        statusCode: 401,
+        details: "You must be authorized to perform this action.",
+      },
+    };
+  }
+
+  // Get the user profile
+  const [existingProfile] = await db.admin
+    .select()
+    .from(profile)
+    .where(eq(profile.id, id));
+
+  if (!existingProfile) {
+    return {
+      success: false,
+      error: {
+        message: "User not found",
+        statusCode: 404,
+        details: "The user you are trying to re-enable does not exist.",
+      },
+    };
+  }
+
+  if (existingProfile.status === "active") {
+    return {
+      success: false,
+      error: {
+        message: "User already active",
+        statusCode: 400,
+        details: "This user is already active.",
+      },
+    };
+  }
+
+  try {
+    // Unban the user in Supabase Auth by setting ban_duration to "none"
+    const { error: unbanError } = await auth.admin.updateUserById(
+      existingProfile.userId!,
+      {
+        ban_duration: "none",
+      }
+    );
+
+    if (unbanError) {
+      return {
+        success: false,
+        error: {
+          message: "Failed to unban user",
+          statusCode: 400,
+          details: unbanError.message ?? "An error occurred while unbanning the user.",
+        },
+      };
+    }
+
+    // Update profile status back to active and clear deletedAt
+    await db.admin
+      .update(profile)
+      .set({
+        status: "active",
+        deletedAt: null,
+      })
+      .where(eq(profile.id, id));
+
+    revalidatePath("/dashboard/user-management");
+
+    return { success: true, data: undefined };
+  } catch (error) {
+    console.error("Error re-enabling agent:", error);
+    return {
+      success: false,
+      error: {
+        message: "Failed to re-enable user",
+        statusCode: 500,
+        details: "An unexpected error occurred while re-enabling the user.",
+      },
+    };
+  }
 }
 
 export async function addImportedUsers(importedData: Partial<User>[]) {
