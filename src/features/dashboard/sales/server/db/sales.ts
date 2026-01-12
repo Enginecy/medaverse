@@ -9,7 +9,6 @@ import {
   sales,
 } from "@/db/schema";
 import { getUserProfile } from "@/features/dashboard/home/server/db/home";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { count, desc, eq, sql } from "drizzle-orm";
 

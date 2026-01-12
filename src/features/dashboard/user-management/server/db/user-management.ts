@@ -4,7 +4,7 @@ import { createDrizzleSupabaseClient } from "@/db/db";
 import { profile, roles, userHierarchy, userRoles, users } from "@/db/schema";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { createClient } from "@/lib/supabase/server";
-import { desc, getTableColumns, eq, gt, sql } from "drizzle-orm";
+import { desc, getTableColumns, eq, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
 export async function getUsers() {

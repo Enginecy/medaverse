@@ -4,7 +4,7 @@ import { saleItems, sales } from "@/db/schema";
 import type { AddSaleFormData } from "@/features/dashboard/sales/schemas/add-sale-schema";
 import type { ActionResult } from "@/lib/utils";
 import { readIssuedSalesFile, type IssuedSaleRecord } from "@/utils/extract-issued-sales";
-import { eq, inArray, sql } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function addSale(
