@@ -27,6 +27,7 @@ export function RoleField({
   roles: Role[];
   onChange: (value: string) => void;
 }) {
+  const sortedRoles = roles.sort((a, b) => a.level - b.level);
   return (
     <FormField
       control={form.control}
@@ -47,7 +48,7 @@ export function RoleField({
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {roles.map((role) => (
+              {sortedRoles.map((role) => (
                 <SelectItem key={role.id} value={role.id}>
                   {role.name}
                 </SelectItem>

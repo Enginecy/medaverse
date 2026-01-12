@@ -44,7 +44,8 @@ export async function getSales() {
             'productName', ${insuranceProducts.name},
             'companyName', ${insuranceCompanies.name},
             'premiumAmount', ${saleItems.premiumAmount},
-            'policyNumber', ${saleItems.policyNumber}
+            'policyNumber', ${saleItems.policyNumber},
+            'isIssued', ${saleItems.isIssued}
           )
         )`.as("products"),
         createdAt: sales.createdAt,
@@ -74,6 +75,7 @@ export type SaleItem = {
   companyName: string;
   premiumAmount: number;
   policyNumber: string;
+  isIssued: boolean;
 };
 export type Sale = Awaited<ReturnType<typeof getSales>>[number];
 
