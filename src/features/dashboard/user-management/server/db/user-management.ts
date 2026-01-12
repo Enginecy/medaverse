@@ -5,6 +5,7 @@ import { profile, roles, userHierarchy, userRoles, users } from "@/db/schema";
 import type { Role } from "@/features/dashboard/admin-settings/server/db/admin-settings";
 import { createClient } from "@/lib/supabase/server";
 import { desc, getTableColumns, eq, gt, sql } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 
 export async function getUsers() {
   const db = await createDrizzleSupabaseClient();
@@ -88,6 +89,8 @@ export async function getRegionalDirectors() {
 export async function getExportUsers() {
   const db = await createDrizzleSupabaseClient();
 
+  const uplineProfile = alias(profile, "upline_profile");
+
   const exportUsers = await db.rls((tx) => {
     return tx
       .select({
@@ -100,11 +103,14 @@ export async function getExportUsers() {
         office: profile.office,
         dob: sql`TO_CHAR(${profile.dob}, 'YYYY-MM-DD')`.as("dob"),
         NpnNumber: profile.npnNumber,
+        uplineName: uplineProfile.name,
       })
       .from(profile)
       .leftJoin(users, eq(profile.userId, users.id))
       .leftJoin(userRoles, eq(userRoles.userId, profile.userId))
       .leftJoin(roles, eq(userRoles.roleId, roles.id))
+      .leftJoin(userHierarchy, eq(userHierarchy.userId, profile.userId))
+      .leftJoin(uplineProfile, eq(userHierarchy.leaderId, uplineProfile.userId))
       .orderBy(desc(profile.createdAt));
   });
 
