@@ -126,7 +126,7 @@ export function First90LeaderboardCard({
 
       <div className="mt-2 w-full">
         <div className="mb-1 flex justify-between text-xs text-cyan-300/70">
-          <span>Progress to $150k goal</span>
+          <span>Progress to $200k goal</span>
           <span>{goalProgressPercent.toFixed(1)}%</span>
         </div>
         <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-800/50 backdrop-blur-sm">

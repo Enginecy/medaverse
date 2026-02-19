@@ -67,7 +67,7 @@ export async function getFirst90Users() {
         FNB,
         end_date,
         submitted_av,
-        150000 - submitted_av as goal_remaining,
+        200000 - submitted_av as goal_remaining,
         -- 3. New Column: Calculates weeks left between TODAY and the end_date
         ROUND(DATE_PART('day', end_date::timestamp - NOW()) / 7) as weeks_left
       FROM 

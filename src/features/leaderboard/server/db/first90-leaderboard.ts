@@ -16,7 +16,7 @@ export type First90LeaderboardUser = {
   weeksLeft: number;
   weeksElapsed: number;
   timeEfficiency: number; // submitted_av / weeks_elapsed
-  goalProgress: number; // percentage of $150k goal
+  goalProgress: number; // percentage of $200k goal
   completionDate: Date | null; // Date when goal was reached (goalRemaining <= 0)
 };
 
@@ -86,7 +86,7 @@ export async function getFirst90LeaderboardDataByCriteria(
                 AND s2.created_at < fsd.time + INTERVAL '3 months'
                 AND s2.deleted_at IS NULL
             ) cumulative
-            WHERE cumulative.running_total >= 150000
+            WHERE cumulative.running_total >= 200000
             LIMIT 1
           ) as completion_date
         FROM
@@ -103,7 +103,7 @@ export async function getFirst90LeaderboardDataByCriteria(
         FNB,
         end_date,
         submitted_av,
-        150000 - submitted_av as goal_remaining,
+        200000 - submitted_av as goal_remaining,
         ROUND(DATE_PART('day', end_date::timestamp - NOW()) / 7) as weeks_left,
         weeks_elapsed,
         CASE 
@@ -124,8 +124,8 @@ export async function getFirst90LeaderboardDataByCriteria(
     const submittedAv = parseFloat(String(row.submitted_av ?? 0));
     const weeksElapsed = parseFloat(String(row.weeks_elapsed ?? 1));
     const timeEfficiency = parseFloat(String(row.time_efficiency ?? 0));
-    const goalRemaining = parseFloat(String(row.goal_remaining ?? 150000));
-    const goalProgress = (submittedAv / 150000) * 100;
+    const goalRemaining = parseFloat(String(row.goal_remaining ?? 200000));
+    const goalProgress = (submittedAv / 200000) * 100;
     const completionDate = row.completion_date
       ? new Date(row.completion_date)
       : null;
@@ -217,7 +217,7 @@ export async function getFirst90Stats() {
       SELECT 
         COUNT(*) as total_users,
         COALESCE(AVG(submitted_av), 0) as avg_av,
-        COALESCE(SUM(CASE WHEN submitted_av >= 150000 THEN 1 ELSE 0 END), 0) as users_at_goal
+        COALESCE(SUM(CASE WHEN submitted_av >= 200000 THEN 1 ELSE 0 END), 0) as users_at_goal
       FROM 
         SalesSummary
     `);
