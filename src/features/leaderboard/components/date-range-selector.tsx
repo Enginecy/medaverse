@@ -1,16 +1,22 @@
 "use client";
 
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useTransition } from "react";
 import { Loader2 } from "lucide-react";
 
-export function DateRangeSelector() {
+export function DateRangeSelector({
+  basePath,
+}: {
+  basePath?: string;
+} = {}) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  // Get initial dates from URL params or use defaults
+  const path = basePath ?? (pathname?.startsWith("/issued-leaderboard") ? "/issued-leaderboard" : "/leaderboard");
+
   const fromParam = searchParams.get("from");
   const toParam = searchParams.get("to");
   const hasCustomRange = fromParam && toParam;
@@ -32,21 +38,20 @@ export function DateRangeSelector() {
         params.set("to", range.to.toISOString().split("T")[0]!);
       }
 
-      // Remove the period param when using custom dates
       params.delete("period");
 
       startTransition(() => {
-        router.push(`/leaderboard?${params.toString()}`);
+        router.push(`${path}?${params.toString()}`);
       });
     },
-    [router],
+    [router, path],
   );
 
   const handleClear = useCallback(() => {
     startTransition(() => {
-      router.push("/leaderboard?period=week");
+      router.push(`${path}?period=week`);
     });
-  }, [router]);
+  }, [router, path]);
 
   return (
     <div className="flex items-center gap-2">

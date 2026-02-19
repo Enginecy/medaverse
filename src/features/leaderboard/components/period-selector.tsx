@@ -1,22 +1,27 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { Loader2 } from "lucide-react";
 
 export function PeriodSelector({
   customDateRange,
+  basePath,
 }: {
   customDateRange?: { from: string; to: string };
+  basePath?: string;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const currentPeriod = searchParams.get("period") ?? "week";
 
+  const path = basePath ?? (pathname?.startsWith("/issued-leaderboard") ? "/issued-leaderboard" : "/leaderboard");
+
   const handlePeriodChange = (newPeriod: "week" | "month" | "all") => {
     startTransition(() => {
-      router.push(`/leaderboard?period=${newPeriod}`);
+      router.push(`${path}?period=${newPeriod}`);
     });
   };
 

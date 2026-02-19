@@ -16,6 +16,6 @@ export const config = {
      * - leaderboard (and its subroutes)
      * Feel free to modify this pattern to include more paths.
      */
-    "/((?!_next/static|_next/image|favicon.ico|leaderboard(?:/|$)|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|leaderboard(?:/|$)|issued-leaderboard(?:/|$)|first90-leaderboard(?:/|$)|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

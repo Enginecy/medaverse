@@ -1,55 +1,24 @@
 "use client";
 import { UserChip } from "@/features/dashboard/admin-settings/components/ui/user-chip";
 import { getLastSale } from "@/features/leaderboard/server/db/leaderboard";
-import { useSupabase } from "@/lib/supabase/provider";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getIssuedLastSale } from "@/features/leaderboard/server/db/issued-leaderboard";
+import { useQuery } from "@tanstack/react-query";
 import { ChartSplineIcon, ClockIcon } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
-export function StockCard() {
-  const supabase = useSupabase();
-
-  const queryClient = useQueryClient();
-  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+export function StockCard({ issuedOnly = false }: { issuedOnly?: boolean }) {
+  const queryKey = issuedOnly ? ["last-issued-sale"] : ["last-sale"];
+  const queryFn = issuedOnly ? getIssuedLastSale : getLastSale;
 
   const {
     data: lastSale,
     isPending,
     isError,
   } = useQuery({
-    queryKey: ["last-sale"],
-    queryFn: getLastSale,
-    refetchOnWindowFocus: false,
+    queryKey,
+    queryFn,
+    refetchOnWindowFocus: true,
   });
-
-  useEffect(() => {
-    // Prevent duplicate subscriptions
-    if (channelRef.current) return;
-
-    const channel = supabase
-      .channel("sales-changes-stock-card")
-      .on(
-        "broadcast",
-        { event: "INSERT" },
-        () => void queryClient.invalidateQueries({ queryKey: ["last-sale"] }),
-      )
-      .on(
-        "broadcast",
-        { event: "DELETE" },
-        () => void queryClient.invalidateQueries({ queryKey: ["last-sale"] }),
-      )
-
-      .subscribe();
-
-    channelRef.current = channel;
-
-    return () => {
-      if (channelRef.current) {
-        void channelRef.current.unsubscribe();
-        channelRef.current = null;
-      }
-    };
-  }, [queryClient, supabase]);
 
   const [animate, setAnimate] = useState(false);
 
