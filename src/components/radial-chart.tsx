@@ -11,9 +11,6 @@ export function ChartRadialText({
   title: string;
   value: number;
 }) {
-  if (value < 0 || value > 100) {
-    throw new Error("Value must be between 0 and 100");
-  }
 
   return (
     <div className="h-30 w-auto">
