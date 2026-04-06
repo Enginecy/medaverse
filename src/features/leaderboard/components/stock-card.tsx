@@ -21,6 +21,11 @@ export function StockCard({ issuedOnly = false }: { issuedOnly?: boolean }) {
   });
 
   const [animate, setAnimate] = useState(false);
+  const formattedSaleTime = lastSale
+    ? new Date(lastSale.createdAt).toLocaleString("en-US", {
+        timeZone: "America/New_York",
+      })
+    : "";
 
   useEffect(() => {
     if (lastSale) {
@@ -106,7 +111,7 @@ export function StockCard({ issuedOnly = false }: { issuedOnly?: boolean }) {
       >
         <div className="flex items-center justify-center gap-2.5">
           <ClockIcon className="h-5 w-5" />
-          <span>{lastSale.createdAt.toLocaleString()}</span>
+          <span>{formattedSaleTime}</span>
         </div>
       </div>
       <div

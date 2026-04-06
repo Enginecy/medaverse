@@ -114,14 +114,14 @@ const columns: ColumnDef<First90LeaderboardDataSection>[] = [
     },
   },
   {
-    accessorKey: "completionDate",
-    header: "Completed On",
+    accessorKey: "endDate",
+    header: "Last Day",
     cell: ({ row }) => {
-      const completionDate = row.original.completionDate;
-      if (!completionDate) return <div className="text-slate-500">-</div>;
+      const endDate = row.original.endDate;
+      if (!endDate) return <div className="text-slate-500">-</div>;
       return (
         <div className="font-semibold text-emerald-400">
-          {completionDate.toLocaleDateString("en-US", {
+          {endDate.toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
             year: "numeric",
@@ -164,12 +164,12 @@ export function First90LeaderboardTable({
       return false;
     }
 
-    // Third tile (Who Finished First): Show Submitted AV, Completed On
+    // Third tile (Who Finished First): Show Submitted AV, Last Day
     if (criteria === "goal_remaining") {
       if ("accessorKey" in col) {
         if (
           col.accessorKey === "submittedAv" ||
-          col.accessorKey === "completionDate"
+          col.accessorKey === "endDate"
         ) {
           return true;
         }

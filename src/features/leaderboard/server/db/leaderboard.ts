@@ -28,7 +28,7 @@ export async function getLastSale() {
   }
 
   return {
-    createdAt: lastSale.updatedAt!,
+    createdAt: lastSale.createdAt!,
     amount: lastSale.totalSaleValue!.toLocaleString(),
     user: {
       avatar: user.profile.avatarUrl,
@@ -43,24 +43,27 @@ export async function getSalesAmountByPeriod(
   customDateRange?: { from: string; to: string },
 ) {
   const db = await createDrizzleSupabaseClient();
+  const createdAtEtDate =
+    sql`(${sales.createdAt} AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York')::date`;
+  const nowEt = sql`(NOW() AT TIME ZONE 'America/New_York')`;
 
   let dateFilter = sql`1=1`; // Default: no filter for 'all'
 
   if (customDateRange?.from && customDateRange?.to) {
     // Use custom date range if provided
     dateFilter = sql`
-      ${sales.createdAt}::date >= ${customDateRange.from}::date
-      AND ${sales.createdAt}::date <= ${customDateRange.to}::date
+      ${createdAtEtDate} >= ${customDateRange.from}::date
+      AND ${createdAtEtDate} <= ${customDateRange.to}::date
     `;
   } else if (period === "week") {
     // Use DATE_TRUNC for current week calculation (Monday to Sunday)
     dateFilter = sql`
-      ${sales.createdAt}::date >= (DATE_TRUNC('week', NOW()) - INTERVAL '2 days')::date
+      ${createdAtEtDate} >= (DATE_TRUNC('week', ${nowEt}) - INTERVAL '2 days')::date
     `;
   } else if (period === "month") {
     // Use DATE_TRUNC for month calculation
     dateFilter = sql`
-      ${sales.createdAt}::date >= (DATE_TRUNC('month', NOW()))::date
+      ${createdAtEtDate} >= (DATE_TRUNC('month', ${nowEt}))::date
     `;
   }
   // 'all' period uses no date filter (dateFilter = sql`1=1`)
@@ -80,29 +83,21 @@ export async function getTodaySalesAmount(
   customDateRange?: { from: string; to: string },
 ) {
   const db = await createDrizzleSupabaseClient();
+  const createdAtEtDate =
+    sql`(${sales.createdAt} AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York')::date`;
+  const todayEt = sql`(NOW() AT TIME ZONE 'America/New_York')::date`;
 
   let dateFilter;
 
   if (customDateRange?.from && customDateRange?.to) {
     // Use custom date range if provided
     dateFilter = sql`
-      ${sales.createdAt}::date >= ${customDateRange.from}::date
-      AND ${sales.createdAt}::date <= ${customDateRange.to}::date
+      ${createdAtEtDate} >= ${customDateRange.from}::date
+      AND ${createdAtEtDate} <= ${customDateRange.to}::date
       AND ${sales.deletedAt} IS NULL
     `;
   } else {
-    // Get today's date
-    const today = new Date(
-      new Intl.DateTimeFormat("en-US", {
-        timeStyle: "medium",
-        dateStyle: "short",
-        timeZone: "America/New_York",
-      }).format(),
-    ).toISOString();
-
-    const todayStr = today.split("T")[0];
-
-    dateFilter = sql`DATE(${sales.createdAt}) = ${todayStr}
+    dateFilter = sql`${createdAtEtDate} = ${todayEt}
         AND ${sales.deletedAt} IS NULL`;
   }
 
