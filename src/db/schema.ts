@@ -218,9 +218,9 @@ export const sales = pgTable(
       scale: 2,
     }),
     notes: text(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date", withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date", withTimezone: true }),
   },
   (table) => [
     index("idx_sales_user_id").using(
@@ -270,9 +270,9 @@ export const saleItems = pgTable(
     policyNumber: varchar("policy_number", { length: 100 }).notNull(),
     isIssued: boolean("is_issued").default(false).notNull(),
     notes: text(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
-    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
-    deletedAt: timestamp("deleted_at", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date", withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true }).defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date", withTimezone: true }),
     companyId: uuid("company_id"),
   },
   (table) => [
