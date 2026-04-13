@@ -51,7 +51,7 @@ const items = [
     title: "First 90",
     url: "/dashboard/first90",
     icon: CalendarDays,
-    requiresLevel: 9,
+    requiresLevel: 5,
   },
   {
     title: "First 90 Leaderboard",
