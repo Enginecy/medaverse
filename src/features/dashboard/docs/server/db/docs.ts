@@ -1,21 +1,9 @@
 "use server";
-import { createDrizzleSupabaseClient } from "@/db/db";
 import { createClient } from "@/lib/supabase/server";
-import { sql } from "drizzle-orm";
+import { fetchNewsDocuments } from "@/features/dashboard/news/server/news-documents-query";
 
 export async function getNews() {
-  const db = await createDrizzleSupabaseClient();
-
-  // call db function public.get_user_accessible_documents
-  return db.rls(async (tx) => {
-    return tx.execute<NewsDocument>(
-      sql`SELECT * FROM public.get_user_accessible_documents(
-        p_category => 'news',
-        p_limit => 100,
-        p_offset => 0
-      )`,
-    );
-  });
+  return fetchNewsDocuments();
 }
 
 export async function getDownloadLink(path: string) {
