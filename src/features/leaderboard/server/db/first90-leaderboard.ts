@@ -159,17 +159,26 @@ export async function getFirst90LeaderboardDataByCriteria(
         (a, b) => b.timeEfficiency - a.timeEfficiency,
       );
       break;
-    case "goal_remaining":
-      // Sort by completion date (who finished first)
-      // Only show users who have completed (goalRemaining <= 0)
-      // Sort by completion date ascending (earliest completion first)
-      sortedUsers = [...users]
-        .filter((user) => user.goalRemaining <= 0 && user.completionDate !== null)
-        .sort((a, b) => {
-          if (!a.completionDate || !b.completionDate) return 0;
-          return a.completionDate.getTime() - b.completionDate.getTime();
-        });
+    case "goal_remaining": {
+      // List all First90 agents: champions who hit $200k first (by completion
+      // date), then everyone else by submitted AV (highest first).
+      const hasCompleted = (u: First90LeaderboardUser) =>
+        u.goalRemaining <= 0 && u.completionDate !== null;
+
+      sortedUsers = [...users].sort((a, b) => {
+        const aDone = hasCompleted(a);
+        const bDone = hasCompleted(b);
+        if (aDone && bDone && a.completionDate && b.completionDate) {
+          return (
+            a.completionDate.getTime() - b.completionDate.getTime()
+          );
+        }
+        if (aDone && !bDone) return -1;
+        if (!aDone && bDone) return 1;
+        return b.submittedAv - a.submittedAv;
+      });
       break;
+    }
     default:
       sortedUsers = users;
   }
