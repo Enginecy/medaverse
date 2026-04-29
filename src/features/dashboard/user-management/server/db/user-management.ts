@@ -50,7 +50,7 @@ export async function getAboveSuperiors(selectedRole: Role) {
       .from(profile)
       .innerJoin(userRoles, eq(userRoles.userId, profile.userId))
       .innerJoin(roles, eq(userRoles.roleId, roles.id))
-      .where(gte(roles.level, selectedRole.level))
+      .where(gte(roles.level, 4))
       .orderBy(profile.name);
 
     return superiors;
